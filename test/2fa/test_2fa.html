@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Test 2fa</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+    }
+
+    #signInPage {
+      display: none;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background-color: white;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    #enable2faPage {
+      display: none;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background-color: white;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    #profilPage {
+      display: none;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background-color: white;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    #all2faPage {
+      display: none;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background-color: white;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    #sms2faPage {
+      display: none;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background-color: white;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+    
+    #smsVerifyCode2faPage {
+      display: none;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background-color: white;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    #email2faPage {
+      display: none;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background-color: white;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+    
+    #emailVerifyCode2faPage {
+      display: none;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background-color: white;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    #totp2faPage {
+      display: none;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background-color: white;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    #totpVerifyCode2faPage {
+      display: none;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background-color: white;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    label {
+      padding: 0.1rem;
+    }
+
+    input {
+      padding: 0.2rem;
+    }
+
+    button {
+      padding: 0.4rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Test connection</h1>
+  <button id="profilBtn">Profil</button>
+  <button id="signInPageBtn">Sign in</button>
+  <button id="enable2faPageBtn">Enable double authentication (2FA)</button>
+
+  <div id="signInPage">
+    <h2>Sign in to 2FA test</h2>
+
+    <label for="login">Login :</label>
+    <input type="text" id="login" name="login" />
+
+    <label for="password">Password :</label>
+    <input type="password" id="password" name="password" />
+
+    <button id="signinBtn">Sign in</button>
+    <button id="closeSignInPageBtn">Close</button>
+  </div>
+
+  <div id="all2faPage">
+    <p>Enable 2FA</p>
+    <button id="sms2faBtn">SMS</button>
+    <button id="email2faBtn">Email</button>
+    <button id="totp2faBtn">App</button>
+    <button id="close2faBtn">Close</button>
+  </div>
+
+  <div id="sms2faPage">
+    <p>Enable 2FA by: SMS</p>
+    <label for="phone">Phone number :</label>
+    <input type="text" id="phone" name="phone"/>
+    <button id="smsVerify2faBtn">Send</button>
+    <button id="closeSms2faPageBtn">Close</button>
+  </div>
+  
+    <div id="smsVerifyCode2faPage">
+      <p>Enable 2FA by: Phone number</p>
+      <label for="smsCode2fa">2FA code :</label>
+      <input type="text" id="smsCode2fa" name="smsCode2fa" maxlength="6"/>
+      <button id="smsVerifyCode2faBtn">Verify</button>
+    </div>
+
+  <div id="email2faPage">
+    <p>Enable 2FA by: Email</p>
+    <label for="email">Email :</label>
+    <input type="text" id="email" name="email"/>
+    <button id="emailVerify2faBtn">Send</button>
+    <button id="closeEmail2faPageBtn">Close</button>
+  </div>
+  
+    <div id="emailVerifyCode2faPage">
+      <p>Enable 2FA by: Email</p>
+      <label for="emailCode2fa">2FA code :</label>
+      <input type="text" id="emailCode2fa" name="emailCode2fa" maxlength="6"/>
+      <button id="emailVerifyCode2faBtn">Verify</button>
+    </div>
+
+  <div id="totp2faPage">
+    <p>Enable 2FA by: App</p>
+    <p>Scannez ce QR Code dans Google Authenticator :</p>
+    <img id="totp2faQrCode" style="display:none; max-width:200px;"/>
+    <br>
+    <button id="totpVerify2faBtn">Générer QR Code</button>
+    <button id="closeTotp2faPageBtn">Close</button>
+  </div>
+  
+    <div id="totpVerifyCode2faPage">
+      <p>Enable 2FA by: App</p>
+      <label for="totpCode2fa">2FA code :</label>
+      <input type="text" id="totpCode2fa" name="totpCode2fa" maxlength="6"/>
+      <button id="totpVerifyCode2faBtn">Verify</button>
+    </div>
+
+  <div id="profilPage">
+    <p>Profil</p>
+    <button id="closeProfilPageBtn">Close</button>
+  </div>
+
+  <script>
+    const login = document.getElementById('login');
+    const password = document.getElementById('password');
+
+    const email = document.getElementById('email');
+    const phone = document.getElementById('phone');
+    // const app = document.getElementById('app');
+
+    let userToken = ''
+    
+//----------------
+//  LOGIN
+//----------------
+    signInPageBtn.addEventListener('click', () => {
+      signInPage.style.display = 'flex';
+    });
+    
+    closeSignInPageBtn.addEventListener('click', () => {
+      signInPage.style.display = 'none';
+    });
+    
+    signinBtn.addEventListener('click', () => {
+      signInPage.style.display = 'none';
+      signInPageBtn.style.display = 'none';
+    });
+
+    enable2faPageBtn.addEventListener('click', () => {
+      all2faPage.style.display = 'flex';
+    });
+
+    close2faBtn.addEventListener('click', () => {
+      all2faPage.style.display = 'none';
+    });
+
+
+//----------------
+//  SMS 2FA
+//----------------
+    sms2faBtn.addEventListener('click', () => {
+      all2faPage.style.display = 'none';
+      sms2faPage.style.display = 'flex';
+    });
+
+    smsVerify2faBtn.addEventListener('click', () => {
+      const data = {
+        login: login.value,
+        phone: phone.value
+      };
+      
+      fetch('http://localhost:3000/sms/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success) {
+          alert('SMS envoyé avec succès !');
+          sms2faPage.style.display = 'none';
+          smsVerifyCode2faPage.style.display = 'flex';
+        } else {
+          alert('Erreur : ' + res.message);
+        }
+      })
+      .catch(err => {
+        console.error("Erreur fetch :", err);
+        alert('Une erreur est survenue');
+      });
+    });
+
+    closeSms2faPageBtn.addEventListener('click', () => {
+      sms2faPage.style.display = 'none';
+      all2faPage.style.display = 'flex';
+    });
+
+    smsVerifyCode2faBtn.addEventListener('click', () => {
+      const data2fa = {
+        login: login.value,
+        phone: phone.value,
+        code: smsCode2fa.value
+      };
+
+      fetch('http://localhost:3000/sms/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data2fa)
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success) {
+          alert('Phone vérifiée !');
+          smsVerifyCode2faPage.style.display = 'none';
+          userToken = res.token;
+        } else {
+          alert('Code incorrect.');
+        }
+      })
+      .catch(err => {
+        console.error("Erreur fetch :", err);
+        alert('Une erreur est survenue');
+      });
+    });
+
+
+//----------------
+//  Email 2FA
+//----------------
+    email2faBtn.addEventListener('click', () => {
+      all2faPage.style.display = 'none';
+      email2faPage.style.display = 'flex';
+    });
+
+    emailVerify2faBtn.addEventListener('click', () => {
+      const data = {
+        login: login.value,
+        email: email.value
+      };
+      
+      fetch('http://localhost:3000/email/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success) {
+          alert('E-mail envoyé avec succès !');
+          email2faPage.style.display = 'none';
+          emailVerifyCode2faPage.style.display = 'flex';
+        } else {
+          alert('Erreur : ' + res.message);
+        }
+      })
+      .catch(err => {
+        console.error("Erreur fetch :", err);
+        alert('Une erreur est survenue');
+      });
+    });
+
+    closeEmail2faPageBtn.addEventListener('click', () => {
+      email2faPage.style.display = 'none';
+      all2faPage.style.display = 'flex';
+    });
+
+    emailVerifyCode2faBtn.addEventListener('click', () => {
+      const data2fa = {
+        login: login.value,
+        email: email.value,
+        code: emailCode2fa.value
+      };
+
+      fetch('http://localhost:3000/email/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data2fa)
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success) {
+          alert('Email vérifiée !');
+          emailVerifyCode2faPage.style.display = 'none';
+          userToken = res.token;
+        } else {
+          alert('Code incorrect.');
+        }
+      })
+      .catch(err => {
+        console.error("Erreur fetch :", err);
+        alert('Une erreur est survenue');
+      });
+    });
+
+
+//----------------
+//  TOTP 2FA
+//----------------
+    totp2faBtn.addEventListener('click', () => {
+      const data = {
+        login: login.value
+      };
+      
+      fetch('http://localhost:3000/totp/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success) {
+          // Afficher le QR Code retourné par le backend
+          const qrImg = document.getElementById('totp2faQrCode');
+          qrImg.src = res.qrCode; // data:image/png;base64,...
+          qrImg.style.display = 'block';
+
+          all2faPage.style.display = 'none';
+          totp2faPage.style.display = 'flex';
+        } else {
+          alert('Erreur : ' + res.message);
+        }
+      })
+      .catch(err => {
+        console.error("Erreur fetch :", err);
+        alert('Une erreur est survenue');
+      });
+    });
+
+    totpVerify2faBtn.addEventListener('click', () => {
+      totp2faPage.style.display = 'none';
+      totpVerifyCode2faPage.style.display = 'flex';
+    });
+
+    closeTotp2faPageBtn.addEventListener('click', () => {
+      totp2faPage.style.display = 'none';
+      all2faPage.style.display = 'flex';
+    });
+
+    totpVerifyCode2faBtn.addEventListener('click', () => {
+      const data2fa = {
+        login: login.value,
+        code: totpCode2fa.value
+      };
+
+      fetch('http://localhost:3000/totp/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data2fa)
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success) {
+          alert('Authentification par application réussie ✅');
+          totpVerifyCode2faPage.style.display = 'none';
+          userToken = res.token;
+        } else {
+          alert('Code incorrect.');
+        }
+      })
+      .catch(err => {
+        console.error("Erreur fetch :", err);
+        alert('Une erreur est survenue');
+      });
+    });
+
+//----------------
+//  OTHER
+//----------------
+    profilBtn.addEventListener('click', () => {
+      fetch('http://localhost:3000/profil', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + userToken
+         }
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success) {
+          profilPage.style.display = 'flex';
+        } else {
+          alert('Movais token JWT !');
+        }
+      });
+    });
+
+    closeProfilPageBtn.addEventListener('click', () => {
+      profilPage.style.display = 'none';
+    });
+
+  </script>
+</body>
+</html>
