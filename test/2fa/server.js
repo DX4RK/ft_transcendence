@@ -124,7 +124,7 @@ app.post('/totp/send', async (req, res) => {
   // Si le secret existe déjà, ne pas en régénérer un
   let userSecret = totpCode.get(login);
   if (!userSecret) {
-    const secret = speakeasy.generateSecret({ length: 20, name: `MonSite (${login})` });
+    const secret = speakeasy.generateSecret({ length: 20, name: login, issuer: "2FA-Test" });
     userSecret = secret.base32;
     totpCode.set(login, userSecret);
 
@@ -152,8 +152,8 @@ app.post('/totp/verify', (req, res) => {
   const verified = speakeasy.totp.verify({
     secret: userSecret,
     encoding: 'base32',
-    code,
-    window: 3 // tolérance de 60s
+    token: code,
+    window: 1
   });
 
   if (verified) {
