@@ -25,6 +25,26 @@
       z-index: 10;
     }
 
+    #signUpPage {
+      display: none;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background-color: white;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    #enable2faPageBtn {
+      display: none;
+    }
+
     #enable2faPage {
       display: none;
       flex-direction: column;
@@ -186,6 +206,7 @@
   <h1>Test connection</h1>
   <button id="profilBtn">Profil</button>
   <button id="signInPageBtn">Sign in</button>
+  <button id="signUpPageBtn">Sign up</button>
   <button id="enable2faPageBtn">Enable double authentication (2FA)</button>
 
   <div id="signInPage">
@@ -197,7 +218,7 @@
     <label for="password">Password :</label>
     <input type="password" id="password" name="password" />
 
-    <button id="signinBtn">Sign in</button>
+    <button id="signInBtn">Sign in</button>
     <button id="closeSignInPageBtn">Close</button>
   </div>
 
@@ -210,8 +231,8 @@
     <label for="password">Password :</label>
     <input type="password" id="password" name="password" />
 
-    <button id="signUpBtn">Sign in</button>
-    <button id="closeSignInPUpPageBtn">Close</button>
+    <button id="signUpBtn">Sign up</button>
+    <button id="closeSignUpPageBtn">Close</button>
   </div>
 
   <div id="all2faPage">
@@ -279,13 +300,16 @@
 
     const email = document.getElementById('email');
     const phone = document.getElementById('phone');
-    // const app = document.getElementById('app');
+    const app = document.getElementById('app');
 
     let userToken = ''
     
 //----------------
 //  LOGIN
 //----------------
+
+    // sign in
+
     signInPageBtn.addEventListener('click', () => {
       signInPage.style.display = 'flex';
     });
@@ -294,10 +318,35 @@
       signInPage.style.display = 'none';
     });
     
-    signinBtn.addEventListener('click', () => {
+    signInBtn.addEventListener('click', () => {
       signInPage.style.display = 'none';
       signInPageBtn.style.display = 'none';
+      signUpPageBtn.style.display = 'none';
+      enable2faPageBtn.style.display = 'flex';
     });
+
+    // sign up
+
+    signUpPageBtn.addEventListener('click', () => {
+      signUpPage.style.display = 'flex';
+    });
+    
+    closeSignUpPageBtn.addEventListener('click', () => {
+      signUpPage.style.display = 'none';
+    });
+    
+    signUpBtn.addEventListener('click', () => { // a termier
+      const data = {
+        login: login.value,
+        password: password.value
+      };
+
+      signUpPage.style.display = 'none';
+      signUpPageBtn.style.display = 'none';
+      signInPageBtn.style.display = 'none';
+    });
+
+    // enable 2fa
 
     enable2faPageBtn.addEventListener('click', () => {
       all2faPage.style.display = 'flex';
@@ -311,6 +360,7 @@
 //----------------
 //  SMS 2FA
 //----------------
+
     sms2faBtn.addEventListener('click', () => {
       all2faPage.style.display = 'none';
       sms2faPage.style.display = 'flex';
@@ -324,9 +374,7 @@
       
       fetch('http://localhost:3000/sms/send', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       })
       .then(res => res.json())
@@ -382,6 +430,7 @@
 //----------------
 //  Email 2FA
 //----------------
+
     email2faBtn.addEventListener('click', () => {
       all2faPage.style.display = 'none';
       email2faPage.style.display = 'flex';
@@ -395,9 +444,7 @@
       
       fetch('http://localhost:3000/email/send', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       })
       .then(res => res.json())
@@ -453,6 +500,7 @@
 //----------------
 //  TOTP 2FA
 //----------------
+
     totp2faBtn.addEventListener('click', () => {
       const data = {
         login: login.value
@@ -468,9 +516,8 @@
       .then(res => res.json())
       .then(res => {
         if (res.success) {
-          // Afficher le QR Code retourné par le backend
           const qrImg = document.getElementById('totp2faQrCode');
-          qrImg.src = res.qrCode; // data:image/png;base64,...
+          qrImg.src = res.qrCode;
           qrImg.style.display = 'block';
 
           all2faPage.style.display = 'none';
@@ -525,6 +572,7 @@
 //----------------
 //  OTHER
 //----------------
+
     profilBtn.addEventListener('click', () => {
       fetch('http://localhost:3000/profil', {
         method: 'POST',
