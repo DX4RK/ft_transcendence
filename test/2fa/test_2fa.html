@@ -278,7 +278,7 @@
     <p>Scannez ce QR Code dans Google Authenticator :</p>
     <img id="totp2faQrCode" style="display:none; max-width:200px;"/>
     <br>
-    <button id="totpVerify2faBtn">Générer QR Code</button>
+    <button id="totpVerify2faBtn">OK</button>
     <button id="closeTotp2faPageBtn">Close</button>
   </div>
   
@@ -319,6 +319,17 @@
     });
     
     signInBtn.addEventListener('click', () => {
+      const data = {
+        login: login.value,
+        password: password.value
+      };
+
+      fetch('http://localhost:3000/signIn', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+
       signInPage.style.display = 'none';
       signInPageBtn.style.display = 'none';
       signUpPageBtn.style.display = 'none';
@@ -341,9 +352,29 @@
         password: password.value
       };
 
-      signUpPage.style.display = 'none';
-      signUpPageBtn.style.display = 'none';
-      signInPageBtn.style.display = 'none';
+      fetch('http://localhost:3000/signUp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success) {
+          signUpPage.style.display = 'none';
+          signUpPageBtn.style.display = 'none';
+          signInPageBtn.style.display = 'none';
+
+          if (res.method == 'sms')
+            smsVerifyCode2faPage.style.display = 'flex';
+          else if (res.method == 'email')
+            emailVerifyCode2faPage.style.display = 'flex';
+          else if (res.method == 'totp')
+            totpVerifyCode2faPage.style.display = 'flex';
+
+        } else {
+          alert('Erreur : ' + res.message);
+        }
+      })
     });
 
     // enable 2fa
