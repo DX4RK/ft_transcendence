@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>2FA-Test</title>
+  <title>Live-Chat-Test</title>
   <style>
     body {
       font-family: sans-serif;
@@ -10,7 +10,7 @@
     }
 
     #liveChatPage {
-      display: flex;
+      display: none;
       flex-direction: column;
       gap: 0.5rem;
       position: fixed;
@@ -27,6 +27,36 @@
       width: 400px;
       height: 500px;
     }
+
+    #messages {
+      flex: 1;
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      overflow-y: auto;
+      background: #fafafa;
+    }
+
+    .message {
+      margin: 0.25rem 0;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+    }
+
+    .me {
+      background: #d1ffd1;
+      align-self: flex-end;
+    }
+
+    .other {
+      background: #e1e1ff;
+      align-self: flex-start;
+    }
+
+    #messageInput {
+      width: 95%;
+      padding: 0.5rem;
+    }
+
   </style>
 </head>
 <body>
@@ -36,13 +66,38 @@
   <div id="liveChatPage">
     <h2>Live chat test</h2>
 
-    <label for="login">Message :</label>
-    <input type="text" id="login" name="login" />
+    <div id="messages"></div>
 
-    <button id="senadBtn">Send</button>
+    <textarea id="messageInput" placeholder="Écris ton message..."></textarea>
+
+    <button id="sendBtn">Send</button>
     <button id="closeLiveChatPageBtn">Close</button>
   </div>
   <script>
+
+    liveChatBtn.addEventListener('click', () => {
+      liveChatPage.style.display = 'flex';
+    });
+
+    closeLiveChatPageBtn.addEventListener('click', () => {
+      liveChatPage.style.display = 'none';
+    });
+
+    sendBtn.addEventListener('click', () => {
+      const text = messageInput.value.trim();
+      if (text) {
+        addMessage(text, "me");
+        messageInput.value = "";
+      }
+    });
+  
+    function addMessage(text, type = "other") {
+      const div = document.createElement("div");
+      div.classList.add("message", type);
+      div.textContent = text;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
 
   </script>
 </body>
