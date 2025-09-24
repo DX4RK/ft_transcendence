@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>2FA-Test</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+    }
+
+    #liveChatPage {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background-color: white;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 10;
+
+      width: 400px;
+      height: 500px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Test Live chat</h1>
+  <button id="liveChatBtn">Chat</button>
+
+  <div id="liveChatPage">
+    <h2>Live chat test</h2>
+
+    <label for="login">Message :</label>
+    <input type="text" id="login" name="login" />
+
+    <button id="senadBtn">Send</button>
+    <button id="closeLiveChatPageBtn">Close</button>
+  </div>
+  <script>
+
+  </script>
+</body>
+</html>
