@@ -34,7 +34,11 @@ const code_tmp_2fa = new Map();
 app.post('/signIn', async (req, res) => {
   const { login, password } = req.body;
 
+  if (clients_password.has(login)) return res.status(400).json({ success: false, message: 'Utilisateur déjà inscrit' });
+
   clients_password.set(login, password);
+
+  res.json({ success: true });
 });
 
   // sign up
@@ -44,11 +48,13 @@ app.post('/signUp', async (req, res) => {
   const expected_password = clients_password.get(login);
   const method = clients_method_2fa.get(login);
 
-  if (password != expected_password)
-    res.status(401).json({ success: false, message: 'Mot de pass incorect' });
+  if (password !== expected_password) return res.status(401).json({ success: false, message: 'Mot de pass incorect' });
   
-  if (method == 'sms') { // sms
-    try {
+  try {
+    if (method === 'sms') { // sms
+
+      const code = Math.floor(100000 + Math.random() * 900000);
+
       const phone = clients_phone.get(login);
       const response = await vonage.sms.send({
         to: phone,
@@ -59,12 +65,10 @@ app.post('/signUp', async (req, res) => {
       code_tmp_2fa.set(phone, code);
       setTimeout(() => code_tmp_2fa.delete(phone), 5 * 60 * 1000);
 
-    } catch (err) {
-      console.error("Erreur SMS :", err);
-      res.json({ success: false, message: 'Erreur lors de l’envoi du SMS' });
-    }
-  } else if (method == 'email') { // email
-    try {
+    } else if (method === 'email') { // email
+
+      const code = Math.floor(100000 + Math.random() * 900000);
+
       const email = clients_email.get(login);
       let transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -85,16 +89,18 @@ app.post('/signUp', async (req, res) => {
       code_tmp_2fa.set(email, code);
       setTimeout(() => code_tmp_2fa.delete(email), 5 * 60 * 1000);
 
-    } catch (err) {
-      console.error("Erreur serveur :", err);
-      res.json({ success: false, message: 'Erreur lors de l’envoi de l’e-mail' });
-    }
-  } else if (method == 'totp') { // totp
-    ;
-  } else
-    res.json({ success: false, message: 'Pas de metode de 2fa' });
+    } else if (method === 'totp') { // totp
+      ;
+    } else
+      return res.json({ success: false, message: 'Pas de metode de 2fa' });
 
-  res.json({ success: true, method: method });  
+    return res.json({ success: true, method: method }); 
+
+  } catch (err) {
+      console.error("Erreur serveur :", err);
+      return res.json({ success: false, message: 'Erreur lors de l’envoi du code' });
+  }
+
 });
 
 //----------------

@@ -213,10 +213,10 @@
     <h2>Sign in for 2FA test</h2>
 
     <label for="login">Login :</label>
-    <input type="text" id="login" name="login" />
+    <input type="text" id="login" name="login"/>
 
-    <label for="password">Password :</label>
-    <input type="password" id="password" name="password" />
+    <label for="passwordIn">Password :</label>
+    <input type="password" id="passwordIn" name="passwordIn"/>
 
     <button id="signInBtn">Sign in</button>
     <button id="closeSignInPageBtn">Close</button>
@@ -226,10 +226,10 @@
     <h2>Sign up for 2FA test</h2>
 
     <label for="login">Login :</label>
-    <input type="text" id="login" name="login" />
+    <input type="text" id="login" name="login"/>
 
-    <label for="password">Password :</label>
-    <input type="password" id="password" name="password" />
+    <label for="passwordUp">Password :</label>
+    <input type="password" id="passwordUp" name="passwordUp"/>
 
     <button id="signUpBtn">Sign up</button>
     <button id="closeSignUpPageBtn">Close</button>
@@ -296,7 +296,8 @@
 
   <script>
     const login = document.getElementById('login');
-    const password = document.getElementById('password');
+    const passwordIn = document.getElementById('passwordIn');
+    const passwordUp = document.getElementById('passwordUp');
 
     const email = document.getElementById('email');
     const phone = document.getElementById('phone');
@@ -321,7 +322,7 @@
     signInBtn.addEventListener('click', () => {
       const data = {
         login: login.value,
-        password: password.value
+        passwordIn: passwordIn.value
       };
 
       fetch('http://localhost:3000/signIn', {
@@ -349,7 +350,7 @@
     signUpBtn.addEventListener('click', () => { // a termier
       const data = {
         login: login.value,
-        password: password.value
+        passwordUp: passwordUp.value
       };
 
       fetch('http://localhost:3000/signUp', {
@@ -446,6 +447,7 @@
         if (res.success) {
           alert('Phone vérifiée !');
           smsVerifyCode2faPage.style.display = 'none';
+          enable2faPageBtn.style.display = 'none';
           userToken = res.token;
         } else {
           alert('Code incorrect.');
@@ -516,6 +518,7 @@
         if (res.success) {
           alert('Email vérifiée !');
           emailVerifyCode2faPage.style.display = 'none';
+          enable2faPageBtn.style.display = 'none';
           userToken = res.token;
         } else {
           alert('Code incorrect.');
@@ -589,6 +592,7 @@
         if (res.success) {
           alert('Authentification par application réussie ✅');
           totpVerifyCode2faPage.style.display = 'none';
+          enable2faPageBtn.style.display = 'none';
           userToken = res.token;
         } else {
           alert('Code incorrect.');
