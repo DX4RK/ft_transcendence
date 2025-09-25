@@ -205,34 +205,34 @@
 <body>
   <h1>Test connection</h1>
   <button id="profilBtn">Profil</button>
-  <button id="signInPageBtn">Sign in</button>
   <button id="signUpPageBtn">Sign up</button>
+  <button id="signInPageBtn">Sign in</button>
   <button id="enable2faPageBtn">Enable double authentication (2FA)</button>
-
-  <div id="signInPage">
-    <h2>Sign in for 2FA test</h2>
-
-    <label for="login">Login :</label>
-    <input type="text" id="login" name="login"/>
-
-    <label for="passwordIn">Password :</label>
-    <input type="password" id="passwordIn" name="passwordIn"/>
-
-    <button id="signInBtn">Sign in</button>
-    <button id="closeSignInPageBtn">Close</button>
-  </div>
 
   <div id="signUpPage">
     <h2>Sign up for 2FA test</h2>
 
-    <label for="login">Login :</label>
-    <input type="text" id="login" name="login"/>
+    <label for="loginUp">Login :</label>
+    <input type="text" id="loginUp" name="loginUp"/>
 
     <label for="passwordUp">Password :</label>
     <input type="password" id="passwordUp" name="passwordUp"/>
 
     <button id="signUpBtn">Sign up</button>
     <button id="closeSignUpPageBtn">Close</button>
+  </div>
+
+  <div id="signInPage">
+    <h2>Sign in for 2FA test</h2>
+
+    <label for="loginIn">Login :</label>
+    <input type="text" id="loginIn" name="loginIn"/>
+
+    <label for="passwordIn">Password :</label>
+    <input type="password" id="passwordIn" name="passwordIn"/>
+
+    <button id="signInBtn">Sign in</button>
+    <button id="closeSignInPageBtn">Close</button>
   </div>
 
   <div id="all2faPage">
@@ -295,19 +295,51 @@
   </div>
 
   <script>
-    const login = document.getElementById('login');
-    const passwordIn = document.getElementById('passwordIn');
+    const loginUp = document.getElementById('loginUp');
+    const loginIn = document.getElementById('loginIn');
     const passwordUp = document.getElementById('passwordUp');
+    const passwordIn = document.getElementById('passwordIn');
 
     const email = document.getElementById('email');
     const phone = document.getElementById('phone');
     const app = document.getElementById('app');
 
     let userToken = ''
+    let userLogin = '';
     
 //----------------
 //  LOGIN
 //----------------
+
+    // sign up
+
+    signUpPageBtn.addEventListener('click', () => {
+      signUpPage.style.display = 'flex';
+    });
+    
+    closeSignUpPageBtn.addEventListener('click', () => {
+      signUpPage.style.display = 'none';
+    });
+    
+    signUpBtn.addEventListener('click', () => {
+      const data = {
+        login: loginUp.value,
+        password: passwordUp.value
+      };
+
+      fetch('http://localhost:3000/signUp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+
+      userLogin = loginUp.value;
+      
+      signUpPage.style.display = 'none';
+      signUpPageBtn.style.display = 'none';
+      signInPageBtn.style.display = 'none';
+      enable2faPageBtn.style.display = 'flex';
+    });
 
     // sign in
 
@@ -321,8 +353,8 @@
     
     signInBtn.addEventListener('click', () => {
       const data = {
-        login: login.value,
-        passwordIn: passwordIn.value
+        login: loginIn.value,
+        password: passwordIn.value
       };
 
       fetch('http://localhost:3000/signIn', {
@@ -330,40 +362,14 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       })
-
-      signInPage.style.display = 'none';
-      signInPageBtn.style.display = 'none';
-      signUpPageBtn.style.display = 'none';
-      enable2faPageBtn.style.display = 'flex';
-    });
-
-    // sign up
-
-    signUpPageBtn.addEventListener('click', () => {
-      signUpPage.style.display = 'flex';
-    });
-    
-    closeSignUpPageBtn.addEventListener('click', () => {
-      signUpPage.style.display = 'none';
-    });
-    
-    signUpBtn.addEventListener('click', () => { // a termier
-      const data = {
-        login: login.value,
-        passwordUp: passwordUp.value
-      };
-
-      fetch('http://localhost:3000/signUp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
       .then(res => res.json())
       .then(res => {
         if (res.success) {
-          signUpPage.style.display = 'none';
-          signUpPageBtn.style.display = 'none';
+          userLogin = loginIn.value;
+
+          signInPage.style.display = 'none';
           signInPageBtn.style.display = 'none';
+          signUpPageBtn.style.display = 'none';
 
           if (res.method == 'sms')
             smsVerifyCode2faPage.style.display = 'flex';
@@ -400,7 +406,7 @@
 
     smsVerify2faBtn.addEventListener('click', () => {
       const data = {
-        login: login.value,
+        login: userLogin,
         phone: phone.value
       };
       
@@ -412,7 +418,6 @@
       .then(res => res.json())
       .then(res => {
         if (res.success) {
-          alert('SMS envoyé avec succès !');
           sms2faPage.style.display = 'none';
           smsVerifyCode2faPage.style.display = 'flex';
         } else {
@@ -432,7 +437,7 @@
 
     smsVerifyCode2faBtn.addEventListener('click', () => {
       const data2fa = {
-        login: login.value,
+        login: userLogin,
         phone: phone.value,
         code: smsCode2fa.value
       };
@@ -471,7 +476,7 @@
 
     emailVerify2faBtn.addEventListener('click', () => {
       const data = {
-        login: login.value,
+        login: userLogin,
         email: email.value
       };
       
@@ -483,7 +488,6 @@
       .then(res => res.json())
       .then(res => {
         if (res.success) {
-          alert('E-mail envoyé avec succès !');
           email2faPage.style.display = 'none';
           emailVerifyCode2faPage.style.display = 'flex';
         } else {
@@ -503,7 +507,7 @@
 
     emailVerifyCode2faBtn.addEventListener('click', () => {
       const data2fa = {
-        login: login.value,
+        login: userLogin,
         email: email.value,
         code: emailCode2fa.value
       };
@@ -537,7 +541,7 @@
 
     totp2faBtn.addEventListener('click', () => {
       const data = {
-        login: login.value
+        login: userLogin
       };
       
       fetch('http://localhost:3000/totp/send', {
@@ -578,7 +582,7 @@
 
     totpVerifyCode2faBtn.addEventListener('click', () => {
       const data2fa = {
-        login: login.value,
+        login: userLogin,
         code: totpCode2fa.value
       };
 
