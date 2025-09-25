@@ -13,9 +13,8 @@ const authMiddleware = (req, res, next) => {
         return res.status(403).json({ success: false, message: 'Token invalide' });
       }
 
-      // On stocke les infos du user dans req.user
       req.user = decoded;
-      next(); // On passe à la route suivante
+      next();
     }
   );
 };

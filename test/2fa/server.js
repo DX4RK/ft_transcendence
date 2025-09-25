@@ -24,6 +24,7 @@ const clients_phone = new Map();
 const clients_email = new Map();
 const clients_method_2fa = new Map();
 const code_tmp_2fa = new Map();
+const code_totp_2fa = new Map();
 
 //----------------
 //  Login
@@ -38,11 +39,7 @@ app.post('/signUp', async (req, res) => {
 
   clients_password.set(login, password);
 
-  console.log("sign up");
-  console.log(login);
-  console.log(password);
-
-  res.json({ success: true });
+  res.json({ success: true, message: 'Inscription réussie' });
 });
 
   // sign in
@@ -52,14 +49,8 @@ app.post('/signIn', async (req, res) => {
   const expected_password = clients_password.get(login);
   const method = clients_method_2fa.get(login);
 
-  console.log("sign in");
-  console.log(method);
-  console.log(expected_password);
-  console.log(login);
-  console.log(password);
-
-  if (!clients_password.has(login)) return res.status(400).json({ success: false, message: 'Utilisateur inconu' });
-  if (password !== expected_password) return res.status(401).json({ success: false, message: 'Mot de pass incorect' });
+  if (!clients_password.has(login)) return res.status(404).json({ success: false, message: 'Utilisateur inconnu' });
+  if (password !== expected_password) return res.status(401).json({ success: false, message: 'Mot de passe incorrect' });
   
   try {
     if (method === 'sms') { // sms
@@ -90,7 +81,7 @@ app.post('/signIn', async (req, res) => {
       });
 
       let info = await transporter.sendMail({
-        from: '"Mon Site 👤" <fttranscendence03@gmail.com>',
+        from: 'Mon Site 👤 <fttranscendence03@gmail.com>',
         to: email,
         subject: 'Code de vérification 2FA',
         text: `Bonjour ${login}, votre code de vérification est : ${code}`,
@@ -101,15 +92,15 @@ app.post('/signIn', async (req, res) => {
       setTimeout(() => code_tmp_2fa.delete(email), 5 * 60 * 1000);
 
     } else if (method === 'totp') { // totp
-      ;
+      return res.json({ success: true, message: 'Veuillez entrer votre code TOTP depuis Google Authenticator' });
     } else
-      return res.json({ success: false, message: 'Pas de metode de 2fa' });
+      return res.status(400).json({ success: false, message: 'Méthode 2FA non configurée pour cet utilisateur' });
 
-    return res.json({ success: true, method: method }); 
+    return res.json({ success: true, method, message: `Code de vérification envoyé par ${method}` }); 
 
   } catch (err) {
-      console.error("Erreur serveur :", err);
-      return res.json({ success: false, message: 'Erreur lors de l’envoi du code' });
+      console.error('Erreur serveur :', err);
+      return res.status(500).json({ success: false, message: 'Erreur interne : impossible d’envoyer le code de vérification' });
   }
 
 });
@@ -136,11 +127,11 @@ app.post('/sms/send', async (req, res) => {
     code_tmp_2fa.set(phone, code);
     setTimeout(() => code_tmp_2fa.delete(phone), 5 * 60 * 1000);
 
-    res.json({ success: true });
+    res.json({ success: true, message: 'Code envoyé par SMS', method: 'sms' });
 
   } catch (err) {
-    console.error("Erreur SMS :", err);
-    res.json({ success: false, message: 'Erreur lors de l’envoi du SMS' });
+    console.error('Erreur serveur :', err.message);
+    res.status(500).json({ success: false, message: 'Erreur interne : impossible d’envoyer le code de vérification' });
   }
 });
 
@@ -156,22 +147,20 @@ app.post('/sms/verify', (req, res) => {
 
   const expectedCode = code_tmp_2fa.get(userPhone);
 
-  if (!expectedCode) return res.json({ success: false, message: 'Pas de secret pour cet utilisateur' });
+  if (!expectedCode) return res.status(404).json({ success: false, message: 'Aucun code de vérification ou secret actif trouvé pour cet utilisateur' });
 
 
   if (Number(code) === expectedCode) {
     code_tmp_2fa.delete(userPhone);
 
-    const token = jwt.sign({ userLogin: login, userPhone: userPhone }, /*process.env.JWT_SECRET*/'c4d33a89a49710c12fce5a7d272f470a82ddd04b7680f46529514fce5ad41905', { expiresIn: '7d' });
+    const token = jwt.sign({ userLogin: login, method: 'sms' }, /*process.env.JWT_SECRET*/'c4d33a89a49710c12fce5a7d272f470a82ddd04b7680f46529514fce5ad41905', { expiresIn: '7d' });
    
-    clients_method_2fa.set(login, "sms");
+    clients_method_2fa.set(login, 'sms');
     clients_phone.set(login, userPhone);
-    
-    console.log(clients_method_2fa.get(login));
 
-    return res.json({ success: true, token });
+    return res.json({ success: true, message: 'Vérification réussie', token });
   }
-  res.json({ success: false });
+  res.status(401).json({ success: false, message: 'Code de vérification invalide ou expiré' });
 });
 
 //----------------
@@ -196,7 +185,7 @@ app.post('/email/send', async (req, res) => {
     });
 
     let info = await transporter.sendMail({
-      from: '"Mon Site 👤" <fttranscendence03@gmail.com>',
+      from: 'Mon Site 👤 <fttranscendence03@gmail.com>',
       to: email,
       subject: 'Code de vérification 2FA',
       text: `Bonjour ${login}, votre code de vérification est : ${code}`,
@@ -206,11 +195,11 @@ app.post('/email/send', async (req, res) => {
     code_tmp_2fa.set(email, code);
     setTimeout(() => code_tmp_2fa.delete(email), 5 * 60 * 1000);
 
-    res.json({ success: true });
+    res.json({ success: true, message: 'Code envoyé par Email', method: 'email' });
 
   } catch (err) {
-    console.error("Erreur serveur :", err);
-    res.json({ success: false, message: 'Erreur lors de l’envoi de l’e-mail' });
+    console.error('Erreur serveur :', err.message);
+    res.status(500).json({ success: false, message: 'Erreur interne : impossible d’envoyer le code de vérification' });
   }
 });
 
@@ -226,20 +215,20 @@ app.post('/email/verify', (req, res) => {
 
   const expectedCode = code_tmp_2fa.get(userEmail);
 
-  if (!expectedCode) return res.json({ success: false, message: 'Pas de secret pour cet utilisateur' });
+  if (!expectedCode) return res.status(404).json({ success: false, message: 'Aucun code de vérification ou secret actif trouvé pour cet utilisateur' });
 
   if (Number(code) === expectedCode) {
     code_tmp_2fa.delete(userEmail);
 
-    const token = jwt.sign({ userLogin: login, userEmail: userEmail }, /*process.env.JWT_SECRET*/'c4d33a89a49710c12fce5a7d272f470a82ddd04b7680f46529514fce5ad41905', { expiresIn: '7d' });
+    const token = jwt.sign({ userLogin: login, method: 'email' }, /*process.env.JWT_SECRET*/'c4d33a89a49710c12fce5a7d272f470a82ddd04b7680f46529514fce5ad41905', { expiresIn: '7d' });
 
-    clients_method_2fa.set(login, "email");
+    clients_method_2fa.set(login, 'email');
     clients_email.set(login, userEmail);
 
-    return res.json({ success: true, token });
+    return res.json({ success: true, message: 'Vérification réussie', token });
   }
 
-  res.json({ success: false });
+  res.status(401).json({ success: false, message: 'Code de vérification invalide ou expiré' });
 });
 
 //----------------
@@ -252,12 +241,12 @@ app.post('/totp/send', async (req, res) => {
   if (!login) return res.status(400).json({ success: false, message: 'Login requis' });
 
   try {
-    let userSecret = code_tmp_2fa.get(login);
+    let userSecret = code_totp_2fa.get(login);
 
     if (!userSecret) {
-      const secret = speakeasy.generateSecret({ length: 20, name: login, issuer: "2FA-Test" });
+      const secret = speakeasy.generateSecret({ length: 20, name: login, issuer: '2FA-Test' });
       userSecret = secret.base32;
-      code_tmp_2fa.set(login, userSecret);
+      code_totp_2fa.set(login, userSecret);
 
       qrcode.toDataURL(secret.otpauth_url, (err, data_url) => {
         if (err) return res.json({ success: false, message: 'Erreur QR Code' });
@@ -266,11 +255,11 @@ app.post('/totp/send', async (req, res) => {
 
       });
     } else {
-      res.json({ success: true, message: '2FA déjà configuré pour cet utilisateur' });
+      res.status(409).json({ success: false, message: '2FA déjà configuré pour cet utilisateur' });
     }
   } catch (err) {
-    console.error("Erreur TOTP :", err);
-    res.json({ success: false, message: 'Erreur lors de l’envoi TOTP' });
+    console.error('Erreur serveur :', err.message);
+    res.status(500).json({ success: false, message: 'Erreur interne : impossible d’envoyer le code de vérification' });
   }
 });
 
@@ -280,9 +269,9 @@ app.post('/totp/verify', (req, res) => {
   if (!login) return res.status(400).json({ success: false, message: 'Login requis' });
   if (!code) return res.status(400).json({ success: false, message: 'Code requis' });
 
-  const expectedCode = code_tmp_2fa.get(login);
+  const expectedCode = code_totp_2fa.get(login);
 
-  if (!expectedCode) return res.json({ success: false, message: 'Pas de secret pour cet utilisateur' });
+  if (!expectedCode) return res.status(404).json({ success: false, message: 'Aucun code de vérification ou secret actif trouvé pour cet utilisateur' });
 
   const verified = speakeasy.totp.verify({
     secret: expectedCode,
@@ -292,15 +281,13 @@ app.post('/totp/verify', (req, res) => {
   });
 
   if (verified) {
-    const jwtToken = jwt.sign({ userLogin: login }, /*process.env.JWT_SECRET*/'c4d33a89a49710c12fce5a7d272f470a82ddd04b7680f46529514fce5ad41905', { expiresIn: '7d' });
+    const token = jwt.sign({ userLogin: login, method: 'totp' }, /*process.env.JWT_SECRET*/'c4d33a89a49710c12fce5a7d272f470a82ddd04b7680f46529514fce5ad41905', { expiresIn: '7d' });
     
-    clients_method_2fa.set(login, "totp");
-    
-    console.log(clients_method_2fa.get(login));
+    clients_method_2fa.set(login, 'totp');
 
-    return res.json({ success: true, token: jwtToken });
+    return res.json({ success: true, message: 'Vérification réussie', token });
   }
-  res.json({ success: false, message: 'Code invalide' });
+  res.status(401).json({ success: false, message: 'Code de vérification invalide ou expiré' });
 });
 
 //----------------
