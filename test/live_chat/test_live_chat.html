@@ -52,8 +52,13 @@
       align-self: flex-start;
     }
 
-    #messageInput {
-      width: 95%;
+    #formulaire input[type="messageInput"] {
+      width: 100%;
+      padding: 0.5rem;
+    }
+
+    #formulaire button[type="sendBtn"] {
+      width: 10%;
       padding: 0.5rem;
     }
 
@@ -66,15 +71,18 @@
   <div id="liveChatPage">
     <h2>Live chat test</h2>
 
-    <div id="messages"></div>
+    <div id="messages">
+      
+    </div>
 
-    <textarea id="messageInput" placeholder="Écris ton message..."></textarea>
+    <form id="messageBox">
+      <input id="messageInput" placeholder="Écris ton message...">
+      <button id="sendBtn" onclick="sendMessage()">Send</button>
+    </form>
 
-    <button id="sendBtn">Send</button>
     <button id="closeLiveChatPageBtn">Close</button>
   </div>
   <script>
-
     liveChatBtn.addEventListener('click', () => {
       liveChatPage.style.display = 'flex';
     });
@@ -83,21 +91,48 @@
       liveChatPage.style.display = 'none';
     });
 
-    sendBtn.addEventListener('click', () => {
-      const text = messageInput.value.trim();
-      if (text) {
-        addMessage(text, "me");
-        messageInput.value = "";
-      }
-    });
-  
-    function addMessage(text, type = "other") {
-      const div = document.createElement("div");
-      div.classList.add("message", type);
-      div.textContent = text;
-      messages.appendChild(div);
-      messages.scrollTop = messages.scrollHeight;
-    }
+
+    
+    // const socket = new WebSocket('ws://localhost:9999');
+
+    // socket.onopen = function() {
+    //   console.log('Connecté au serveur de ft_transcendence!');
+    // };
+
+    // socket.onmessage = function(event) {
+    //   const message = document.createElement('div');
+    //   message.textContent = event.data;
+    //   document.getElementById('messages').appendChild(message);
+    //   messages.scrollTop = messages.scrollHeight;
+    // }
+
+    // document.getElementById('messageBox').addEventListener('sendBtn', function(event) {
+    //   event.preventDefault();
+    //   const text = document.getElementById('messageInput').value;
+    //   if (text) {
+    //     socket.send(text);
+    //     document.getElementById('messageInput').value = "";
+    //   }
+    // });
+
+
+
+
+    // sendBtn.addEventListener('click', () => {
+    //   const text = messageInput.value.trim();
+    //   if (text) {
+    //     addMessage(text, "me");
+    //     messageInput.value = "";
+    //   }
+    // });
+
+    // function addMessage(text, type = "other") {
+    //   const message = document.createElement("message");
+    //   message.classList.add("message", type);
+    //   message.textContent = text;
+    //   messages.appendChild(message);
+    //   messages.scrollTop = messages.scrollHeight;
+    // }
 
   </script>
 </body>

@@ -7,8 +7,8 @@ const {Vonage} = require('@vonage/server-sdk');
 const speakeasy = require('speakeasy');
 const qrcode = require('qrcode');
 
-const app = express();
 const PORT = 3000;
+const app = express();
 
 app.use(cors());
 app.use(express.json());
@@ -272,6 +272,10 @@ app.post('/profil', authMiddleware, (req, res) => {
   res.json({ success: true, message: 'Accès autorisé au profil', user: req.user });
 
 });
+
+//----------------
+//  Start
+//----------------
 
 app.listen(PORT, () => {
   console.log(`Serveur lancé sur http://localhost:${PORT}`);
