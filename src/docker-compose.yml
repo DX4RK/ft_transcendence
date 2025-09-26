@@ -1,0 +1,21 @@
+services:
+  web:
+    build: containers/nginx
+    volumes:
+      - ./templates:/etc/nginx/templates
+    ports:
+      - "8080:80"
+    environment:
+    - NGINX_HOST=foobar.com
+    - NGINX_PORT=80
+    restart: always
+  db:
+    build: containers/mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: example
+  backend:
+    build: containers/fastify
+    ports:
+      - "3000:3000"
+    restart: always
