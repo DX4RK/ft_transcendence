@@ -1,16 +1,34 @@
-const express = require('express');
+const fastify = require('fastify')({
+  logger: {
+    level: 'info',
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
+        translateTime: 'SYS:standard',
+        ignore: 'pid,hostname'
+      }
+    }
+  }
+});
+
+const cors = require('@fastify/cors'); 
 const nodemailer = require('nodemailer');
-const cors = require('cors'); 
 const {Vonage} = require('@vonage/server-sdk');
 
 const authMiddleware = require('./routes/auth/authMiddleware');
 const { port, gmailUser, gmailPass, vonageKey, vonageSecret } = require("./config/env");
 const { generateToken } = require("./service/jwt");
 
-const app = express();
+//----------------
+// Plugins
+//----------------
 
-app.use(cors());
-app.use(express.json());
+fastify.register(cors, { origin: true });
+
+//----------------
+// Services externes
+//----------------
 
 const vonage = new Vonage({
   apiKey: vonageKey,
@@ -25,7 +43,10 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// a metre en db et crypter
+//----------------
+// Variables en mémoire (à remplacer par DB + hashage)
+//----------------
+
 const clients_password = new Map(); 
 const clients_phone = new Map();
 const clients_email = new Map();
@@ -34,47 +55,64 @@ const code_tmp_2fa = new Map();
 const code_totp_2fa = new Map();
 
 //----------------
-//  Login
+// Routes
 //----------------
 
-const loginRoutes = require('./routes/sign/sign')({ vonage, transporter, clients_password, clients_phone, clients_email, clients_method_2fa, code_tmp_2fa });
-app.use('/sign', loginRoutes);
+fastify.register(require('./routes/sign/sign'), {
+  prefix: '/sign',
+  vonage,
+  transporter,
+  clients_password,
+  clients_phone,
+  clients_email,
+  clients_method_2fa,
+  code_tmp_2fa
+});
 
-//----------------
-//  SMS 2FA
-//----------------
+fastify.register(require('./routes/2fa/sms'), {
+  prefix: '/sms',
+  vonage,
+  clients_phone,
+  clients_method_2fa,
+  code_tmp_2fa,
+  generateToken
+});
 
-const smsRoutes = require('./routes/2fa/sms')({ vonage, clients_phone, clients_method_2fa, code_tmp_2fa, generateToken });
-app.use('/sms', smsRoutes);
+fastify.register(require('./routes/2fa/email'), {
+  prefix: '/email',
+  transporter,
+  clients_email,
+  clients_method_2fa,
+  code_tmp_2fa,
+  generateToken
+});
 
-//----------------
-//  Email 2FA
-//----------------
-
-const emailRoutes = require('./routes/2fa/email')({ transporter, clients_email, clients_method_2fa, code_tmp_2fa, generateToken });
-app.use('/email', emailRoutes);
-
-//----------------
-//  TOTP 2FA
-//----------------
-
-const totpRoutes = require('./routes/2fa/totp')({ clients_method_2fa, code_totp_2fa, generateToken });
-app.use('/totp', totpRoutes);
+fastify.register(require('./routes/2fa/totp'), {
+  prefix: '/totp',
+  clients_method_2fa,
+  code_totp_2fa,
+  generateToken
+});
 
 //----------------
 //  PROFIL
 //----------------
 
-app.post('/profil', authMiddleware, (req, res) => {
-
-  res.json({ success: true, message: 'Accès autorisé au profil', user: req.user });
-
+fastify.post('/profil', { preHandler: authMiddleware }, async (request, reply) => {
+  return { success: true, message: 'Accès autorisé au profil', user: request.user };
 });
 
 //----------------
-//  Start
+// Start
 //----------------
 
-app.listen(port, () => {
-  console.log(`Serveur lancé sur http://localhost:${port}`);
-});
+const start = async () => {
+  try {
+    await fastify.listen({ port, host: '0.0.0.0' });
+    fastify.log.info(`Serveur lancé sur http://localhost:${port}`);
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+};
+start();

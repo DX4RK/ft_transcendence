@@ -1,50 +1,45 @@
-const express = require('express');
-const router = express.Router();
+const sendEmailCode = require('../../service/send/send_email');
 
-module.exports = ({ transporter, clients_email, clients_method_2fa, code_tmp_2fa, generateToken }) => {
-    router.post('/send', async (req, res) => {
-        const { login, email } = req.body;
+async function emailRoutes(fastify, opts) {
+    const { transporter, clients_email, clients_method_2fa, code_tmp_2fa, generateToken } = opts;
 
-        if (!login) return res.status(400).json({ success:false, message:'Login requis' });
-        if (!email) return res.status(400).json({ success:false, message:'Email requis' });
+    fastify.post('/send', async (request, reply) => {
+        const { login, email } = request.body;
 
-        const code = Math.floor(100000 + Math.random() * 900000);
+        if (!login)
+            return reply.code(400).send({ success:false, message:'Login requis' });
+        if (!email)
+            return reply.code(400).send({ success:false, message:'Email requis' });
 
         try {
-            let info = await transporter.sendMail({
-                from: 'Mon Site 👤 <fttranscendence03@gmail.com>',
-                to: email,
-                subject: 'Code de vérification 2FA',
-                text: `Bonjour ${login}, votre code de vérification est : ${code}`,
-                html: `<b>Bonjour ${login},</b><br>Votre code de vérification est : <strong>${code}</strong>`
-            });
-
-            code_tmp_2fa.set(email, code);
-            setTimeout(() => code_tmp_2fa.delete(email), 5 * 60 * 1000);
-
-            res.json({ success: true, message: 'Code envoyé par Email', method: 'email' });
-
+            const info = await sendEmailCode(transporter, login, email, code_tmp_2fa);
+            fastify.log.info(info);
+            return reply.send({ success: true, message: 'Code envoyé par Email', method: 'email' });
         } catch (err) {
-            console.error('Erreur serveur :', err.message);
-            res.status(500).json({ success: false, message: 'Erreur interne : impossible d’envoyer le code de vérification' });
+            fastify.log.error(err);
+            return reply.code(500).send({ success: false, message: 'Erreur interne : impossible d’envoyer le code de vérification' });
         }
     });
 
-    router.post('/verify', (req, res) => {
+    fastify.post('/verify', (req, reply) => {
         const { login, email, code } = req.body;
 
-        if (!login) return res.status(400).json({ success: false, message: 'Login requis' });
-        if (!code) return res.status(400).json({ success: false, message: 'Code requis' });
+        if (!login)
+            return reply.code(400).send({ success: false, message: 'Login requis' });
+        if (!code)
+            return reply.code(400).send({ success: false, message: 'Code requis' });
 
         const userEmail = email || clients_email.get(login);
 
-        if (!userEmail) return res.status(400).json({ success: false, message: 'Email requis' });
+        if (!userEmail)
+            return reply.code(400).send({ success: false, message: 'Email requis' });
 
         const expectedCode = code_tmp_2fa.get(userEmail);
 
-        if (!expectedCode) return res.status(404).json({ success: false, message: 'Aucun code de vérification ou secret actif trouvé pour cet utilisateur' });
+        if (!expectedCode)
+            return reply.code(404).send({ success: false, message: 'Aucun code de vérification ou secret actif trouvé pour cet utilisateur' });
 
-        if (Number(code) === expectedCode) {
+        if (Number(code) === Number(expectedCode)) {
             code_tmp_2fa.delete(userEmail);
 
             const token = generateToken({ userLogin: login, method: 'email' });
@@ -52,11 +47,10 @@ module.exports = ({ transporter, clients_email, clients_method_2fa, code_tmp_2fa
             clients_method_2fa.set(login, 'email');
             clients_email.set(login, userEmail);
 
-            return res.json({ success: true, message: 'Vérification réussie', token });
+            return reply.send({ success: true, message: 'Vérification réussie', token });
         }
-
-        res.status(401).json({ success: false, message: 'Code de vérification invalide ou expiré' });
+        return reply.code(401).send({ success: false, message: 'Code de vérification invalide ou expiré' });
     });
-
-  return router;
 };
+
+module.exports = emailRoutes;

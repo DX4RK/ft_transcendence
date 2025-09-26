@@ -618,7 +618,8 @@
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + userToken
-         }
+        },
+        body: JSON.stringify({})
       })
       .then(res => res.json())
       .then(res => {
