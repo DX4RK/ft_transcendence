@@ -327,7 +327,7 @@
         password: passwordUp.value
       };
 
-      fetch('http://localhost:3000/signUp', {
+      fetch('http://localhost:3000/sign/up', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -357,7 +357,7 @@
         password: passwordIn.value
       };
 
-      fetch('http://localhost:3000/signIn', {
+      fetch('http://localhost:3000/sign/in', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -377,11 +377,14 @@
             emailVerifyCode2faPage.style.display = 'flex';
           else if (res.method == 'totp')
             totpVerifyCode2faPage.style.display = 'flex';
-
         } else {
           alert('Erreur : ' + res.message);
         }
       })
+      .catch(err => {
+        console.error("Erreur fetch :", err);
+        alert('Une erreur est survenue');
+      });
     });
 
     // enable 2fa
@@ -450,7 +453,6 @@
       .then(res => res.json())
       .then(res => {
         if (res.success) {
-          alert('Phone vérifiée !');
           smsVerifyCode2faPage.style.display = 'none';
           enable2faPageBtn.style.display = 'none';
           userToken = res.token;
@@ -520,12 +522,11 @@
       .then(res => res.json())
       .then(res => {
         if (res.success) {
-          alert('Email vérifiée !');
           emailVerifyCode2faPage.style.display = 'none';
           enable2faPageBtn.style.display = 'none';
           userToken = res.token;
         } else {
-          alert('Code incorrect.');
+          alert('Erreur : ' + res.message);
         }
       })
       .catch(err => {
@@ -594,12 +595,11 @@
       .then(res => res.json())
       .then(res => {
         if (res.success) {
-          alert('Authentification par application réussie ✅');
           totpVerifyCode2faPage.style.display = 'none';
           enable2faPageBtn.style.display = 'none';
           userToken = res.token;
         } else {
-          alert('Code incorrect.');
+          alert('Erreur : ' + res.message);
         }
       })
       .catch(err => {
