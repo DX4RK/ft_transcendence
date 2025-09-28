@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* sign */
+
+.body_sign {
+  @apply font-sans p-8;
+}
+
+.page_sign {
+    @apply hidden flex flex-col gap-2 fixed top-[30%] left-[50%] -translate-x-[50%] -translate-y-[30%] bg-white border-2 border-gray-800 rounded-lg p-4 pt-6 shadow-md z-10;
+}
+
+.label_sign {
+  @apply p-0.5;
+}
+
+.btn_sign {
+  @apply p-2 bg-blue-500 text-white rounded hover:bg-blue-600;
+}
+
+.input_sign {
+  @apply p-1 border rounded;
+}
+
+/* pong */
+
+.body_pong {
+  @apply font-poppins text-center bg-ghostwhite flex justify-center items-center h-screen flex-col fixed w-full;
+}
+
+.board_pong {
+  @apply bg-black border-t-[5px] border-b-[5px] border-[#CD45FF];
+}
+
+/* index */
+
+.body_index {
+  @apply font-sans p-8;
+}
+
+.btn_index {
+  @apply p-2 bg-blue-500 text-white rounded hover:bg-blue-600;
+}
+
+.page_index {
+    @apply hidden flex flex-col gap-2 fixed top-[30%] left-[50%] -translate-x-[50%] -translate-y-[30%] bg-white border-2 border-gray-800 rounded-lg p-4 pt-6 shadow-md z-10;
+}

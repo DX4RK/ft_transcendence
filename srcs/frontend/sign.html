@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>2FA</title>
+    <link href="./output.css" rel="stylesheet">
+    <script src="./typeScript/sign.js" defer></script>
+</head>
+<body class="body_sign">
+    <h1>Connection</h1>
+    <button id="profilBtn" class="btn_sign">Profil</button>
+    <button id="signUpPageBtn" class="btn_sign">Sign up</button>
+    <button id="signInPageBtn" class="btn_sign">Sign in</button>
+    <button id="enable2faPageBtn" class="btn_sign">Enable double authentication (2FA)</button>
+
+    <div id="signUpPage" class="page_sign">
+        <h2>Sign up</h2>
+
+        <label for="loginUp" class="label_sign">Login :</label>
+        <input type="text" id="loginUp" name="loginUp" class="input_sign"/>
+
+        <label for="passwordUp" class="label_sign">Password :</label>
+        <input type="password" id="passwordUp" name="passwordUp" class="input_sign"/>
+
+        <button id="signUpBtn" class="btn_sign">Sign up</button>
+        <button id="closeSignUpPageBtn" class="btn_sign">Close</button>
+    </div>
+
+    <div id="signInPage" class="page_sign">
+        <h2>Sign in</h2>
+
+        <label for="loginIn" class="label_sign">Login :</label>
+        <input type="text" id="loginIn" name="loginIn" class="input_sign"/>
+
+        <label for="passwordIn" class="label_sign">Password :</label>
+        <input type="password" id="passwordIn" name="passwordIn" class="input_sign"/>
+
+        <button id="signInBtn" class="btn_sign">Sign in</button>
+        <button id="closeSignInPageBtn" class="btn_sign">Close</button>
+    </div>
+
+    <div id="all2faPage" class="page_sign">
+        <p>Enable 2FA</p>
+        <button id="sms2faBtn" class="btn_sign">SMS</button>
+        <button id="email2faBtn" class="btn_sign">Email</button>
+        <button id="totp2faBtn" class="btn_sign">App</button>
+        <button id="close2faBtn" class="btn_sign">Close</button>
+    </div>
+
+    <div id="sms2faPage" class="page_sign">
+        <p>Enable 2FA by: SMS</p>
+        <label for="phone" class="label_sign">Phone number :</label>
+        <input type="text" id="phone" name="phone" class="input_sign"/>
+        <button id="smsVerify2faBtn" class="btn_sign">Send</button>
+        <button id="closeSms2faPageBtn" class="btn_sign">Close</button>
+    </div>
+    
+    <div id="smsVerifyCode2faPage" class="page_sign">
+        <p>Enable 2FA by: Phone number</p>
+        <label for="smsCode2fa" class="label_sign">2FA code :</label>
+        <input type="text" id="smsCode2fa" name="smsCode2fa" maxlength="6"/>
+        <button id="smsVerifyCode2faBtn" class="btn_sign">Verify</button>
+    </div>
+
+    <div id="email2faPage" class="page_sign">
+        <p>Enable 2FA by: Email</p>
+        <label for="email" class="label_sign">Email :</label>
+        <input type="text" id="email" name="email" class="input_sign"/>
+        <button id="emailVerify2faBtn" class="btn_sign">Send</button>
+        <button id="closeEmail2faPageBtn" class="btn_sign">Close</button>
+    </div>
+    
+    <div id="emailVerifyCode2faPage" class="page_sign">
+        <p>Enable 2FA by: Email</p>
+        <label for="emailCode2fa" class="label_sign">2FA code :</label>
+        <input type="text" id="emailCode2fa" name="emailCode2fa" maxlength="6" class="input_sign"/>
+        <button id="emailVerifyCode2faBtn" class="btn_sign">Verify</button>
+    </div>
+
+    <div id="totp2faPage" class="page_sign">
+        <p>Enable 2FA by: App</p>
+        <p>Scannez ce QR Code dans Google Authenticator :</p>
+        <img id="totp2faQrCode" style="display:none; max-width:200px;"/>
+        <br>
+        <button id="totpVerify2faBtn" class="btn_sign">OK</button>
+        <button id="closeTotp2faPageBtn" class="btn_sign">Close</button>
+    </div>
+    
+    <div id="totpVerifyCode2faPage" class="page_sign">
+        <p>Enable 2FA by: App</p>
+        <label for="totpCode2fa" class="label_sign">2FA code :</label>
+        <input type="text" id="totpCode2fa" name="totpCode2fa" maxlength="6" class="input_sign"/>
+        <button id="totpVerifyCode2faBtn" class="btn_sign">Verify</button>
+    </div>
+
+    <div id="profilPage" class="page_sign">
+        <p>Profil</p>
+        <button id="closeProfilPageBtn" class="btn_sign">Close</button>
+    </div>
+</body>
+</html>
