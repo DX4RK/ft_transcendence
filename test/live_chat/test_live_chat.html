@@ -1,139 +1,24 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Live-Chat-Test</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 2rem;
-    }
-
-    #liveChatPage {
-      display: none;
-      flex-direction: column;
-      gap: 0.5rem;
-      position: fixed;
-      top: 30%;
-      left: 50%;
-      transform: translate(-50%, -30%);
-      background-color: white;
-      border: 2px solid #333;
-      border-radius: 8px;
-      padding: 1rem 1.5rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      z-index: 10;
-
-      width: 400px;
-      height: 500px;
-    }
-
-    #messages {
-      flex: 1;
-      border: 1px solid #ccc;
-      padding: 0.5rem;
-      overflow-y: auto;
-      background: #fafafa;
-    }
-
-    .message {
-      margin: 0.25rem 0;
-      padding: 0.25rem 0.5rem;
-      border-radius: 6px;
-    }
-
-    .me {
-      background: #d1ffd1;
-      align-self: flex-end;
-    }
-
-    .other {
-      background: #e1e1ff;
-      align-self: flex-start;
-    }
-
-    #formulaire input[type="messageInput"] {
-      width: 100%;
-      padding: 0.5rem;
-    }
-
-    #formulaire button[type="sendBtn"] {
-      width: 10%;
-      padding: 0.5rem;
-    }
-
-  </style>
+    <meta charset="UTF-8" />
+    <title>Live-Chat-Test</title>
+    <link href="./output.css" rel="stylesheet">
+    <script src="./test_live_chat.js" defer></script>
 </head>
-<body>
-  <h1>Test Live chat</h1>
-  <button id="liveChatBtn">Chat</button>
+<body class="body_live_chat">
+    <h1>Test Live chat</h1>
+    <button id="liveChatBtn" class="btn_live_chat">Chat</button>
 
-  <div id="liveChatPage">
-    <h2>Live chat test</h2>
+    <div id="liveChatPage" class="page_live_chat">
+        <h2>Live chat test</h2>
+        <div id="messages" class="messages_live_chat"></div>
+        <form id="messageBox">
+            <input id="messageInput" placeholder="Écris ton message..." class="input_live_chat" />
+            <button id="sendBtn" class="btn_live_chat">Send</button>
+        </form>
 
-    <div id="messages">
-      
+        <button id="closeLiveChatPageBtn" class="btn_live_chat">Close</button>
     </div>
-
-    <form id="messageBox">
-      <input id="messageInput" placeholder="Écris ton message...">
-      <button id="sendBtn" onclick="sendMessage()">Send</button>
-    </form>
-
-    <button id="closeLiveChatPageBtn">Close</button>
-  </div>
-  <script>
-    liveChatBtn.addEventListener('click', () => {
-      liveChatPage.style.display = 'flex';
-    });
-
-    closeLiveChatPageBtn.addEventListener('click', () => {
-      liveChatPage.style.display = 'none';
-    });
-
-
-    
-    // const socket = new WebSocket('ws://localhost:9999');
-
-    // socket.onopen = function() {
-    //   console.log('Connecté au serveur de ft_transcendence!');
-    // };
-
-    // socket.onmessage = function(event) {
-    //   const message = document.createElement('div');
-    //   message.textContent = event.data;
-    //   document.getElementById('messages').appendChild(message);
-    //   messages.scrollTop = messages.scrollHeight;
-    // }
-
-    // document.getElementById('messageBox').addEventListener('sendBtn', function(event) {
-    //   event.preventDefault();
-    //   const text = document.getElementById('messageInput').value;
-    //   if (text) {
-    //     socket.send(text);
-    //     document.getElementById('messageInput').value = "";
-    //   }
-    // });
-
-
-
-
-    // sendBtn.addEventListener('click', () => {
-    //   const text = messageInput.value.trim();
-    //   if (text) {
-    //     addMessage(text, "me");
-    //     messageInput.value = "";
-    //   }
-    // });
-
-    // function addMessage(text, type = "other") {
-    //   const message = document.createElement("message");
-    //   message.classList.add("message", type);
-    //   message.textContent = text;
-    //   messages.appendChild(message);
-    //   messages.scrollTop = messages.scrollHeight;
-    // }
-
-  </script>
 </body>
 </html>

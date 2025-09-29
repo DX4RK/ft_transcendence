@@ -1,53 +1,36 @@
-import express from 'express';
-import { Server } from "socket.io";
-import { createServer } from 'node:http';
+const fastify = require('fastify')({
+  logger: {
+    level: 'info',
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
+        translateTime: 'SYS:standard',
+        ignore: 'pid,hostname'
+      }
+    }
+  }
+});
 
-const app = express();
-const server = createServer(app)
-const io = new Server(server)
+const cors = require('@fastify/cors'); 
 
-const WebSocket = require('ws');
+//----------------
+//  Message
+//----------------
 
-const PORT = 9999;
-const wss = new WebSocket.Server({ port: PORT });
 
-const clients = [];
 
 //----------------
 //  Start
 //----------------
 
-server.listen(PORT, () => {
-  console.log(`Serveur lancé sur ws://localhost:${PORT}`);
-});
-
-io.on("connection", (socket) => {
-    console.log('user connected');
-
-    socket.on("new message", (args) => {
-        socket.broadcast.emit("new message", args);
-    });
-
-    socket.on('disconnect', function () {
-        console.log('user disconnected');
-    });
-});
-
-// wss.on('connection', function connection(ws) { 
-//     clients.push(ws);
-
-//     ws.on('message', function incoming(message) {
-//         console.log('received: %s', message);
-//         broadcast(String(message));
-//     });
-
-//     ws.send('Bienvenue sur le Live Chat de transcendence!');
-// });
-
-// function broadcast(message) {
-//     clients.forEach(function(client) {
-//         client.send(message);
-//     });
-// }
-
-// console.log(`Serveur lancé sur ws://localhost:${PORT}`);
+const start = async () => {
+  try {
+    await fastify.listen({ port, host: '0.0.0.0' });
+    fastify.log.info(`Serveur lancé sur http://localhost:${port}`);
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+};
+start();
