@@ -18,7 +18,17 @@ const cors = require('@fastify/cors');
 //  Message
 //----------------
 
+io.on("connection", (socket) => {
+  fastify.console.log("new connection !!");
+});
 
+socket.on("message", (arg, callback) => {
+  console.log(arg); // "world"
+
+  // envoyer a tout les utilisateurs
+
+  callback("got it");
+});
 
 //----------------
 //  Start

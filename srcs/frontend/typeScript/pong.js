@@ -18,7 +18,7 @@ var player1 = {
     velocityY: playerVelocityY
 };
 var player2 = {
-    x: boardWidth - playerWidth - 10,
+    x: boardWidth - 10,
     y: boardHeight / 2,
     width: playerWidth,
     height: playerHeight,
@@ -136,7 +136,7 @@ function resetGame() {
     ball = {
         x: boardWidth / 2,
         y: boardHeight / 2,
-        width: ballWidth,
+        width: ballWidth,getRandomInt,
         height: ballHeight,
         velocityX: getRandomInt(2),
         velocityY: getRandomInt(2),

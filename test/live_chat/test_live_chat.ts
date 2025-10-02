@@ -19,3 +19,7 @@ liveChatBtn.addEventListener('click', () => {
 closeLiveChatPageBtn.addEventListener('click', () => {
     liveChatPage.style.display = 'none';
 });
+
+sendBtn.addEventListener('click', () => {
+    console.log("lala");
+});

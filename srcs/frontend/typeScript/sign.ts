@@ -186,7 +186,7 @@ closeSms2faPageBtn.addEventListener('click', () => {
     sms2faPage.style.display = 'none';
     all2faPage.style.display = 'flex';
 });
-
+hidden
 smsVerifyCode2faBtn.addEventListener('click', () => {
     const data2fa = {
         login: userLogin,
@@ -204,7 +204,7 @@ smsVerifyCode2faBtn.addEventListener('click', () => {
         if (res.success) {
             smsVerifyCode2faPage.style.display = 'none';
             enable2faPageBtn.style.display = 'none';
-            userToken = res.token;
+            userToken = res.token;hidden
         } else {
             alert('Code incorrect.');
         }
