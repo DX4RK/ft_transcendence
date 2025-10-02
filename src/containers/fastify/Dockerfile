@@ -1,8 +1,6 @@
-FROM node:18-slim
+FROM node:24-alpine3.21
 
-RUN apt-get update && \
-	apt-get install -y --no-install-recommends git && \
-	rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache git
 
 WORKDIR /app
 
@@ -12,4 +10,4 @@ RUN npm install
 COPY . .
 EXPOSE 3000
 
-CMD ["node", "src/index.js"]
+CMD ["npm", "start"]
