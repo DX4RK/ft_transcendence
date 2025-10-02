@@ -2,6 +2,7 @@ const fastify = require('fastify')({ logger: true });
 
 const cors = require('@fastify/cors');
 const nodemailer = require('nodemailer');
+const fastifySqlite = require('fastify-sqlite');
 const {Vonage} = require('@vonage/server-sdk');
 
 //const authMiddleware = require('./routes/auth/authMiddleware');
@@ -11,6 +12,9 @@ const {Vonage} = require('@vonage/server-sdk');
 // PLUGINS
 
 fastify.register(cors, { origin: true });
+//fastify.register(fastifySqlite, {
+//	dbFile: 'test.db'
+//})
 
 // EXTERNAL SERVICES
 

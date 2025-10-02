@@ -13,7 +13,7 @@ services:
       -  USER_SQLITE=sqlite
       -  GROUP_SQLITE=sqlite
     volumes:
-      - ./containers/sqlite/data:/data
+      - ./volumes/sqlite:/data
     restart: always
   backend:
     build: containers/fastify
@@ -21,7 +21,7 @@ services:
       - "3000:3000"
     volumes:
       - ./containers/fastify:/app
-      - /app/node_modules
+      - ./volumes/node_modules:/app/node_modules
     working_dir: /app
     command: sh -c "npm install && npm run dev"
     restart: unless-stopped
