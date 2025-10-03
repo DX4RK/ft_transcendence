@@ -2,8 +2,9 @@ const fastify = require('fastify')({ logger: true });
 
 const cors = require('@fastify/cors');
 const nodemailer = require('nodemailer');
-const fastifySqlite = require('fastify-sqlite');
 const {Vonage} = require('@vonage/server-sdk');
+
+const fastifyBetterSqlite3 = require('./plugins/db.js');
 
 //const authMiddleware = require('./routes/auth/authMiddleware');
 //const { port, gmailUser, gmailPass, vonageKey, vonageSecret } = require("./config/env");
@@ -12,9 +13,11 @@ const {Vonage} = require('@vonage/server-sdk');
 // PLUGINS
 
 fastify.register(cors, { origin: true });
-//fastify.register(fastifySqlite, {
-//	dbFile: 'test.db'
-//})
+fastify.register(fastifyBetterSqlite3, {
+  name: 'usersDb',
+  pathToDb: '/data/users.db',
+});
+
 
 // EXTERNAL SERVICES
 
