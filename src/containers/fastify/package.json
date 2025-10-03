@@ -2,13 +2,13 @@
   "name": "fastify-app",
   "version": "1.0.0",
   "main": "src/index.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js"
   },
   "dependencies": {
-    "fastify": "^5.6.1",
-    "fastify-sqlite": "^1.1.0",
+    "fastify": "^5.2.1",
     "@fastify/cors": "^11.1.0",
     "@vonage/server-sdk": "^3.25.1",
     "bcrypt": "^6.0.0",
@@ -17,7 +17,8 @@
     "nodemailer": "^7.0.6",
     "pino-pretty": "^13.1.1",
     "qrcode": "^1.5.4",
-    "speakeasy": "^2.0.0"
+    "speakeasy": "^2.0.0",
+    "better-sqlite3": "^12.4.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
