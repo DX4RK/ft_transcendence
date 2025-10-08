@@ -25,12 +25,12 @@ fastify.register(fastifyBetterSqlite3, {
 //	apiKey: vonageKey,
 //	apiSecret: vonageSecret
 //});
-console.log(gmailPass);
+
 const transporter = nodemailer.createTransport({
 	service: 'gmail',
 	auth: {
-		user: "fttranscendence03@gmail.com",
-		pass: "rqws vbkc xjyl mcoe"
+		user: gmailUser,
+		pass: gmailPass
 	}
 });
 
