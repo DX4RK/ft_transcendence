@@ -1,19 +1,13 @@
-async function sendEmailCode(transporter, login, email, code_tmp_2fa) {
+async function sendEmailCode(transporter, user, email, code) {
+	const info = await transporter.sendMail({
+		from: 'ft_transcendence <fttranscendence03@gmail.com>',
+		to: email,
+		subject: 'Verification Code',
+		text: `Hello ${user}, your verification code is ${code}`,
+		html: `<b>Hello ${user},</b><br>your verification code is <strong>${code}</strong>`
+	});
 
-    const code = Math.floor(100000 + Math.random() * 900000);
-
-    const info = await transporter.sendMail({
-        from: 'Mon Site 👤 <fttranscendence03@gmail.com>',
-        to: email,
-        subject: 'Code de vérification 2FA',
-        text: `Bonjour ${login}, votre code de vérification est : ${code}`,
-        html: `<b>Bonjour ${login},</b><br>Votre code de vérification est : <strong>${code}</strong>`
-    });
-
-    code_tmp_2fa.set(email, code);
-    setTimeout(() => code_tmp_2fa.delete(email), 5 * 60 * 1000);
-
-    return info;
+	return code;
 }
 
 module.exports = sendEmailCode;
