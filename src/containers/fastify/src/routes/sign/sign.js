@@ -1,8 +1,13 @@
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const sendSMSCode = require('../../service/send/send_sms');
 const sendEmailCode = require('../../service/send/send_email');
 
+const method = "email";
+
 async function signRoutes(fastify, opts) {
+	const { transporter } = opts;
+
 	fastify.post('/up', async (request, reply) => {
 		const { username, email, password } = request.body;
 
@@ -55,9 +60,26 @@ async function signRoutes(fastify, opts) {
 				return reply.code(401).send({ success: false, message: 'Invalid password' });
 			}
 
+			// -- 2FA SETUP
+
+			const code = crypto.randomInt(100000, 999999).toString();
+			const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+
+			fastify.usersDb
+				.prepare('DELETE FROM tmp_2fa_codes WHERE user_id = ?')
+				.run(user.id);
+
+			fastify.usersDb
+				.prepare('INSERT INTO tmp_2fa_codes (user_id, code, expires_at) VALUES (?, ?, ?)')
+				.run(user.id, code, expiresAt);
+
+			if (method == "email") {
+				await sendEmailCode(transporter, username, user.email, code);
+			}
+
 			return reply.send({
 				success: true,
-				message: 'Login successfull',
+				message: '2FA code sent successfully',
 				userId: user.id,
 			});
 		} catch (err) {
