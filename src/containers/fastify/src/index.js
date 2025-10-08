@@ -7,7 +7,7 @@ const {Vonage} = require('@vonage/server-sdk');
 const fastifyBetterSqlite3 = require('./plugins/db.js');
 
 //const authMiddleware = require('./routes/auth/authMiddleware');
-//const { port, gmailUser, gmailPass, vonageKey, vonageSecret } = require("./config/env");
+const { port, gmailUser, gmailPass, vonageKey, vonageSecret } = require("./config/env");
 //const { generateToken } = require("./service/jwt");
 
 // PLUGINS
@@ -25,14 +25,14 @@ fastify.register(fastifyBetterSqlite3, {
 //	apiKey: vonageKey,
 //	apiSecret: vonageSecret
 //});
-
-//const transporter = nodemailer.createTransport({
-//	service: 'gmail',
-//	auth: {
-//		user: gmailUser,
-//		pass: gmailPass
-//	}
-//});
+console.log(gmailPass);
+const transporter = nodemailer.createTransport({
+	service: 'gmail',
+	auth: {
+		user: "fttranscendence03@gmail.com",
+		pass: "rqws vbkc xjyl mcoe"
+	}
+});
 
 fastify.get('/', async (request, reply) => {
 	return { message: 'Hello from Fastify!' };
@@ -40,7 +40,8 @@ fastify.get('/', async (request, reply) => {
 
 const signRoute = require('./routes/sign/sign')
 fastify.register(signRoute, {
-	prefix: '/sign'
+	prefix: '/sign',
+	transporter
 })
 
 const start = async () => {
