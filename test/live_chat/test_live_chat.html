@@ -4,21 +4,44 @@
     <meta charset="UTF-8" />
     <title>Live-Chat-Test</title>
     <link href="./output.css" rel="stylesheet">
-    <script src="./test_live_chat.js" defer></script>
+    <script type="module" src="./test_live_chat.js" defer></script>
 </head>
 <body class="body_live_chat">
     <h1>Test Live chat</h1>
     <button id="liveChatBtn" class="btn_live_chat">Chat</button>
+    <button id="privChatBtn" class="btn_live_chat"> Priv Chat</button>
 
     <div id="liveChatPage" class="page_live_chat">
         <h2>Live chat test</h2>
         <div id="messages" class="messages_live_chat"></div>
-        <form id="messageBox">
+        <div id="sendMessage">
             <input id="messageInput" placeholder="Écris ton message..." class="input_live_chat" />
-            <button id="sendBtn" class="btn_live_chat">Send</button>
-        </form>
-
+            <button id="sendMessageBtn" class="btn_live_chat">Send</button>
+        </div>
         <button id="closeLiveChatPageBtn" class="btn_live_chat">Close</button>
+    </div>
+    <div id="privChatUserPage" class="page_live_chat">
+        <button id="userConnected" class="messages_live_chat"> <!-- metre la classe en user_live_chat -->
+            <button id="closeUserConnectedPageBtn" class="btn_live_chat"> Close</button>
+        </bouton>
+        <div id="privChatPage" class="page_live_chat">
+            <h2>Priv chat test</h2>
+            <button id="profilUserBtn" class="btn_live_chat">Profil</button>
+            <button id="blockUserBtn" class="btn_live_chat">Block</button>
+            <div id="privMessages" class="messages_live_chat"></div>
+            <div id="sendPrivMessage">
+                <input id="privMessageInput" placeholder="Écris ton message..." class="input_live_chat" />
+                <button id="sendPrivMessageBtn" class="btn_live_chat">Send</button>
+            </div>
+            <button id="closePrivChatPageBtn" class="btn_live_chat">Close</button>
+        </div>
+    </div>
+    <div id="notifs" class="messages_live_chat"> <!-- changer la classe -->
+        <p>Notification</p>
+    </div>
+    <div id="profilPageUser" class="page_live_chat">
+        <p>Profil</p>
+        <button id="closeProfilPageUserBtn" class="btn_live_chat">Close</button>
     </div>
 </body>
 </html>

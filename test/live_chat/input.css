@@ -25,3 +25,7 @@
 .messages_live_chat {
     @apply flex-1 border border-gray-300 p-2 overflow-y-auto bg-[#fafafa];
 }
+
+.user_live_chat {
+    @apply flex-1 border border-gray-300 p-2 overflow-y-auto bg-[#fafafa];
+}
