@@ -8,7 +8,7 @@ const fastifyBetterSqlite3 = require('./plugins/db.js');
 
 //const authMiddleware = require('./routes/auth/authMiddleware');
 const { port, gmailUser, gmailPass, vonageKey, vonageSecret } = require("./config/env");
-//const { generateToken } = require("./service/jwt");
+const { generateToken, verifyToken } = require("./service/jwt");
 
 // PLUGINS
 
@@ -42,6 +42,14 @@ const signRoute = require('./routes/sign/sign')
 fastify.register(signRoute, {
 	prefix: '/sign',
 	transporter
+})
+
+// 2FA
+
+const emailRoute = require('./routes/2FA/email')
+fastify.register(emailRoute, {
+	prefix: '/email',
+	generateToken
 })
 
 const start = async () => {
