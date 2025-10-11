@@ -41,7 +41,7 @@ async function signRoutes(fastify, opts) {
 
 			fastify.usersDb.prepare('DELETE FROM tmp_2fa_codes WHERE user_id = ?').run(user.id);
 
-			const token = generateToken({ userId: user.id, method: 'email' });
+			const token = generateToken({ userId: user.id });
 			return reply.send({
 				success: true,
 				message: '2FA verfication went successfull',
