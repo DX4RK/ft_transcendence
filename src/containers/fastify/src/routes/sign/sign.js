@@ -3,8 +3,6 @@ const crypto = require('crypto');
 const sendSMSCode = require('../../service/send/send_sms');
 const sendEmailCode = require('../../service/send/send_email');
 
-const method = "email";
-
 async function signRoutes(fastify, opts) {
 	const { transporter } = opts;
 
@@ -25,8 +23,8 @@ async function signRoutes(fastify, opts) {
 
 			const hashedPassword = await bcrypt.hash(password, 10);
 
-			const insertStmt = fastify.usersDb.prepare('INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)');
-			const info = insertStmt.run(username, email, hashedPassword);
+			const insertStmt = fastify.usersDb.prepare('INSERT INTO users (username, email, twofa_method, password_hash) VALUES (?, ?, ?, ?)');
+			const info = insertStmt.run(username, email, "email", hashedPassword);
 
 			return reply.send({
 				success: true,
@@ -73,7 +71,7 @@ async function signRoutes(fastify, opts) {
 				.prepare('INSERT INTO tmp_2fa_codes (user_id, code, expires_at) VALUES (?, ?, ?)')
 				.run(user.id, code, expiresAt);
 
-			if (method == "email") {
+			if (user.twofa_method == "email") {
 				await sendEmailCode(transporter, username, user.email, code);
 			}
 
