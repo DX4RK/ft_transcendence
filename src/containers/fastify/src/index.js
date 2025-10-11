@@ -46,11 +46,14 @@ fastify.register(signRoute, {
 
 // 2FA
 
-const emailRoute = require('./routes/2FA/email')
-fastify.register(emailRoute, {
-	prefix: '/email',
+const verifyRoute = require('./routes/2FA/verify')
+fastify.register(verifyRoute, {
+	prefix: '/twofa',
 	generateToken
 })
+
+const authMiddlewareRoute = require('./routes/auth/authMiddleware')
+fastify.register(authMiddlewareRoute, { verifyToken })
 
 const start = async () => {
 	try {
