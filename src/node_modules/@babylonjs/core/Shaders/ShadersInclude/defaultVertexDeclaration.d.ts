@@ -1,0 +1,6 @@
+import "./decalVertexDeclaration.js";
+/** @internal */
+export declare const defaultVertexDeclaration: {
+    name: string;
+    shader: string;
+};

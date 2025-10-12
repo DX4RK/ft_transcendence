@@ -1,0 +1,73 @@
+import { RegisterClass } from "../../../../Misc/typeStore.js";
+import { NodeParticleBlockConnectionPointTypes } from "../../Enums/nodeParticleBlockConnectionPointTypes.js";
+import { NodeParticleBlock } from "../../nodeParticleBlock.js";
+import { _ConnectAtTheEnd } from "../../../Queue/executionQueue.js";
+/**
+ * Block used to update the age of a particle
+ */
+export class UpdateAgeBlock extends NodeParticleBlock {
+    /**
+     * Create a new UpdateAgeBlock
+     * @param name defines the block name
+     */
+    constructor(name) {
+        super(name);
+        this.registerInput("particle", NodeParticleBlockConnectionPointTypes.Particle);
+        this.registerInput("age", NodeParticleBlockConnectionPointTypes.Float);
+        this.registerOutput("output", NodeParticleBlockConnectionPointTypes.Particle);
+    }
+    /**
+     * Gets the particle component
+     */
+    get particle() {
+        return this._inputs[0];
+    }
+    /**
+     * Gets the age input component
+     */
+    get age() {
+        return this._inputs[1];
+    }
+    /**
+     * Gets the output component
+     */
+    get output() {
+        return this._outputs[0];
+    }
+    /**
+     * Gets the current class name
+     * @returns the class name
+     */
+    getClassName() {
+        return "UpdateAgeBlock";
+    }
+    /**
+     * Builds the block
+     * @param state defines the current build state
+     */
+    _build(state) {
+        const system = this.particle.getConnectedValue(state);
+        this.output._storedValue = system;
+        if (!this.age.isConnected) {
+            return;
+        }
+        const processAge = (particle) => {
+            state.particleContext = particle;
+            state.systemContext = system;
+            particle.age = this.age.getConnectedValue(state);
+        };
+        const ageProcessing = {
+            process: processAge,
+            previousItem: null,
+            nextItem: null,
+        };
+        if (system._updateQueueStart) {
+            _ConnectAtTheEnd(ageProcessing, system._updateQueueStart);
+        }
+        else {
+            system._updateQueueStart = ageProcessing;
+        }
+    }
+}
+RegisterClass("BABYLON.UpdateAgeBlock", UpdateAgeBlock);
+//# sourceMappingURL=updateAgeBlock.js.map

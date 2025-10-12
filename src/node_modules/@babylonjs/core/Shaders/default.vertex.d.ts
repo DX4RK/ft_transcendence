@@ -1,0 +1,38 @@
+import "./ShadersInclude/defaultVertexDeclaration.js";
+import "./ShadersInclude/defaultUboDeclaration.js";
+import "./ShadersInclude/uvAttributeDeclaration.js";
+import "./ShadersInclude/helperFunctions.js";
+import "./ShadersInclude/bonesDeclaration.js";
+import "./ShadersInclude/bakedVertexAnimationDeclaration.js";
+import "./ShadersInclude/instancesDeclaration.js";
+import "./ShadersInclude/prePassVertexDeclaration.js";
+import "./ShadersInclude/mainUVVaryingDeclaration.js";
+import "./ShadersInclude/samplerVertexDeclaration.js";
+import "./ShadersInclude/bumpVertexDeclaration.js";
+import "./ShadersInclude/clipPlaneVertexDeclaration.js";
+import "./ShadersInclude/fogVertexDeclaration.js";
+import "./ShadersInclude/lightVxFragmentDeclaration.js";
+import "./ShadersInclude/lightVxUboDeclaration.js";
+import "./ShadersInclude/morphTargetsVertexGlobalDeclaration.js";
+import "./ShadersInclude/morphTargetsVertexDeclaration.js";
+import "./ShadersInclude/logDepthDeclaration.js";
+import "./ShadersInclude/morphTargetsVertexGlobal.js";
+import "./ShadersInclude/morphTargetsVertex.js";
+import "./ShadersInclude/instancesVertex.js";
+import "./ShadersInclude/bonesVertex.js";
+import "./ShadersInclude/bakedVertexAnimation.js";
+import "./ShadersInclude/prePassVertex.js";
+import "./ShadersInclude/uvVariableDeclaration.js";
+import "./ShadersInclude/samplerVertexImplementation.js";
+import "./ShadersInclude/bumpVertex.js";
+import "./ShadersInclude/clipPlaneVertex.js";
+import "./ShadersInclude/fogVertex.js";
+import "./ShadersInclude/shadowsVertex.js";
+import "./ShadersInclude/vertexColorMixing.js";
+import "./ShadersInclude/pointCloudVertex.js";
+import "./ShadersInclude/logDepthVertex.js";
+/** @internal */
+export declare const defaultVertexShader: {
+    name: string;
+    shader: string;
+};

@@ -1,0 +1,6 @@
+import "./decalFragmentDeclaration.js";
+/** @internal */
+export declare const defaultFragmentDeclaration: {
+    name: string;
+    shader: string;
+};

@@ -35,10 +35,10 @@ function Home() {
 			<div className="fixed top-25 bottom-40 left-8 w-40 bg-gradient-to-b from-violet-500/50 to-fuchsia-500/50 rounded-xl shadow-md transform -translate-x-full transition-transform duration-300 peer-checked:translate-x-0 z-40">
 				<nav className="flex flex-col my-35 space-y-15 justify-items-center auto-cols-auto	">
 
-					<Link to="/" className="flex p-1 mx-1 text-orange-300/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">Home</Link>
-					<Link to="/test" className="flex p-1 text-orange-300/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">Test</Link>
-					<Link to="/Profile" className="flex p-1 text-orange-300/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">Profile</Link>
-					<Link to="/ladder" className="flex p-1 text-orange-300/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">Ladder</Link>
+					<Link to="/" className="flex p-2 mx-1 text-yellow-500/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">Home</Link>
+					<Link to="/test" className="flex p-2 text-yellow-500/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">Test</Link>
+					<Link to="/Profile" className="flex p-2 text-yellow-500/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">Profile</Link>
+					<Link to="/ladder" className="flex p-2 text-yellow-500/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">Ladder</Link>
 				</nav>
 			</div>
 		</div>
@@ -58,7 +58,7 @@ function Home() {
 			<div className="fixed inset-0 bg-black/60 peer-checked:hidden transition z-40"></div>
 
 			<a className="text-base text-2xl text-[#6fc8dc] translate-y-100 font-arcade transition-transform duration-1700 peer-checked:-translate-y-400 z-45">W E L C O M E</a>
-			<Link to="/game" className="flex rounded-full items-center translate-y-300 justify-center w-128 z-10 transition ease-in-out  bg-pink-300/90 font-bold p-5 shadow-xl text-white text-2xl font-arcade dark:bg-black-950  hover:bg-yellow-500/90 hover:italic hover:text-white-500 hover:shadow-inner hover:outline hover:ouline-8 hover:scale-110 hover:outline-rose-400/80 transition-transform duration-1700 peer-checked:translate-y-100"> PLAY </Link>
+			<Link to="/game" className="flex rounded-full items-center translate-y-300 justify-center w-128 z-10 transition ease-in-out  bg-pink-300/90 font-bold p-5 shadow-xl text-white text-2xl font-arcade dark:bg-black-950  hover:bg-yellow-500/80 hoer:italic hover:text-white-500 hover:shadow-inner hover:outline hover:ouline-8 hover:scale-110 hover:outline-rose-400/80 transition-transform duration-1700 peer-checked:translate-y-100"> PLAY </Link>
 		</div>
 
 	</div>

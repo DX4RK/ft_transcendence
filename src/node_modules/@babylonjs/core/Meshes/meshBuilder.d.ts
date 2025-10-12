@@ -1,0 +1,57 @@
+import { CreateRibbon } from "./Builders/ribbonBuilder.js";
+import { CreateDisc } from "./Builders/discBuilder.js";
+import { CreateBox } from "./Builders/boxBuilder.js";
+import { CreateTiledBox } from "./Builders/tiledBoxBuilder.js";
+import { CreateSphere } from "./Builders/sphereBuilder.js";
+import { CreateCylinder } from "./Builders/cylinderBuilder.js";
+import { CreateTorus } from "./Builders/torusBuilder.js";
+import { CreateTorusKnot } from "./Builders/torusKnotBuilder.js";
+import { CreateDashedLines, CreateLineSystem, CreateLines } from "./Builders/linesBuilder.js";
+import { CreatePolygon, ExtrudePolygon } from "./Builders/polygonBuilder.js";
+import { ExtrudeShape, ExtrudeShapeCustom } from "./Builders/shapeBuilder.js";
+import { CreateLathe } from "./Builders/latheBuilder.js";
+import { CreatePlane } from "./Builders/planeBuilder.js";
+import { CreateTiledPlane } from "./Builders/tiledPlaneBuilder.js";
+import { CreateGround, CreateGroundFromHeightMap, CreateTiledGround } from "./Builders/groundBuilder.js";
+import { CreateTube } from "./Builders/tubeBuilder.js";
+import { CreatePolyhedron } from "./Builders/polyhedronBuilder.js";
+import { CreateIcoSphere } from "./Builders/icoSphereBuilder.js";
+import { CreateDecal } from "./Builders/decalBuilder.js";
+import { CreateCapsule } from "./Builders/capsuleBuilder.js";
+import { CreateGeodesic } from "./Builders/geodesicBuilder.js";
+import { CreateGoldberg } from "./Builders/goldbergBuilder.js";
+import { CreateText } from "./Builders/textBuilder.js";
+/**
+ * Class containing static functions to help procedurally build meshes
+ */
+export declare const MeshBuilder: {
+    CreateBox: typeof CreateBox;
+    CreateTiledBox: typeof CreateTiledBox;
+    CreateSphere: typeof CreateSphere;
+    CreateDisc: typeof CreateDisc;
+    CreateIcoSphere: typeof CreateIcoSphere;
+    CreateRibbon: typeof CreateRibbon;
+    CreateCylinder: typeof CreateCylinder;
+    CreateTorus: typeof CreateTorus;
+    CreateTorusKnot: typeof CreateTorusKnot;
+    CreateLineSystem: typeof CreateLineSystem;
+    CreateLines: typeof CreateLines;
+    CreateDashedLines: typeof CreateDashedLines;
+    ExtrudeShape: typeof ExtrudeShape;
+    ExtrudeShapeCustom: typeof ExtrudeShapeCustom;
+    CreateLathe: typeof CreateLathe;
+    CreateTiledPlane: typeof CreateTiledPlane;
+    CreatePlane: typeof CreatePlane;
+    CreateGround: typeof CreateGround;
+    CreateTiledGround: typeof CreateTiledGround;
+    CreateGroundFromHeightMap: typeof CreateGroundFromHeightMap;
+    CreatePolygon: typeof CreatePolygon;
+    ExtrudePolygon: typeof ExtrudePolygon;
+    CreateTube: typeof CreateTube;
+    CreatePolyhedron: typeof CreatePolyhedron;
+    CreateGeodesic: typeof CreateGeodesic;
+    CreateGoldberg: typeof CreateGoldberg;
+    CreateDecal: typeof CreateDecal;
+    CreateCapsule: typeof CreateCapsule;
+    CreateText: typeof CreateText;
+};

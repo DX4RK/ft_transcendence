@@ -1,0 +1,31 @@
+import "./ShadersInclude/defaultUboDeclaration.js";
+import "./ShadersInclude/prePassDeclaration.js";
+import "./ShadersInclude/oitDeclaration.js";
+import "./ShadersInclude/mainUVVaryingDeclaration.js";
+import "./ShadersInclude/helperFunctions.js";
+import "./ShadersInclude/lightUboDeclaration.js";
+import "./ShadersInclude/lightsFragmentFunctions.js";
+import "./ShadersInclude/shadowsFragmentFunctions.js";
+import "./ShadersInclude/samplerFragmentDeclaration.js";
+import "./ShadersInclude/fresnelFunction.js";
+import "./ShadersInclude/reflectionFunction.js";
+import "./ShadersInclude/imageProcessingDeclaration.js";
+import "./ShadersInclude/imageProcessingFunctions.js";
+import "./ShadersInclude/bumpFragmentMainFunctions.js";
+import "./ShadersInclude/bumpFragmentFunctions.js";
+import "./ShadersInclude/clipPlaneFragmentDeclaration.js";
+import "./ShadersInclude/logDepthDeclaration.js";
+import "./ShadersInclude/fogFragmentDeclaration.js";
+import "./ShadersInclude/clipPlaneFragment.js";
+import "./ShadersInclude/bumpFragment.js";
+import "./ShadersInclude/decalFragment.js";
+import "./ShadersInclude/depthPrePass.js";
+import "./ShadersInclude/lightFragment.js";
+import "./ShadersInclude/logDepthFragment.js";
+import "./ShadersInclude/fogFragment.js";
+import "./ShadersInclude/oitFragment.js";
+/** @internal */
+export declare const defaultPixelShaderWGSL: {
+    name: string;
+    shader: string;
+};
