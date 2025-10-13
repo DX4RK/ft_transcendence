@@ -24,12 +24,9 @@ export default function BabylonScene() {
 		// enable physics in the scene with a gravity
 		scene.enablePhysics(new Vector3(0, -9.8, 0), hk);
 
-		// Create a sphere shape and the associated body. Size will be determined automatically.
-
 		// Create a static box shape.
-
 		var sphere = MeshBuilder.CreateSphere("sphere", { diameterX: 1, diameterY: 1, diameterZ: 1 }, scene);
-		sphere.position.y = 10;
+		sphere.position.y = 7;
 		const sphereAggregate = new PhysicsAggregate(sphere, PhysicsShapeType.SPHERE, { mass: 1, restitution: 0.5 }, scene);
 
 
@@ -51,39 +48,62 @@ export default function BabylonScene() {
 		const groundAggregate = new PhysicsAggregate(ground, PhysicsShapeType.BOX, { mass: 0, restitution: 0.2, friction: 0.8 }, scene);
 
 		// create toit
-		const roofR = MeshBuilder.CreateBox("roofR", { width: 22, depth: 16, height: 0.2 }, scene);
+		const roofR = MeshBuilder.CreateBox("roofR", { width: 8, depth: 16, height: 0.2 }, scene);
 		roofR.rotation.z = Math.PI / 16;
-		roofR.position.y = 0;
-		roofR.position.x = -10.8;
+		roofR.position.y = 0.65;
+		roofR.position.x = -3.9;
 		const roofRAggregate = new PhysicsAggregate( roofR, PhysicsShapeType.BOX, { mass: 0, restitution: 0.3, friction: 0.8 }, scene);
 
-		const roofL = MeshBuilder.CreateBox("roofL", { width: 22, depth: 16, height: 0.2 }, scene);
+		const roofL = MeshBuilder.CreateBox("roofL", { width: 8, depth: 16, height: 0.2 }, scene);
 		roofL.rotation.z = -Math.PI / 16;
-		roofL.position.y = 0;
-		roofL.position.x = 10.8;
+		roofL.position.y = 0.65;
+		roofL.position.x = 3.9;
 		new PhysicsAggregate( roofL, PhysicsShapeType.BOX, { mass: 0, restitution: 0.3, friction: 0.8 }, scene);
 
 		// create Walls
 		const invisWall = new StandardMaterial("wallMat", scene);
 		invisWall.alpha = 0.1;
+		const goalAlpha = new StandardMaterial("wallMat", scene);
+		goalAlpha.alpha = 0.3;
 
-		const backWall = MeshBuilder.CreateBox("backWall", { width: 40, height: 5, depth: 0.1 }, scene);
-		const frontWall = MeshBuilder.CreateBox("frontWall", { width: 40, height: 2, depth: 0.1 }, scene);
+		const backWall = MeshBuilder.CreateBox("backWall", { width: 40, height: 10, depth: 0.1 }, scene);
+		const frontWall = MeshBuilder.CreateBox("frontWall", { width: 40, height: 10, depth: 0.1 }, scene);
 		backWall.position.z = -8;
-		backWall.position.y = 1;
+		backWall.position.y = 5;
 		frontWall.position.z = 8;
-		frontWall.position.y = 1;
+		frontWall.position.y = 5;
 		frontWall.material = invisWall;
+		const frontWAggregate = new PhysicsAggregate( frontWall, PhysicsShapeType.BOX, { mass: 0, restitution: 1, friction: 0 }, scene);
+		const backWAggregate = new PhysicsAggregate( backWall, PhysicsShapeType.BOX, { mass: 0, restitution: 1, friction: 0}, scene);
+
+		// create roof
+		const roof = MeshBuilder.CreateBox("roof", { width: 40, height: 0.1, depth: 16 }, scene);
+		roof.position.y = 10;
+		roof.material = invisWall;
+		const roofAggregate = new PhysicsAggregate( roof, PhysicsShapeType.BOX, { mass: 0, restitution: 1, friction: 0.3 }, scene);
+
+
+		// create Goals
+		const goalL = MeshBuilder.CreateBox("goalL", { width: 0.1, height: 10, depth: 16 }, scene);
+		const goalR = MeshBuilder.CreateBox("goalR", { width: 0.1, height: 10, depth: 16 }, scene);
+		goalL.position.x = -20;
+		goalL.position.y = 5;
+		goalR.position.x = 20;
+		goalR.position.y = 5;
+		goalL.material = goalAlpha;
+		goalR.material = goalAlpha;
+		const goalRAggregate = new PhysicsAggregate( goalR, PhysicsShapeType.BOX, { mass: 0, restitution: 1.5, friction: 0.3 }, scene);
+		const goalLAggregate = new PhysicsAggregate( goalL, PhysicsShapeType.BOX, { mass: 0, restitution: 1.5, friction: 0.3 }, scene);
 
 
 		//create box
-		var box1 = MeshBuilder.CreateBox("box1", {width: 0.4, height: 3, depth: 4 }, scene);
-		box1.position = new Vector3(16, 2, 0);
-		const box1Aggregate = new PhysicsAggregate( box1, PhysicsShapeType.BOX, { mass: 20, restitution: 2, friction: 0.3 }, scene);
+		var pad1 = MeshBuilder.CreateBox("pad1", {width: 0.4, height: 3, depth: 4 }, scene);
+		pad1.position = new Vector3(16, 2, 0);
+		const pad1Aggregate = new PhysicsAggregate( pad1, PhysicsShapeType.BOX, { mass: 20, restitution: 1.1, friction: 0.3 }, scene);
 
-		var box2 = MeshBuilder.CreateBox("box", {width: 0.4, height: 3, depth: 4 }, scene);
-		box2.position = new Vector3(-16, 0, 0);
-		const box2Aggregate = new PhysicsAggregate( box2, PhysicsShapeType.BOX, { mass: 0, restitution: 2, friction: 2 }, scene);
+		var pad2 = MeshBuilder.CreateBox("pad2", {width: 0.4, height: 3, depth: 4 }, scene);
+		pad2.position = new Vector3(-16, 2, 0);
+		const pad2Aggregate = new PhysicsAggregate( pad2, PhysicsShapeType.BOX, { mass: 20, restitution: 1.1, friction: 2 }, scene);
 
 
 		const keys: Record<string, boolean> = {};
@@ -91,21 +111,30 @@ export default function BabylonScene() {
 		window.addEventListener("keyup", (e) => (keys[e.key.toLowerCase()] = false));
 
 		scene.onBeforeRenderObservable.add(() => {
-			const body = box1Aggregate.body;
-			// const body = sphereAggregate.body;
-			if (!body) return;
+			const padBody1 = pad1Aggregate.body;
+			const padBody2 = pad2Aggregate.body;
+			if (!pad1 || !pad2) return;
 
-			// box1Aggregate.body.setLinearFactor(new Vector3(1, 0, 1)); // pas de mouvement vertical (Y)
-			// box1Aggregate.body.setAngularFactor(Vector3.Zero());
-			const velocity = new Vector3(0, 0, 0);
-			const speed = 3;
+			const speed = 6;
 
-			if (keys["z"] || keys["w"]) velocity.z -= speed;
-			if (keys["s"]) velocity.z += speed;
-			if (keys["q"] || keys["a"]) velocity.x -= speed;
-			if (keys["d"]) velocity.x += speed;
+			pad1Aggregate.body.setAngularVelocity(Vector3.Zero());
+			pad2Aggregate.body.setAngularVelocity(Vector3.Zero());
+			const velocity1 = new Vector3(0, 0, 0);
+			const velocity2 = new Vector3(0, 0, 0);
 
-			body.setLinearVelocity(velocity);
+			if (keys["z"] || keys["w"]) velocity1.z -= speed;
+			if (keys["s"]) velocity1.z += speed;
+			if (keys["d"] && pad1.position.x > 10) velocity1.x -= speed;
+			if (keys["a"] || keys["q"]) velocity1.x += speed;
+
+
+			if (keys["o"]) velocity2.z -= speed;
+			if (keys["l"]) velocity2.z += speed;
+			if (keys[";"] ) velocity2.x -= speed;
+			if (keys["k"] && pad2.position.x < -10) velocity2.x += speed;
+
+			padBody1.setLinearVelocity(velocity1);
+			padBody2.setLinearVelocity(velocity2);
 		});
 
 
