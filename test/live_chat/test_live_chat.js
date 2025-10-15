@@ -20,6 +20,7 @@ const privChatUserPage = document.getElementById('privChatUserPage');
 const userConnected = document.getElementById('userConnected');
 const closeUserConnectedPageBtn = document.getElementById('closeUserConnectedPageBtn');
 const privChatPage = document.getElementById('privChatPage');
+const privChatUserName = document.getElementById('privChatUserName');
 const profilUserBtn = document.getElementById('profilUserBtn');
 const blockUserBtn = document.getElementById('blockUserBtn');
 const privMessages = document.getElementById('privMessages');
@@ -29,6 +30,7 @@ const sendPrivMessageBtn = document.getElementById('sendPrivMessageBtn');
 const closePrivChatPageBtn = document.getElementById('closePrivChatPageBtn');
 
 const profilPageUser = document.getElementById('profilPageUser');
+const invitToPlayBtn = document.getElementById('invitToPlayBtn');
 const closeProfilPageUserBtn = document.getElementById('closeProfilPageUserBtn');
 
 //----------------
@@ -98,7 +100,11 @@ function addUserButton(user) {
     // newUser.classList.add("user-btn");
     newUser.addEventListener("click", () => {
         selectedUser = user;
-        userConnected.style.display = 'none';
+        var userName = document.createElement("h2");
+        userName.textContent = `Priv chat with ${selectedUser}`;
+        privChatUserName.replaceChildren();
+        privChatUserName.appendChild(userName);
+        privChatUserPage.style.display = 'none';
         privChatPage.style.display = 'flex';
     });
     userConnected.appendChild(newUser);
@@ -112,7 +118,7 @@ socket.on('priv-message', (user, msg) => {
         privMessages.appendChild(newMessage);
         console.log(msg);
     } else if (user !== selectedUser) {
-        addNotification(`New private message from ${user}`);
+        addNotification("priv-message", msg, user);
     }
 });
 
@@ -131,7 +137,7 @@ closeUserConnectedPageBtn.addEventListener('click', () => {
 });
 
 closePrivChatPageBtn.addEventListener('click', () => {
-    privChatUserPage.style.display = 'none';
+    privChatPage.style.display = 'none';
 });
 
 // blocke un user
@@ -151,7 +157,7 @@ socket.on('block-user', (blocker, blocked) => {
         privMessages.appendChild(newMessage);
         console.log(`User ${blocker} bloked you`);
     } else if (blocker !== selectedUser) {
-        addNotification(`${blocker} blocked you.`);
+        addNotification("blocked", `${blocker} blocked you.`, blocker);
     }
     console.log(blocker + " " + socket.id);    
 });
@@ -165,29 +171,78 @@ blockUserBtn.addEventListener('click', () => {
 // afficher le profil
 
 profilUserBtn.addEventListener('click', () => {
+    profilPageUser.appendChild(document.createTextNode(`Profil of ${selectedUser}`));
     profilPageUser.style.display = 'flex';
 });
 
+invitToPlayBtn.addEventListener('click', () => {
+    socket.emit("message", `/invit ${selectedUser}`, (callback) => {
+        console.log(callback); // Invitation sent to ...
+    });
+});
+
 closeProfilPageUserBtn.addEventListener('click', () => {
+    profilPageUser.replaceChildren();
     profilPageUser.style.display = 'none';
 });
 
 // future notification
 
 socket.on('notify-next-game', (notif) => {
-    addNotification(notif);
+    addNotification("notify-next-game", notif);
     console.log(notif);
 });
 
-function addNotification(notif) {
+socket.on('notify-invit-game', (notif) => {
+    addNotification("notify-invit-game", notif);
+    console.log(notif);
+});
+
+function addNotification(event, notif, sender=null) {
     const newNotif = document.createElement("button");
-    newNotif.textContent = notif;
-    newNotif.dataset.notif = notif;
     // newNotif.classList.add("notif-btn");
-    newNotif.addEventListener("click", () => {
-        // faire quelque chose pour la notif
-        newNotif.remove();
-    });
+    if (event === "notify-next-game") {
+        newNotif.textContent = notif;
+        newNotif.dataset.notif = notif;
+        newNotif.addEventListener("click", () => {
+            // faire quelque chose pour la notif (prochaine game du tournoi)(rejoindre la game)
+            newNotif.remove();
+        });
+    } else if (event === "notify-invit-game") {
+        newNotif.textContent = notif;
+        newNotif.dataset.notif = notif;
+        newNotif.addEventListener("click", () => {
+            // faire quelque chose pour la notif (invitation a jouer d'un autre joueur)(rejoindre la game)
+            newNotif.remove();
+        });
+    } else if (event === "priv-message") {
+        newNotif.textContent = `New private message from ${sender}`;
+        newNotif.dataset.notif = `New private message from ${sender}`;
+        newNotif.addEventListener("click", () => {
+            // faire quelque chose pour la notif (ouvrir le chat priver avec l'envoyeur et afficher le message[fait])(afficher l'istorique des message)
+            selectedUser = sender;
+            var userName = document.createElement("h2");
+            userName.textContent = `Priv chat with ${sender}`;
+            privChatUserName.replaceChildren();
+            privChatUserName.appendChild(userName);
+            privChatPage.style.display = 'flex';
+            
+            var newMessage = document.createElement("div");
+            var newMessageText = document.createTextNode(notif);
+            newMessage.appendChild(newMessageText);
+            privMessages.appendChild(newMessage);
+            console.log(notif);
+
+            newNotif.remove();
+        });
+    } else if (event === "blocked") {
+        newNotif.textContent = notif;
+        newNotif.dataset.notif = notif;
+        newNotif.addEventListener("click", () => {
+            // faire quelque chose pour la notif (un user nous a bloqué)(ne rien faire)
+            newNotif.remove();
+        });
+    }
     notifs.appendChild(newNotif);
     notifs.appendChild(document.createElement("br"));
 }

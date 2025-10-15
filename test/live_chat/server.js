@@ -66,6 +66,17 @@ const start = async () => {
             });
 
             socket.on('message', (msg, callback) => { // message pour le chat public
+                if (msg.startsWith('/invit')) { // commande pour inviter un user a jouer
+                    const parts = msg.split(' ');
+                    const targetId = parts[1];
+                    if (clients.includes(targetId)) {
+                        fastify.io.to(targetId).emit('notify-invit-game', `Invitation to play from ${socket.id}`);
+                        callback(`Invitation sent to ${targetId}`);
+                    } else {
+                        callback(`User ${targetId} not found`);
+                    }
+                    return;
+                }
                 fastify.log.info(socket.id + ": " + msg);
                 callback(`Message reçu : ${msg}`);
                 fastify.io.emit('message', socket.id, msg);
@@ -74,7 +85,7 @@ const start = async () => {
             socket.on('priv-message', (dest, msg, callback) => {
                 fastify.log.info(socket.id + " send to " + dest + ": " + msg);
                 for (let clientId of clients) {
-                    if (clientId === dest || clientId === socket.id)
+                    if (clientId === dest || clientId === socket.id) // ajouter une condition si blocked
                         fastify.io.to(clientId).emit('priv-message', socket.id, `${socket.id} dit : ${msg}`);
                 }
                 callback(`Message reçu : ${msg}`);
