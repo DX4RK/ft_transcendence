@@ -6,6 +6,7 @@ import Test from "@/pages/Test"
 import Profile from "@/pages/Profile"
 import Ladder from "@/pages/Ladder"
 import Game from "@/pages/Game"
+import Login from "@/pages/login"
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/test" element={<Test />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/ladder" element={<Ladder />} />
+		  <Route path="/login" element={<Login />} />
 		  <Route path="/game" element={<Game />} />
 
         </Routes>

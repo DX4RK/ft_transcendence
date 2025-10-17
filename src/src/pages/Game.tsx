@@ -10,7 +10,6 @@ function Game() {
 	  // Fonction appelée à la fois par le bouton et la touche Échap
   const handleEscape = () => {
     alert("- Game paused -");
-    // Ici, tu peux mettre ton code pour mettre le jeu en pause, etc.
   };
 
   useEffect(() => {

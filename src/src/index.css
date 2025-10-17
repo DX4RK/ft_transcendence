@@ -13,6 +13,21 @@
   src: url(./assets/fonts/ARCADE_R.TTF);
 }
 
+@keyframes draw {
+  0% {
+    stroke-dasharray: 500;
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dasharray: 500;
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-draw {
+  animation: draw 3s ease-in-out forwards;
+}
+
 @theme {
   --font-arcade: "arcade", sans-serif;
   --font-arcade-i: "arcade-i", sans-serif;

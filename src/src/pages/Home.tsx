@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+// import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 import { Background } from "../../Game/background";
 import { useEffect } from "react";
@@ -6,15 +6,28 @@ import { useEffect } from "react";
 
 function Home() {
 
-  useEffect(() => {
-    const game = new Background();
-    game.start();
-  }, []);
+	useEffect(() => {
+	const game = new Background();
+	game.start();
+	}, []);
 
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-r from-cyan-500/50 to-blue-500/50 ">
-      	<Link to="/" className="text-base text-cyan-300/70 text-xl font-arcade z-50">ft_transcendence</Link>
+		<div className="flex flex-row">
+			<Link to="/" className="flex-grow text-base text-cyan-300/70 text-xl font-arcade z-30">ft_transcendence</Link>
+			<Link to="/login" className="z-30">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor" className=" size-16 m-4 z-30">
+				<defs>
+					<linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+					<stop offset="0%" stop-color="#f97316" />
+					<stop offset="100%" stop-color="#b94a9dff" />
+					</linearGradient>
+				</defs>
+  				<path stroke-linecap="round" stroke-linejoin="round" stroke="url(#orangeGradient)" className="" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+			</svg> </Link>
+		</div>
+
 
 		<div>
 			<input type="checkbox" id="menu-toggle" className="hidden peer"></input>
@@ -33,12 +46,12 @@ function Home() {
 			</label>
 
 			<div className="fixed top-25 bottom-40 left-8 w-40 bg-gradient-to-b from-violet-500/50 to-fuchsia-500/50 rounded-xl shadow-md transform -translate-x-full transition-transform duration-300 peer-checked:translate-x-0 z-40">
-				<nav className="flex flex-col my-35 space-y-15 justify-items-center auto-cols-auto	">
+				<nav className="flex flex-col my-35 space-y-15 auto-cols-auto	">
 
-					<Link to="/" className="flex p-2 mx-1 text-yellow-500/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">Home</Link>
-					<Link to="/test" className="flex p-2 text-yellow-500/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">Test</Link>
-					<Link to="/Profile" className="flex p-2 text-yellow-500/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">Profile</Link>
-					<Link to="/ladder" className="flex p-2 text-yellow-500/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">Ladder</Link>
+					<Link to="/" className="flex p-2 mx-1 text-yllow-500/80 bg-gradient-to-br from-pink-500/90 to-orange-400/90 bg-clip-text text-transparent font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">1</Link>
+					<Link to="/test" className="flex p-2 text-yellow-500/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">2</Link>
+					<Link to="/Profile" className="flex p-2 text-yelow-500/80 bg-gradient-to-br from-pink-500/90 to-orange-400/90 bg-clip-text text-transparent font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">3</Link>
+					<Link to="/ladder" className="flex p-2 text-yellow-500/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">4	</Link>
 				</nav>
 			</div>
 		</div>
@@ -47,10 +60,6 @@ function Home() {
 		<script type="module" src="../Game/main.ts"></script>
 
 
-		<div className="absolute top-10 right-20 z-10">
-			<Button className=" rounded-xl bg-yellow-500/80" onClick={() => alert("Hello !")} >|      |</Button>
-		</div>
-
 		<div className="flex flex-col items-center">
 			<input id="welcome" type="checkbox" className="peer hidden"/>
 			<label htmlFor="welcome" className="peer absolute inset-0 w-full h-full opacity-0 cursor-pointer z-45 transition-opacity peer-checked: peer-checked:z-0"></label>
@@ -58,7 +67,7 @@ function Home() {
 			<div className="fixed inset-0 bg-black/60 peer-checked:hidden transition z-40"></div>
 
 			<a className="text-base text-2xl text-[#6fc8dc] translate-y-100 font-arcade transition-transform duration-1700 peer-checked:-translate-y-400 z-45">W E L C O M E</a>
-			<Link to="/game" className="flex rounded-full items-center translate-y-300 justify-center w-128 z-10 transition ease-in-out  bg-pink-300/90 font-bold p-5 shadow-xl text-white text-2xl font-arcade dark:bg-black-950  hover:bg-yellow-500/80 hoer:italic hover:text-white-500 hover:shadow-inner hover:outline hover:ouline-8 hover:scale-110 hover:outline-rose-400/80 transition-transform duration-1700 peer-checked:translate-y-100"> PLAY </Link>
+			<Link to="/game" className="flex rounded-full items-center translate-y-300 justify-center w-128 z-10 transition ease-in-out duration-1700 bg-gradient-to-br from-pink-500/90 to-orange-400/90 font-bold p-5 shadow-xl text-white text-2xl font-arcade dark:bg-black-950  hover:bg-yellow-500/80 hoer:italic hover:text-white-500 hover:shadow-inner hover:outline hover:ouline-8 hover:scale-110 hover:duration-300 peer-checked:translate-y-100"> PLAY </Link>
 		</div>
 
 	</div>
