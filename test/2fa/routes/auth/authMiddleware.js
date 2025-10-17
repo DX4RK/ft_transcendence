@@ -2,7 +2,7 @@ const { verifyToken } = require("../../service/jwt");
 
 async function authMiddleware(request, reply) {
   const authHeader = request.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = request.cookies.jwt;
 
   if (!token) {
     return reply.status(401).json({ success: false, message: 'Token manquant' });

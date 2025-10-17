@@ -29,7 +29,6 @@ const fastify = require('fastify')({
 const cors = require('@fastify/cors'); 
 const fastifyIO = require('fastify-socket.io');
 const { port } = require("./config/env");
-const { text } = require('stream/consumers');
 
 //----------------
 //  Start

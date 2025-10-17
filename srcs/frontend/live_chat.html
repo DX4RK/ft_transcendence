@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Live-Chat</title>
+    <link href="./tailwind/output.css" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script type="module" src="./typeScript/live_chat.js" defer></script>
+</head>
+<body class="body_live_chat">
+    <h1>Live chat</h1>
+    <button id="liveChatBtn" class="btn_live_chat">Chat</button>
+    <button id="privChatBtn" class="btn_live_chat"> Priv Chat</button>
+
+    <div id="liveChatPage" class="page_live_chat">
+        <h2>Live chat</h2>
+        <div id="messages" class="messages_live_chat"></div>
+        <div id="sendMessage">
+            <input id="messageInput" placeholder="Écris ton message..." class="input_live_chat" />
+            <button id="sendMessageBtn" class="btn_live_chat">Send</button>
+        </div>
+        <button id="closeLiveChatPageBtn" class="btn_live_chat">Close</button>
+    </div>
+    <div id="privChatUserPage" class="page_live_chat">
+        <div id="userConnected" class="user_live_chat"></div>
+        <button id="closeUserConnectedPageBtn" class="btn_live_chat"> Close</button>
+    </div>
+    <div id="privChatPage" class="page_live_chat">
+        <h2 id="privChatUserName">Priv chat</h2>
+        <button id="profilUserBtn" class="btn_live_chat">Profil</button>
+        <button id="blockUserBtn" class="btn_live_chat">Block</button>
+        <div id="privMessages" class="messages_live_chat"></div>
+        <div id="sendPrivMessage">
+            <input id="privMessageInput" placeholder="Écris ton message..." class="input_live_chat" />
+            <button id="sendPrivMessageBtn" class="btn_live_chat">Send</button>
+        </div>
+        <button id="closePrivChatPageBtn" class="btn_live_chat">Close</button>
+    </div>
+    <div id="notifs" class="notifs_live_chat">
+        <p>Notification</p>
+    </div>
+    <div id="profilPageUser" class="page_live_chat">
+        <p>Profil</p>
+        <button id="invitToPlayBtn" class="btn_live_chat">Invit</button>
+        <button id="closeProfilPageUserBtn" class="btn_live_chat">Close</button>
+    </div>
+</body>
+</html>

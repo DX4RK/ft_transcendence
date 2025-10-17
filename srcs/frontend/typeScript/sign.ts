@@ -1,4 +1,3 @@
-let userToken = ''
 let userLogin = '';
 
 //----------------
@@ -79,8 +78,18 @@ signUpBtn.addEventListener('click', () => {
     fetch('http://localhost:3000/sign/up', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: "include",
         body: JSON.stringify(data)
     })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success)
+            console.log(data);
+    })
+    .catch(err => {
+        console.error("Erreur fetch :", err);
+        alert('Une erreur est survenue');
+    });
 
     userLogin = loginUp.value;
     
@@ -109,25 +118,26 @@ signInBtn.addEventListener('click', () => {
     fetch('http://localhost:3000/sign/in', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: "include",
         body: JSON.stringify(data)
     })
     .then(res => res.json())
-    .then(res => {
-        if (res.success) {
+    .then(data => {
+        if (data.success) {
             userLogin = loginIn.value;
 
             signInPage.style.display = 'none';
             signInPageBtn.style.display = 'none';
             signUpPageBtn.style.display = 'none';
 
-            if (res.method == 'sms')
+            if (data.method == 'sms')
                 smsVerifyCode2faPage.style.display = 'flex';
-            else if (res.method == 'email')
+            else if (data.method == 'email')
                 emailVerifyCode2faPage.style.display = 'flex';
-            else if (res.method == 'totp')
+            else if (data.method == 'totp')
                 totpVerifyCode2faPage.style.display = 'flex';
         } else {
-            alert('Erreur : ' + res.message);
+            alert('Erreur : ' + data.message);
         }
     })
     .catch(err => {
@@ -165,15 +175,16 @@ smsVerify2faBtn.addEventListener('click', () => {
     fetch('http://localhost:3000/sms/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: "include",
         body: JSON.stringify(data)
     })
     .then(res => res.json())
-    .then(res => {
-        if (res.success) {
+    .then(data => {
+        if (data.success) {
             sms2faPage.style.display = 'none';
             smsVerifyCode2faPage.style.display = 'flex';
         } else {
-            alert('Erreur : ' + res.message);
+            alert('Erreur : ' + data.message);
         }
     })
     .catch(err => {
@@ -197,14 +208,15 @@ smsVerifyCode2faBtn.addEventListener('click', () => {
     fetch('http://localhost:3000/sms/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: "include",
         body: JSON.stringify(data2fa)
     })
     .then(res => res.json())
-    .then(res => {
-        if (res.success) {
+    .then(data => {
+        if (data.success) {
             smsVerifyCode2faPage.style.display = 'none';
             enable2faPageBtn.style.display = 'none';
-            userToken = res.token;
+            localStorage.setItem("jwt", data.token);
         } else {
             alert('Code incorrect.');
         }
@@ -234,15 +246,16 @@ emailVerify2faBtn.addEventListener('click', () => {
     fetch('http://localhost:3000/email/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: "include",
         body: JSON.stringify(data)
     })
     .then(res => res.json())
-    .then(res => {
-        if (res.success) {
+    .then(data => {
+        if (data.success) {
             email2faPage.style.display = 'none';
             emailVerifyCode2faPage.style.display = 'flex';
         } else {
-            alert('Erreur : ' + res.message);
+            alert('Erreur : ' + data.message);
         }
     })
     .catch(err => {
@@ -266,16 +279,17 @@ emailVerifyCode2faBtn.addEventListener('click', () => {
     fetch('http://localhost:3000/email/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: "include",
         body: JSON.stringify(data2fa)
     })
     .then(res => res.json())
-    .then(res => {
-        if (res.success) {
+    .then(data => {
+        if (data.success) {
             emailVerifyCode2faPage.style.display = 'none';
             enable2faPageBtn.style.display = 'none';
-            userToken = res.token;
+            localStorage.setItem("jwt", data.token);
         } else {
-            alert('Erreur : ' + res.message);
+            alert('Erreur : ' + data.message);
         }
     })
     .catch(err => {
@@ -296,21 +310,20 @@ totp2faBtn.addEventListener('click', () => {
       
     fetch('http://localhost:3000/totp/send', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: "include",
         body: JSON.stringify(data)
     })
     .then(res => res.json())
-    .then(res => {
-        if (res.success) {
-            totp2faQrCode.src = res.qrCode;
+    .then(data => {
+        if (data.success) {
+            totp2faQrCode.src = data.qrCode;
             totp2faQrCode.style.display = 'block';
 
             all2faPage.style.display = 'none';
             totp2faPage.style.display = 'flex';
         } else {
-            alert('Erreur : ' + res.message);
+            alert('Erreur : ' + data.message);
         }
     })
     .catch(err => {
@@ -338,16 +351,17 @@ totpVerifyCode2faBtn.addEventListener('click', () => {
     fetch('http://localhost:3000/totp/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: "include",
         body: JSON.stringify(data2fa)
     })
     .then(res => res.json())
-    .then(res => {
-        if (res.success) {
+    .then(data => {
+        if (data.success) {
             totpVerifyCode2faPage.style.display = 'none';
             enable2faPageBtn.style.display = 'none';
-            userToken = res.token;
+            localStorage.setItem("jwt", data.token);
         } else {
-            alert('Erreur : ' + res.message);
+            alert('Erreur : ' + data.message);
         }
     })
     .catch(err => {
@@ -362,20 +376,21 @@ totpVerifyCode2faBtn.addEventListener('click', () => {
 
 profilBtn.addEventListener('click', () => {
     fetch('http://localhost:3000/profil', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + userToken
-        },
-        body: JSON.stringify({})
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: "include"
     })
     .then(res => res.json())
-    .then(res => {
-        if (res.success) {
+    .then(data => {
+        if (data.success) {
             profilPage.style.display = 'flex';
         } else {
-            alert('Movais token JWT !');
+            alert('Erreur : ' + data.message);
         }
+    })
+    .catch(err => {
+        console.error("Erreur fetch :", err);
+        alert('Une erreur est survenue');
     });
 });
 

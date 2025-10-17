@@ -47,7 +47,16 @@ async function emailRoutes(fastify, opts) {
             clients_method_2fa.set(login, 'email');
             clients_email.set(login, userEmail);
 
-            return reply.send({ success: true, message: 'Vérification réussie', token });
+            return reply
+                .setCookie('jwt', token, {
+                    httpOnly: true,
+                    secure: false,
+                    sameSite: 'strict',
+                    signed: true,
+                    path: '/',
+                    maxAge: 60*60 
+                })
+                .send({ success: true, message: 'Vérification réussie', token });
         }
         return reply.code(401).send({ success: false, message: 'Code de vérification invalide ou expiré' });
     });

@@ -1,23 +1,23 @@
 // Board
-var board;
-var boardWidth = 500;
-var boardHeight = 500;
-var context;
+let board;
+let boardWidth = 500;
+let boardHeight = 500;
+let context;
 // Players
-var playerWidth = 10;
-var playerHeight = 60;
-var playerVelocityY = 0;
-var playerMoveSensibility = 3;
-var player1Score = 0;
-var player2Score = 0;
-var player1 = {
+let playerWidth = 10;
+let playerHeight = 60;
+let playerVelocityY = 0;
+let playerMoveSensibility = 3;
+let player1Score = 0;
+let player2Score = 0;
+let player1 = {
     x: 10,
     y: boardHeight / 2,
     width: playerWidth,
     height: playerHeight,
     velocityY: playerVelocityY
 };
-var player2 = {
+let player2 = {
     x: boardWidth - playerWidth - 10,
     y: boardHeight / 2,
     width: playerWidth,
@@ -30,10 +30,10 @@ function getRandomInt(max) {
         return 1;
     return -1;
 }
-var SPEED = 1;
-var ballWidth = 10;
-var ballHeight = 10;
-var ball = {
+let SPEED = 1;
+let ballWidth = 10;
+let ballHeight = 10;
+let ball = {
     x: boardWidth / 2,
     y: boardHeight / 2,
     width: ballWidth,
@@ -59,8 +59,8 @@ window.onload = function () {
 function update() {
     requestAnimationFrame(update);
     context.clearRect(0, 0, board.width, board.height);
-    var nextPlayer1Y = player1.y + player1.velocityY;
-    var nextPlayer2Y = player2.y + player2.velocityY;
+    let nextPlayer1Y = player1.y + player1.velocityY;
+    let nextPlayer2Y = player2.y + player2.velocityY;
     if (!outOfBounds(nextPlayer1Y)) {
         player1.y = nextPlayer1Y;
     }
@@ -143,3 +143,5 @@ function resetGame() {
         speed: SPEED
     };
 }
+export {};
+//# sourceMappingURL=pong.js.map

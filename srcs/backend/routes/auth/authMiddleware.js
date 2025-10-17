@@ -1,20 +1,25 @@
 const { verifyToken } = require("../../service/jwt");
 
 async function authMiddleware(request, reply) {
-  const authHeader = request.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+    const cookies = request.unsignCookie(request.cookies?.jwt);
 
-  if (!token) {
-    return reply.status(401).json({ success: false, message: 'Token manquant' });
-  }
+    if (!cookies.valid) {
+        return reply.code(401).send({ success: false, message: 'Cookie manquant ou non signé' });
+    }
 
-  const { valid, decoded } = verifyToken(token);
+    const token = cookies.value;
 
-  if (!valid) {
-    return reply.status(403).json({ success: false, message: "Token invalide" });
-  }
+    if (!token) {
+        return reply.code(401).send({ success: false, message: 'Token manquant' });
+    }
 
-  request.user = decoded;
+    const { valid, decoded } = verifyToken(token);
+
+    if (!valid) {
+        return reply.code(403).send({ success: false, message: "Token invalide" });
+    }
+
+    request.user = decoded;
 };
 
 module.exports = authMiddleware;

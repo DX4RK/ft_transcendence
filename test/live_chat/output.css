@@ -620,3 +620,25 @@ video {
   background-color: rgb(250 250 250 / var(--tw-bg-opacity, 1));
   padding: 0.5rem;
 }
+
+.user_live_chat {
+  flex: 1 1 0%;
+  overflow-y: auto;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgb(209 213 219 / var(--tw-border-opacity, 1));
+  --tw-bg-opacity: 1;
+  background-color: rgb(250 250 250 / var(--tw-bg-opacity, 1));
+  padding: 0.5rem;
+}
+
+.notifs {
+  flex: 1 1 0%;
+  overflow-y: auto;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgb(209 213 219 / var(--tw-border-opacity, 1));
+  --tw-bg-opacity: 1;
+  background-color: rgb(250 250 250 / var(--tw-bg-opacity, 1));
+  padding: 0.5rem;
+}

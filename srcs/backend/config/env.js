@@ -7,4 +7,5 @@ module.exports = {
   gmailPass: process.env.GMAIL_PASS,
   vonageKey: process.env.VONAGE_KEY,
   vonageSecret: process.env.VONAGE_SECRET,
+  cookieSecret: process.env.COOKIE_SECRET,
 };

@@ -8,6 +8,9 @@ async function signRoutes(fastify, opts) {
     fastify.post('/up', async (request, reply) => {
         const { login, password } = request.body;
 
+        if (!login || !password)
+            return reply.code(400).send({ success: false, message: 'login ou password manquant' });
+        
         if (clients_password.has(login)) 
             return reply.code(400).send({ success: false, message: 'Utilisateur déjà inscrit' });
 
