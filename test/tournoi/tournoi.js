@@ -7,6 +7,7 @@ function tournoi(users, variant) { // a verifier si le nombre de joueur est pair
     let roundNumber = 1;
 
     while (currentRound.length > 1) {
+        // notif live chat du debut du round
         console.log(`Round ${roundNumber}:`);
         let nextRound = [];
 
