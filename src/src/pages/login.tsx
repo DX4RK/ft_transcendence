@@ -16,21 +16,24 @@ export default function LoginPage() {
 
 	<div className="bg-gradient-to-r from-[#1A2730] to-[#45586c]">
 
-		{/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 left-0 w-full h-[40vh] z-0">
-			<path
-			d="M20,224L60,192C120,160,240,96,360,85.3C480,75,600,117,720,138.7C840,160,960,160,1080,144C1200,128,1320,96,1380,80L1440,64L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
-			fill="none"
-			stroke="#f97316"
-			strokeWidth="2"
-			className="animate-draw"
-			/>
-		</svg> */}
 
-		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 14" className="absolute bottom-0 left-0 w-full z-0">
-			<path d="M 0 7 L 9 14 Z M 15 0 L 24 7 Z" stroke="#e95d2c" stroke-width="0.03" fill="none" className="animate-draw"/>
-		</svg>	
 
-		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 14" className="absolute bottom-0 left-0 w-full blur-xs z-0">
+{/*	------ good ones
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 14" className="absolute bottom-0 left-0 w-full z-0 delay-300 pointer-events-none">
+			<path d="M 5 15 L 5 13 S 3 12 3.971 10.012 L 4 8 Q 3.557 6.094 2 6 L 0 3 M 8.79 15.016 L 9 13 Q 9.007 12.692 9.258 12.575 L 9.726 12.358 Q 9.96 12.241 10.027 12.023 L 10.244 9.984" stroke="#e95d2c" stroke-width="0.05" fill="none"
+			className="delay-1000 animate-draw "/>
+		</svg>
+
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 14" className="absolute bottom-0 left-0 w-full z-0 delay-300 pointer-events-none blur">
+			<path d="M 5 15 L 5 13 S 3 12 3.971 10.012 L 4 8 Q 3.557 6.094 2 6 L 0 3 M 8.79 15.016 L 9 13 Q 9.007 12.692 9.258 12.575 L 9.726 12.358 Q 9.96 12.241 10.027 12.023 L 10.244 9.984" stroke="#e95d2c" stroke-width="0.05" fill="none"
+			className="delay-1000 animate-draw "/>
+		</svg> ----------*/}
+
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 14" className="absolute bottom-0 left-0 w-full blur-xs z-0 pointer-events-none	">
+			<path d="M 0 7 L 9 14 Z M 15 0 L 24 7 Z" stroke="#e95d2c" stroke-width="0.05" fill="none" className="animate-draw"/>
+		</svg>
+
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 14" className="absolute bottom-0 left-0 w-full z-0 pointer-events-none	">
 			<path d="M 0 7 L 9 14 Z M 15 0 L 24 7 Z" stroke="#e95d2c" stroke-width="0.05" fill="none" className="animate-draw"/>
 		</svg>
 
@@ -53,7 +56,7 @@ export default function LoginPage() {
 				placeholder="••••••••"/>
 			</div>
 
-			<button type="submit" className="w-full bg-[#E95D2C] font-arcade text-[#B0CEE2] py-2 rounded-lg hover:bg-orange-600 hover:text-[#1A2730] transition">
+			<button type="submit" className="w-full bg-[#E95D2C] font-arcade text-[#B0CEE2] py-2 rounded-lg hover:ring hover:ring-[#B0CEE2] hover:bg-orange-600 hover:text-[#1A2730] transition">
 					log in
 			</button>
 			</form>

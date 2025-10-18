@@ -15,11 +15,11 @@
 
 @keyframes draw {
   0% {
-    stroke-dasharray: 500;
-    stroke-dashoffset: 1000;
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
   }
   100% {
-    stroke-dasharray: 500;
+    stroke-dasharray: 40;
     stroke-dashoffset: 0;
   }
 }
