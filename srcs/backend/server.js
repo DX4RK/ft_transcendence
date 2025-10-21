@@ -172,13 +172,25 @@ const start = async () => {
                 fastify.log.info(`Client déconnecté : ${socket.id}`);
             });
 
-            socket.on('message', (msg, callback) => { // message pour le chat public
-                if (msg.startsWith('/invit')) { // commande pour inviter un user a jouer
+            socket.on('join-room', (roomId) => {
+                socket.join(roomId);
+            });
+
+            socket.on('game-update', (data) => {
+                socket.to(data.roomId).emit('update-state', data);
+            });
+
+            socket.on('paddle-update', (data) => {
+                socket.to(data.roomId).emit('update-paddle', data);
+            });
+
+            socket.on('message', (msg, callback) => {
+                if (msg.startsWith('/invit')) {
                     const parts = msg.split(' ');
                     const targetId = parts[1];
                     if (clients.includes(targetId)) {
                         fastify.io.to(targetId).emit('notify-invit-game', `Invitation to play from ${socket.id}`);
-                        callback({ success: true, message: `Invitation sent to ${targetId}` });
+                        callback({ success: true, message: `Invitation sent to ${targetId}`});
                     } else {
                         callback({ success: false, message: `User ${targetId} not found` });
                     }
@@ -200,13 +212,13 @@ const start = async () => {
                 }
                 fastify.log.info(socket.id + " send to " + dest + ": " + msg);
                 for (let clientId of clients) {
-                    if (clientId === dest || clientId === socket.id) // ajouter une condition si blocked
+                    if (clientId === dest || clientId === socket.id)
                         fastify.io.to(clientId).emit('priv-message', socket.id, `${socket.id} dit : ${msg}`);
                 }
                 callback({ success: true, message: `Message reçu : ${msg}` });
             });
 
-            socket.on('block-user', (user, callback) => { // y faudra rajoute une liste pour stoquer les user blocker et leur interdir les futur message
+            socket.on('block-user', (user, callback) => {
                 fastify.log.info(socket.id + " block " + user);
                 if (!blockedUser[socket.id]) {
                     blockedUser[socket.id] = new Set();

@@ -12,10 +12,11 @@ function tournoi(users, variant) { // a verifier si le nombre de joueur est pair
         let nextRound = [];
 
         for (let i = 0; i < currentRound.length; i += 2) {
+            // anoncer le match dans le live chat
             const user1 = currentRound[i];
             const user2 = currentRound[i + 1];
             const winner = match(user1, user2);
-            // envoyer une notif live chat avec le resultat et anoncer le prochain match
+            // anoncer le gagnant dans le live chat
             console.log(`Match: ${user1} vs ${user2} => Winner: ${winner}`);
             nextRound.push(winner);
         }
