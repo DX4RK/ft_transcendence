@@ -1,11 +1,11 @@
 FROM node:24-alpine3.21 AS build
 
 RUN npm install -g pnpm@latest
-WORKDIR /app/react
-COPY react/package.json react/pnpm-lock.yaml ./
+WORKDIR /app/front
+COPY front/package.json front/pnpm-lock.yaml ./
 
 RUN pnpm install
-COPY react/ .
+COPY front/ .
 RUN pnpm run build
 
 COPY . /app
@@ -13,6 +13,6 @@ COPY . /app
 FROM nginx:stable-alpine
 
 COPY --from=build /app/conf/nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /app/react/dist /usr/share/nginx/html
+COPY --from=build /app/front/dist /usr/share/nginx/html
 EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
