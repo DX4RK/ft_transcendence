@@ -1,15 +1,13 @@
 import { useEffect, useRef } from "react";
-import { Engine, Scene, MeshBuilder, Vector3, FreeCamera, StandardMaterial, Color4, HavokPlugin, PhysicsAggregate, PhysicsShapeType, DirectionalLight, ShadowGenerator, Mesh } from "@babylonjs/core";
+import { Engine, Scene, MeshBuilder, Vector3, FreeCamera, StandardMaterial, Color4, HavokPlugin, PhysicsAggregate, PhysicsShapeType, DirectionalLight, ShadowGenerator, PhysicsMotionType, Quaternion } from "@babylonjs/core";
 import  HavokPhysics from "@babylonjs/havok";
 import * as earcut from 'earcut';
 
-// declare global {
-//   interface Window {
-//     earcut: any;
-//   }
-// }
+interface GameSceneProps {
+  onScoreUpdate?: (left: number, right: number) => void;
+}
 
-export default function BabylonScene() {
+export default function BabylonScene({ onScoreUpdate }: GameSceneProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -33,15 +31,14 @@ export default function BabylonScene() {
 		scene.enablePhysics(new Vector3(0, -9.8, 0), hk);
 
 		//create Lumière
-		// new HemisphericLight("light", new Vector3(10, 1, 10), scene);
 		const light = new DirectionalLight("dirLight", new Vector3(-1, -2, -1), scene);
 		light.position = new Vector3(20, 40, 20);
 		const shadowGenerator = new ShadowGenerator(1024, light);
 
-		// Create a static box shape.
+		// Create sphere.
 		var sphere = MeshBuilder.CreateSphere("sphere", { diameterX: 1, diameterY: 1, diameterZ: 1 }, scene);
 		sphere.position.y = 7;
-		new PhysicsAggregate(sphere, PhysicsShapeType.SPHERE, { mass: 1, restitution: 0.5 }, scene);
+		const sphereAgg = new PhysicsAggregate(sphere, PhysicsShapeType.SPHERE, { mass: 1, restitution: 0.5 }, scene);
 		shadowGenerator.addShadowCaster(sphere);
 
 		//create camera
@@ -98,16 +95,17 @@ export default function BabylonScene() {
 
 
 		// create Goals
-		const goalL = MeshBuilder.CreateBox("goalL", { width: 0.1, height: 10, depth: 16 }, scene);
 		const goalR = MeshBuilder.CreateBox("goalR", { width: 0.1, height: 10, depth: 16 }, scene);
-		goalL.position.x = -20;
-		goalL.position.y = 5;
 		goalR.position.x = 20;
 		goalR.position.y = 5;
-		goalL.material = goalAlpha;
 		goalR.material = goalAlpha;
-		new PhysicsAggregate( goalR, PhysicsShapeType.BOX, { mass: 0, restitution: 1, friction: 0.3 }, scene);
-		new PhysicsAggregate( goalL, PhysicsShapeType.BOX, { mass: 0, restitution: 1, friction: 0.3 }, scene);
+		const goalRAgg = new PhysicsAggregate( goalR, PhysicsShapeType.BOX, { mass: 0, restitution: 0	, friction: 0.3 }, scene);
+
+		const goalL = MeshBuilder.CreateBox("goalL", { width: 0.1, height: 10, depth: 16 }, scene);
+		goalL.position.x = -20;
+		goalL.position.y = 5;
+		goalL.material = goalAlpha;
+		const goalLAgg = new PhysicsAggregate( goalL, PhysicsShapeType.BOX, { mass: 0, restitution: 0, friction: 0.3 }, scene);
 
 
 		//create pads
@@ -121,23 +119,46 @@ export default function BabylonScene() {
 		const pad2Aggregate = new PhysicsAggregate( pad2, PhysicsShapeType.BOX, { mass: 20, restitution: 1, friction: 2 }, scene);
 		shadowGenerator.addShadowCaster(pad2);
 
-		// Points du triangle (dans le plan XZ)
-		const trianglePoints = [
-			new Vector3(-1, 0, 0),  // gauche
-			new Vector3(1, 0, 0),   // droite
-			new Vector3(0, 0, 2),   // sommet avant
-		];
+		// // Points du triangle (dans le plan XZ)
+		// const trianglePoints = [
+		// 	new Vector3(-1, 0, 0),  // gauche
+		// 	new Vector3(1, 0, 0),   // droite
+		// 	new Vector3(0, 0, 2),   // sommet avant
+		// ];
 
-		// Créer la forme
-		// const trianglePad = MeshBuilder.CreatePolygon("trianglePad", {
-		// 	shape: trianglePoints,
-		// 	sideOrientation: Mesh.DOUBLESIDE, // visible des deux côtés
-		// }, scene);
+		//	Game logic
+		let scoreLeft = 0;
+		let scoreRight = 0;
+		let lastGoalTime = 0;
 
-		// trianglePad.position.y = 0.5;
-		// trianglePad.material = new StandardMaterial("triMat", scene);
-		// trianglePad.material.diffuseColor = new Color3(0, 0.6, 1); // bleu
+		function resetBall() {
+			const body = sphereAgg.body;
+			body.setLinearVelocity(Vector3.Zero());
+			body.setAngularVelocity(Vector3.Zero());
+			console.log("reset ball called");
 
+			setTimeout(() => {
+			body.setTargetTransform(new Vector3(0, 5, 0), Quaternion.Identity());
+			}, 50);
+		}
+
+
+		scene.onBeforePhysicsObservable.add(() => {
+		const now = performance.now();
+		if (sphere.position.x < -3.9) { // x du goalL
+			lastGoalTime = now;
+			scoreLeft++;
+			console.log("Point pour joueur gauche :", scoreLeft, "-", scoreRight);
+			onScoreUpdate?.(scoreLeft, scoreRight);
+			resetBall();
+		} else if (sphere.position.x > 3.9) {
+			lastGoalTime = now;
+			scoreRight++;
+			console.log("Point pour joueur droit :", scoreLeft, "-", scoreRight);
+			onScoreUpdate?.(scoreLeft, scoreRight);
+			resetBall();
+		}
+		});
 
 		shadowGenerator.usePoissonSampling = true
 
