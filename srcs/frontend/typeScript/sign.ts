@@ -216,7 +216,6 @@ smsVerifyCode2faBtn.addEventListener('click', () => {
         if (data.success) {
             smsVerifyCode2faPage.style.display = 'none';
             enable2faPageBtn.style.display = 'none';
-            localStorage.setItem("jwt", data.token);
         } else {
             alert('Code incorrect.');
         }
@@ -287,7 +286,6 @@ emailVerifyCode2faBtn.addEventListener('click', () => {
         if (data.success) {
             emailVerifyCode2faPage.style.display = 'none';
             enable2faPageBtn.style.display = 'none';
-            localStorage.setItem("jwt", data.token);
         } else {
             alert('Erreur : ' + data.message);
         }
@@ -359,7 +357,6 @@ totpVerifyCode2faBtn.addEventListener('click', () => {
         if (data.success) {
             totpVerifyCode2faPage.style.display = 'none';
             enable2faPageBtn.style.display = 'none';
-            localStorage.setItem("jwt", data.token);
         } else {
             alert('Erreur : ' + data.message);
         }

@@ -63,9 +63,9 @@ closeLiveChatPageBtn.addEventListener('click', () => {
 });
 
 sendMessageBtn.addEventListener('click', () => {
-    if (messageInput.value.startsWith('/invit')) {
-        socket.emit('join-room', `room-${pseudoEnvoyer}-${pseudoReceveur}`); // a modifier
-    }
+    // if (messageInput.value.startsWith('/invit')) {
+    //     socket.emit('join-room', `room-${pseudoEnvoyer}-${pseudoReceveur}`); // a modifier
+    // }
     socket.emit("message", messageInput.value, (callback) => {
         console.log(callback);
     });
@@ -228,7 +228,7 @@ function addNotification(event, notif, sender=null) {
         newNotif.textContent = notif;
         newNotif.dataset.notif = notif;
         newNotif.addEventListener("click", () => {
-            socket.emit('join-room', `room-${pseudoEnvoyer}-${pseudoReceveur}`); // a modifier
+            // socket.emit('join-room', `room-${pseudoEnvoyer}-${pseudoReceveur}`); // a modifier
             // puis lancer la game
             newNotif.remove();
         });
@@ -265,11 +265,11 @@ function addNotification(event, notif, sender=null) {
     notifs.appendChild(newNotif);
     notifs.appendChild(document.createElement("br"));
 }
-
+/*
 // uptade du jeu
 
 // pour l'hote du jeu
-foncyion stratHostGame(roomID) { // id = room-pseudoEnvoyer-pseudoReceveur
+function stratHostGame(roomID) { // id = room-pseudoEnvoyer-pseudoReceveur
     setInterval(() => {
     socket.emit('game-update', {
         roomId,
@@ -279,17 +279,17 @@ foncyion stratHostGame(roomID) { // id = room-pseudoEnvoyer-pseudoReceveur
         score,
     });
     }, 33);
-}
+};
 
 // pour l'invite du jeu
-foncyion stratGuestGame(roomID) { // id = room-pseudoEnvoyer-pseudoReceveur
+function stratGuestGame(roomID) { // id = room-pseudoEnvoyer-pseudoReceveur
     setInterval(() => {
     socket.emit('paddle-update', {
         roomId,
         paddleB: { x: posB, y: posB },
     });
     }, 33);
-}
+};
 
 
 socket.on('update-state', (data) => {
@@ -299,3 +299,4 @@ socket.on('update-state', (data) => {
 socket.on('update-paddle', (data) => {
     // update le jeu avec les nouvelles données
 });
+*/

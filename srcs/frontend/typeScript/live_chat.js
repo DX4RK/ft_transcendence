@@ -36,13 +36,12 @@ socket.on('message', (sender, msg) => {
     var newMessage = document.createElement("div");
     var newMessageProfileBtn = document.createElement("button");
     newMessageProfileBtn.textContent = sender || socket.id;
-    // newMessageProfileBtn.classList.add("user-btn");
     newMessage.appendChild(newMessageProfileBtn);
     var newMessageText = document.createElement("div");
     newMessageText.textContent = ": " + msg;
     newMessage.appendChild(newMessageText);
     newMessageProfileBtn.addEventListener("click", () => {
-        profilPageUser.style.display = 'flex'; // afficher le profil de l'envoyeur
+        profilPageUser.style.display = 'flex';
     });
     messages.appendChild(newMessage);
     console.log(msg);
@@ -54,8 +53,11 @@ closeLiveChatPageBtn.addEventListener('click', () => {
     liveChatPage.style.display = 'none';
 });
 sendMessageBtn.addEventListener('click', () => {
+    if (messageInput.value.startsWith('/invit')) {
+        socket.emit('join-room', `room-${pseudoEnvoyer}-${pseudoReceveur}`); // a modifier
+    }
     socket.emit("message", messageInput.value, (callback) => {
-        console.log(callback); // message reçue ...
+        console.log(callback);
     });
 });
 // debut des messages privers
@@ -78,7 +80,6 @@ function addUserButton(user) {
     const newUser = document.createElement("button");
     newUser.textContent = user;
     newUser.dataset.user = user;
-    // newUser.classList.add("user-btn");
     newUser.addEventListener("click", () => {
         selectedUser = user;
         var userName = document.createElement("h2");
@@ -110,7 +111,7 @@ privChatBtn.addEventListener('click', () => {
 });
 sendPrivMessageBtn.addEventListener('click', () => {
     socket.emit("priv-message", selectedUser, privMessageInput.value, (callback) => {
-        console.log(callback); // message reçue ...
+        console.log(callback);
     });
 });
 closeUserConnectedPageBtn.addEventListener('click', () => {
@@ -143,7 +144,7 @@ socket.on('block-user', (blocker, blocked) => {
 });
 blockUserBtn.addEventListener('click', () => {
     socket.emit("block-user", selectedUser, (callback) => {
-        console.log(callback); // user ... blocked
+        console.log(callback);
     });
 });
 // afficher le profil
@@ -153,7 +154,7 @@ profilUserBtn.addEventListener('click', () => {
 });
 invitToPlayBtn.addEventListener('click', () => {
     socket.emit("message", `/invit ${selectedUser}`, (callback) => {
-        console.log(callback); // Invitation sent to ...
+        console.log(callback);
     });
 });
 closeProfilPageUserBtn.addEventListener('click', () => {
@@ -165,18 +166,37 @@ socket.on('notify-next-game', (notif) => {
     addNotification("notify-next-game", notif);
     console.log(notif);
 });
-socket.on('notify-invit-game', (notif) => {
+socket.on('notify-invit-game', (notif, roomID) => {
     addNotification("notify-invit-game", notif);
     console.log(notif);
 });
 function addNotification(event, notif, sender = null) {
     const newNotif = document.createElement("button");
-    // newNotif.classList.add("notif-btn");
     if (event === "notify-next-game") {
         newNotif.textContent = notif;
         newNotif.dataset.notif = notif;
         newNotif.addEventListener("click", () => {
-            // faire quelque chose pour la notif (prochaine game du tournoi)(rejoindre la game)
+            newNotif.remove();
+        });
+    }
+    else if (event === "notify-result-game") {
+        newNotif.textContent = notif;
+        newNotif.dataset.notif = notif;
+        newNotif.addEventListener("click", () => {
+            newNotif.remove();
+        });
+    }
+    else if (event === "notify-next-round") {
+        newNotif.textContent = notif;
+        newNotif.dataset.notif = notif;
+        newNotif.addEventListener("click", () => {
+            newNotif.remove();
+        });
+    }
+    else if (event === "notify-winer-tournament") {
+        newNotif.textContent = notif;
+        newNotif.dataset.notif = notif;
+        newNotif.addEventListener("click", () => {
             newNotif.remove();
         });
     }
@@ -184,7 +204,8 @@ function addNotification(event, notif, sender = null) {
         newNotif.textContent = notif;
         newNotif.dataset.notif = notif;
         newNotif.addEventListener("click", () => {
-            // faire quelque chose pour la notif (invitation a jouer d'un autre joueur)(rejoindre la game)
+            socket.emit('join-room', `room-${pseudoEnvoyer}-${pseudoReceveur}`); // a modifier
+            // puis lancer la game
             newNotif.remove();
         });
     }
@@ -214,12 +235,41 @@ function addNotification(event, notif, sender = null) {
         newNotif.textContent = notif;
         newNotif.dataset.notif = notif;
         newNotif.addEventListener("click", () => {
-            // faire quelque chose pour la notif (un user nous a bloqué)(ne rien faire)
             newNotif.remove();
         });
     }
     notifs.appendChild(newNotif);
     notifs.appendChild(document.createElement("br"));
 }
+// uptade du jeu
+// pour l'hote du jeu
+function stratHostGame(roomID) {
+    setInterval(() => {
+        socket.emit('game-update', {
+            roomId,
+            ball: { x, y, z },
+            paddleA: { x: posA, y: posA },
+            paddleB: { x: posB, y: posB },
+            score,
+        });
+    }, 33);
+}
+;
+// pour l'invite du jeu
+function stratGuestGame(roomID) {
+    setInterval(() => {
+        socket.emit('paddle-update', {
+            roomId,
+            paddleB: { x: posB, y: posB },
+        });
+    }, 33);
+}
+;
+socket.on('update-state', (data) => {
+    // update le jeu avec les nouvelles données
+});
+socket.on('update-paddle', (data) => {
+    // update le jeu avec les nouvelles données
+});
 export {};
 //# sourceMappingURL=live_chat.js.map

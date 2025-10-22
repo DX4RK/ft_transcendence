@@ -53,6 +53,7 @@ const code_totp_2fa = new Map();
 
 const clients = [];
 const blockedUser = {};
+const roomGame = {};
 
 //----------------
 // Routes
@@ -121,7 +122,7 @@ const start = async () => {
         });
 
         await fastify.register(cookie, {
-            secret: process.env.COOKIE_SECRET,
+            secret: cookieSecret,
             hook: 'onRequest',
         });
 
@@ -172,7 +173,7 @@ const start = async () => {
                 fastify.log.info(`Client déconnecté : ${socket.id}`);
             });
 
-            socket.on('join-room', (roomId) => {
+            /*socket.on('join-room', (roomId) => {
                 socket.join(roomId);
             });
 
@@ -182,7 +183,7 @@ const start = async () => {
 
             socket.on('paddle-update', (data) => {
                 socket.to(data.roomId).emit('update-paddle', data);
-            });
+            });*/
 
             socket.on('message', (msg, callback) => {
                 if (msg.startsWith('/invit')) {
