@@ -7,17 +7,12 @@ const nodemailer = require('nodemailer');
 const {Vonage} = require('@vonage/server-sdk');
 
 const fastifyBetterSqlite3 = require('./plugins/db.js');
-const fastifyIO = require('./plugins/fastify_socket_io.js');
+const fastifyIO = require('fastify-better-socket.io');
 const authMiddlewareRoute = require('./routes/auth/authMiddleware');
 
 //const authMiddleware = require('./routes/auth/authMiddleware');
 const { port, gmailUser, gmailPass, vonageKey, vonageSecret } = require("./config/env");
 const { generateToken, verifyToken } = require("./service/jwt");
-
-/**
- * Plugins
- * this part register plugins to fastify
-*/
 
 fastify.register(cors, {
 	origin: "http://localhost:8080",
@@ -33,13 +28,37 @@ fastify.register(cookie, {
 fastify.register(fastifyIO, {
 	cors: {
 		origin: "http://localhost:8080",
-		methods: ["GET", "POST"]
+		methods: ["GET", "POST"],
+		credentials: true,
+	},
+	onConnection: (socket, io, fastify) => {
+		console.log('Client connected:', socket.id);
+
+		socket.on('authenticate', (token) => {
+			try {
+				const decoded = verifyToken(token);
+				socket.userId = decoded.userId;
+				socket.join(`user:${decoded.userId}`);
+				socket.emit('authenticated', { userId: decoded.userId });
+			} catch (err) {
+				socket.emit('auth-error', { message: 'Invalid token' });
+			}
+		});
+
+		socket.on('message', (data) => {
+			console.log('Message received:', data);
+			io.emit('broadcast', data);
+		});
+
+		socket.on('disconnect', () => {
+			console.log('Client disconnected:', socket.id);
+		});
 	}
 });
 
 fastify.register(fastifyBetterSqlite3, {
-  name: 'usersDb',
-  pathToDb: '/data/users.db',
+	name: 'usersDb',
+	pathToDb: '/data/users.db',
 });
 
 fastify.register(authMiddlewareRoute, { verifyToken });
@@ -82,12 +101,6 @@ fastify.register(verifyRoute, {
 	prefix: '/twofa',
 	generateToken
 })
-
-fastify.ready().then(() => {
-	fastify.socketIO.on("connection", (socket) => {
-		console.log("hellooo");
-	});
-});
 
 const start = async () => {
 	try {
