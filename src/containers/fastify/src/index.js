@@ -1,5 +1,4 @@
 const fastify = require('fastify')({ logger: true });
-
 const cors = require('@fastify/cors');
 const cookie = require('@fastify/cookie');
 
@@ -13,6 +12,8 @@ const authMiddlewareRoute = require('./routes/auth/authMiddleware');
 //const authMiddleware = require('./routes/auth/authMiddleware');
 const { port, gmailUser, gmailPass, vonageKey, vonageSecret } = require("./config/env");
 const { generateToken, verifyToken } = require("./service/jwt");
+
+const socketAuthHandlers = require('./plugins/socket-handlers/auth.js');
 
 fastify.register(cors, {
 	origin: "http://localhost:8080",
@@ -30,29 +31,6 @@ fastify.register(fastifyIO, {
 		origin: "http://localhost:8080",
 		methods: ["GET", "POST"],
 		credentials: true,
-	},
-	onConnection: (socket, io, fastify) => {
-		console.log('Client connected:', socket.id);
-
-		socket.on('authenticate', (token) => {
-			try {
-				const decoded = verifyToken(token);
-				socket.userId = decoded.userId;
-				socket.join(`user:${decoded.userId}`);
-				socket.emit('authenticated', { userId: decoded.userId });
-			} catch (err) {
-				socket.emit('auth-error', { message: 'Invalid token' });
-			}
-		});
-
-		socket.on('message', (data) => {
-			console.log('Message received:', data);
-			io.emit('broadcast', data);
-		});
-
-		socket.on('disconnect', () => {
-			console.log('Client disconnected:', socket.id);
-		});
 	}
 });
 
@@ -61,6 +39,7 @@ fastify.register(fastifyBetterSqlite3, {
 	pathToDb: '/data/users.db',
 });
 
+fastify.register(socketAuthHandlers);
 fastify.register(authMiddlewareRoute, { verifyToken });
 
 /**
