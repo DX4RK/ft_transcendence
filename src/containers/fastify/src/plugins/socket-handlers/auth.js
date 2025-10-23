@@ -11,5 +11,4 @@ async function socketAuthHandlers(fastify, opts) {
 module.exports = fp(socketAuthHandlers, {
   fastify: '5.x',
   name: 'socket-auth-handlers',
-  dependencies: ['fastify-socket-io']
 });
