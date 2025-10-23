@@ -10,9 +10,10 @@
   "dependencies": {
     "fastify": "^5.6.1",
     "@fastify/cors": "^11.1.0",
-	"@fastify/cookie": "^11.0.2",
+    "@fastify/cookie": "^11.0.2",
     "@vonage/server-sdk": "^3.25.1",
-	"socket.io": "^4.7.2",
+    "fastify-better-socket.io": "1.0.0",
+    "socket.io": "^4.7.2",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.2",
     "jsonwebtoken": "^9.0.2",
