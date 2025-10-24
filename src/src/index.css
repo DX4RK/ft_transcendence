@@ -25,7 +25,7 @@
 }
 
 .animate-draw {
-  animation: draw 3s ease-in-out forwards;
+  animation: draw 3s ease-out forwards;
 }
 
 @theme {

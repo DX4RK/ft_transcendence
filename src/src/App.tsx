@@ -11,6 +11,9 @@ import SignIn from "@/pages/SignIn"
 import Tournoi from "@/pages/tournoi"
 import LiveChat from "@/pages/liveChat"
 
+import Testlog from "@/pages/testlog"
+
+
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -25,6 +28,9 @@ function App() {
 		  <Route path="/game" element={<Game />} />
 		  <Route path="/tournoi" element={<Tournoi />} />
 		  <Route path="/liveChat" element={<LiveChat />} />
+
+		  <Route path="/testlog" element={<Testlog />} />
+
 
         </Routes>
       </BrowserRouter>

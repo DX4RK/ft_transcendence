@@ -1,6 +1,12 @@
 import { Link } from "react-router-dom"
 
 function Profile() {
+
+
+
+
+
+	
   return (
     <div className="bg-gradient-to-r from-cyan-500/50 to-blue-500/50 h-screen w-screen">
 
@@ -8,7 +14,7 @@ function Profile() {
       	<Link to="/" className="text-base text-xl font-arcade z-50">ft_transcendence</Link>
 
 		<div>
-			<input type="checkbox" id="menu-toggle" className="hidden peer"></input> {/**/}
+			<input type="checkbox" id="menu-toggle" className="hidden peer"></input>
 
 			<label htmlFor="menu-toggle"
 				className="p-3 px-4 m-2 bg-gray-800 text-2xl text-white rounded-md cursor-pointer absolute bottom-10 left-5 z-40 scale-125 transition duration-300 hover:rotate-90">
