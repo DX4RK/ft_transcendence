@@ -53,9 +53,9 @@ closeLiveChatPageBtn.addEventListener('click', () => {
     liveChatPage.style.display = 'none';
 });
 sendMessageBtn.addEventListener('click', () => {
-    if (messageInput.value.startsWith('/invit')) {
-        socket.emit('join-room', `room-${pseudoEnvoyer}-${pseudoReceveur}`); // a modifier
-    }
+    // if (messageInput.value.startsWith('/invit')) {
+    //     socket.emit('join-room', `room-${pseudoEnvoyer}-${pseudoReceveur}`); // a modifier
+    // }
     socket.emit("message", messageInput.value, (callback) => {
         console.log(callback);
     });

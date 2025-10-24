@@ -116,50 +116,52 @@ fastify.get('/profil', { preHandler: authMiddleware }, async (request, reply) =>
 const start = async () => {
     try {
         await fastify.register(cors, {
-            origin: "http://localhost:5500",
+            origin: "http://localhost:5173",
             credentials: true,
             methods: ["GET", "POST"]
         });
 
         await fastify.register(cookie, {
             secret: cookieSecret,
-            hook: 'onRequest',
+            hook: 'onRequest'
         });
 
         await fastify.register(fastifyIO, {
             cors: {
-                origin: 'http://localhost:5500',
+                origin: 'http://localhost:5173',
+                credentials: true,
                 methods: ['GET', 'POST']
             }
         });
 
         fastify.io.use((socket, next) => {
-            const cookies = socket.request.headers.cookie;
-            if (!cookies) {
-                return next(new Error("No cookies provided"));
-            }
+            next();
+            // const cookies = socket.request.headers.cookie;
+            // if (!cookies) {
+            //     return next(new Error("No cookies provided"));
+            // }
 
-            const parsed = fastify.parseCookie(cookies);
-            const signed = fastify.unsignCookie(parsed.jwt);
+            // const parsed = fastify.parseCookie(cookies);
+            // const signed = fastify.unsignCookie(parsed.jwt);
 
-            if (!signed.valid) {
-                return next(new Error("Invalid or tampered cookie"));
-            }
+            // if (!signed.valid) {
+            //     return next(new Error("Invalid or tampered cookie"));
+            // }
 
-            try {
-                const decoded = verifyToken(signed.value);
-                socket.user = decoded;
-                next();
-            } catch (err) {
-                next(new Error("Invalid token"));
-            }
+            // try {
+            //     const decoded = verifyToken(signed.value);
+            //     socket.user = decoded;
+            //     next();
+            // } catch (err) {
+            //     next(new Error("Invalid token"));
+            // }
         });
 
         fastify.io.on('connection', (socket) => {
             fastify.log.info(`Nouveau client connecté : ${socket.id}`);
             clients.push(socket.id);
-            socket.emit('list-connected-user', clients.filter(id => id !== socket.id));
-            socket.broadcast.emit('connected-user', socket.id);
+            socket.emit('connected-users', clients.filter(id => id !== socket.id));
+            socket.broadcast.emit('new-connected-user', socket.id);
 
             socket.on('disconnect', () => {
                 socket.broadcast.emit('disconnected-user', socket.id);
@@ -190,7 +192,7 @@ const start = async () => {
                     const parts = msg.split(' ');
                     const targetId = parts[1];
                     if (clients.includes(targetId)) {
-                        fastify.io.to(targetId).emit('notify-invit-game', `Invitation to play from ${socket.id}`);
+                        fastify.io.to(targetId).emit('invit-game', socket.id);
                         callback({ success: true, message: `Invitation sent to ${targetId}`});
                     } else {
                         callback({ success: false, message: `User ${targetId} not found` });
@@ -199,7 +201,7 @@ const start = async () => {
                 }
                 fastify.log.info(socket.id + ": " + msg);
                 callback({ success: true, message: `Message reçu : ${msg}` });
-                fastify.io.emit('message', socket.id, msg);
+                fastify.io.emit('message', `${socket.id} dit : ${msg}`);
             });
 
             socket.on('priv-message', (dest, msg, callback) => {
@@ -227,13 +229,27 @@ const start = async () => {
                 blockedUser[socket.id].add(user);
                 for (let clientId of clients) {
                     if (clientId === user || clientId === socket.id)
-                        fastify.io.to(clientId).emit('block-user', socket.id, user);
+                        fastify.io.to(clientId).emit('user-blocked', socket.id, user);
                 }
                 callback({ success: true, message: `User ${user} bloked` });
             });
+
+            socket.on("invit-game", (user, callback) => {
+                if (!clients.includes(user)) {
+                    callback({ success: false, message: `Invite not sent. User ${user} not found.` });
+                    return;
+                }
+                if (blockedUser[user]?.has(socket.id) || blockedUser[socket.id]?.has(user)) {
+                    callback({ success: false, message: `Invite not sent. You are blocked by ${user}.` });
+                    return;
+                }
+                fastify.log.info(socket.id + " invite " + user + " to play a game");
+                fastify.io.to(user).emit('invit-game', socket.id);
+                callback({ success: true, message: `Invitation sent to ${targetId}` });
+            });
         });
 
-        const server = await fastify.listen({ port, host: '0.0.0.0' });
+        const server = await fastify.listen({ port, host: "0.0.0.0" });
         fastify.log.info(`Serveur lancé sur http://localhost:${port}`);
     } catch (err) {
         fastify.log.error(err);
