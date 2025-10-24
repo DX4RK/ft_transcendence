@@ -4,7 +4,7 @@ const sendSMSCode = require('../../service/send/send_sms');
 const sendEmailCode = require('../../service/send/send_email');
 
 async function signRoutes(fastify, opts) {
-	const { transporter } = opts;
+	const { transporter, vonage } = opts;
 	fastify.post('/in', async (request, reply) => {
 		const { username, password } = request.body;
 
@@ -39,8 +39,10 @@ async function signRoutes(fastify, opts) {
 				.prepare('INSERT INTO tmp_2fa_codes (user_id, code, expires_at) VALUES (?, ?, ?)')
 				.run(user.id, code, expiresAt);
 
-			if (user.twofa_method == "email") {
+			if (user.twofa_method == "r") {
 				await sendEmailCode(transporter, username, user.email, code);
+			} else if (user.twofa_method == "email") {
+				await sendSMSCode(vonage, username, user.phone, code);
 			}
 
 			return reply.send({
