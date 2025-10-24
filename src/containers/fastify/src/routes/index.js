@@ -2,10 +2,12 @@ const signRoute = require('./sign/sign');
 const verifyRoute = require('./2FA/verify');
 const authMiddlewareRoute = require('./auth/authMiddleware');
 const socketAuthHandlers = require('../plugins/socket-handlers/auth.js');
+const socketChatHandlers = require('../plugins/socket-handlers/chat.js');
 
 const registerRoutes = async (fastify, { transporter, generateToken, verifyToken }) => {
 	// Socket handlers
-	await fastify.register(socketAuthHandlers);
+	await fastify.register(socketAuthHandlers, { verifyToken });
+	await fastify.register(socketChatHandlers);
 
 	// Auth middleware
 	await fastify.register(authMiddlewareRoute, { verifyToken });
