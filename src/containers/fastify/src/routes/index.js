@@ -5,7 +5,7 @@ const authMiddlewareRoute = require('./auth/authMiddleware');
 const socketAuthHandlers = require('../plugins/socket-handlers/auth.js');
 const socketChatHandlers = require('../plugins/socket-handlers/chat.js');
 
-const registerRoutes = async (fastify, { transporter, generateToken, verifyToken }) => {
+const registerRoutes = async (fastify, { transporter, vonage, generateToken, verifyToken }) => {
 	// Socket handlers
 	await fastify.register(socketAuthHandlers, { verifyToken });
 	await fastify.register(socketChatHandlers);
@@ -21,7 +21,8 @@ const registerRoutes = async (fastify, { transporter, generateToken, verifyToken
 	// Feature routes
 	await fastify.register(signInRoute, {
 		prefix: '/sign',
-		transporter
+		transporter,
+		vonage
 	});
 	await fastify.register(signUpRoute, { prefix: '/sign' });
 
