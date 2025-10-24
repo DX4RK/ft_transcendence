@@ -2,6 +2,8 @@
 echo "Setting up database..."
 
 sqlite3 /data/users.db <<EOF
+PRAGMA foreign_keys = ON;
+
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT NOT NULL UNIQUE,
@@ -9,6 +11,13 @@ CREATE TABLE IF NOT EXISTS users (
   twofa_method TEXT DEFAULT NULL,
   password_hash TEXT NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS user_settings (
+  user_id INTEGER PRIMARY KEY,
+  theme TEXT DEFAULT 'light',
+  notifications_enabled INTEGER DEFAULT 1,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS tmp_2fa_codes (
