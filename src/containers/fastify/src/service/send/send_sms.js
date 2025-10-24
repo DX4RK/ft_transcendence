@@ -1,7 +1,7 @@
 async function sendSMSCode(vonage, user, phone, code) {
 	const info = await vonage.sms.send({
 		to: phone,
-		from: 'ft_transcendence',
+		from: 'Vonage',
 		text: `Hello ${user}, your verification code is ${code}`
 	})
 
