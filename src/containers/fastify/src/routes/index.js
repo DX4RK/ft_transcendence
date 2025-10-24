@@ -1,4 +1,5 @@
-const signRoute = require('./sign/sign');
+const signInRoute = require('./sign/in');
+const signUpRoute = require('./sign/up');
 const verifyRoute = require('./2FA/verify');
 const authMiddlewareRoute = require('./auth/authMiddleware');
 const socketAuthHandlers = require('../plugins/socket-handlers/auth.js');
@@ -18,10 +19,11 @@ const registerRoutes = async (fastify, { transporter, generateToken, verifyToken
 	});
 
 	// Feature routes
-	await fastify.register(signRoute, {
+	await fastify.register(signInRoute, {
 		prefix: '/sign',
 		transporter
 	});
+	await fastify.register(signUpRoute, { prefix: '/sign' });
 
 	await fastify.register(verifyRoute, {
 		prefix: '/twofa',
