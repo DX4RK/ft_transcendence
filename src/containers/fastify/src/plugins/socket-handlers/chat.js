@@ -15,23 +15,22 @@ async function socketChatHandlers(fastify, opts) {
 				});
 			});
 
-			// BETA (DB CRASH)
-			/*socket.on('send-message', async (data) => {
+			socket.on('send-message', async (data) => {
 				if (!socket.userId) return;
 
 				const { roomId, message } = data;
-
+				console.log(message);
 				const msg = await fastify.usersDb.prepare(
 					'INSERT INTO messages (room_id, user_id, message) VALUES (?, ?, ?)'
-				).run(roomId, socket.userId, message);
-
+				).run(roomId, socket.userId, message)
 				fastify.socketIO.to(`room:${roomId}`).emit('new-message', {
 					id: msg.lastInsertRowid,
 					userId: socket.userId,
-					message,
+					text: message,
 					timestamp: Date.now()
 				});
-			});*/
+			});
+
 
 			socket.on('leave-room', (roomId) => {
 				socket.leave(`room:${roomId}`);
