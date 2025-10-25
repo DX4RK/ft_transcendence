@@ -1,13 +1,13 @@
 // import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 import { Background } from "../../Game/background";
-import { useEffect, useContext } from "react";
+import { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 
 
 function Home() {
 
-	const { isLoggedIn } = useAuth();
+	// const { isLoggedIn } = useAuth();
 
 
 	useEffect(() => {
@@ -20,7 +20,7 @@ function Home() {
     <div className="min-h-screen w-full bg-gradient-to-r from-cyan-500/50 to-blue-500/50 ">
 		<div className="flex flex-row">
 			<Link to="/" className="flex-grow text-base text-cyan-300/70 text-xl font-arcade z-30">ft_transcendence</Link>
-			<Link to={isLoggedIn ? "/profil" : "/testlog"} className="z-30">
+			<Link to= "/login" className="z-30">
 			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor" className=" size-16 m-4 z-30">
 				<defs>
 					<linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
