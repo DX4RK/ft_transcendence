@@ -39,9 +39,9 @@ async function signRoutes(fastify, opts) {
 				.prepare('INSERT INTO tmp_2fa_codes (user_id, code, expires_at) VALUES (?, ?, ?)')
 				.run(user.id, code, expiresAt);
 
-			if (user.twofa_method == "r") {
+			if (user.twofa_method == "email") {
 				await sendEmailCode(transporter, username, user.email, code);
-			} else if (user.twofa_method == "email") {
+			} else if (user.twofa_method == "sms") {
 				await sendSMSCode(vonage, username, user.phone, code);
 			}
 
