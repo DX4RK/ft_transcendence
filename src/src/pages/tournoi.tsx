@@ -120,7 +120,7 @@ function Tournoi() {
 
 			{/* Titre */}
 			<h1 className="text-4xl font-arcade md:text-6xl font-bold text-orange-300/90 drop-shadow-lg tracking-wide mt-4">
-				Tournoi
+				Tournament
 			</h1>
 
 			{/* Notifications */}
