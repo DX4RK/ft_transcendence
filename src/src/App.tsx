@@ -7,7 +7,7 @@ import Profile from "@/pages/Profile"
 import Ladder from "@/pages/Ladder"
 import Game from "@/pages/Game"
 import Login from "@/pages/login"
-import SignIn from "@/pages/SignIn"
+import SignIn from "@/pages/Register"
 import Tournoi from "@/pages/tournoi"
 import LiveChat from "@/pages/liveChat"
 

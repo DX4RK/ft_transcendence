@@ -14,7 +14,9 @@ const { login } = useAuth();
 const navigate = useNavigate();
 
 
-const handleSubmit = async () => {
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
+	e.preventDefault();
 	if (!email || !password) {
 		setError('Tous les champs sont requis');
 		return;
@@ -25,6 +27,7 @@ const handleSubmit = async () => {
 
 	try {
 		const result = await login(email, password);
+
 		if (result.success) {
 			console.log("success !");
 			navigate('/profile');
@@ -44,22 +47,27 @@ return (
 
 
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 14" className="absolute bottom-0 left-0 w-full z-0 delay-300 pointer-events-none">
-			<path d="M 0 3 L 2 6 Q 2.607 5.659 3.747 8.076 L 3.971 10.012 Q 3.921 13.02 4.777 13.002 Q 5.415 13.439 5 16 l 3.7 0.637 L 9 13 Q 9.007 12.692 9.258 12.575 L 9.726 12.358 Q 9.96 12.241 10.027 12.023 L 10.314 10.27" stroke="#e95d2c" stroke-width="0.05" fill="none"
+			<path d="M 0 3 L 2 6 Q 2.607 5.659 3.747 8.076 L 3.971 10.012 Q 3.921 13.02 4.777 13.002 Q 5.415 13.439 5 16 l 3.7 0.637 L 9 13 Q 9.007 12.692 9.258 12.575 L 9.726 12.358 Q 9.96 12.241 10.027 12.023 L 10.314 10.27" stroke="#e95d2c" strokeWidth="0.05" fill="none"
 			className="delay-1000 animate-draw "/>
 		</svg>
 
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 14" className="absolute bottom-0 left-0 w-full z-0 delay-300 pointer-events-none blur">
-			<path d="M 0 3 L 2 6 Q 2.607 5.659 3.747 8.076 L 3.971 10.012 Q 3.921 13.02 4.777 13.002 Q 5.415 13.439 5 16 l 3.7 0.637 L 9 13 Q 9.007 12.692 9.258 12.575 L 9.726 12.358 Q 9.96 12.241 10.027 12.023 L 10.314 10.27" stroke="#e95d2c" stroke-width="0.05" fill="none"
+			<path d="M 0 3 L 2 6 Q 2.607 5.659 3.747 8.076 L 3.971 10.012 Q 3.921 13.02 4.777 13.002 Q 5.415 13.439 5 16 l 3.7 0.637 L 9 13 Q 9.007 12.692 9.258 12.575 L 9.726 12.358 Q 9.96 12.241 10.027 12.023 L 10.314 10.27" stroke="#e95d2c" strokeWidth="0.05" fill="none"
 			className="delay-1000 animate-draw "/>
 		</svg>
 
 		<Link to="/" className="text-base text-cyan-300/70  text-xl hover:shadow-lg font-arcade z-50">ft_transcendence</Link>
 
 		<div className="flex min-h-screen items-center justify-center ">
-			<form className="bg-gradient-to-r from-[#45586c] to-[#424048] p-8 rounded-lg shadow-xl shadow-cyan-500/30 w-80 ">
+			<form onSubmit={handleSubmit} className="bg-gradient-to-r from-[#45586c] to-[#424048] p-8 rounded-lg shadow-xl shadow-cyan-500/30 w-80 ">
 			<h2 className="text-2xl font-arcade text-center mb-6 text-slate-300 m-6">
 				connexion
 			</h2>
+			{error && (
+				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+					{error}
+				</div>
+			)}
 			<div className="">
 				<div className="mb-4">
 					<input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
@@ -74,7 +82,7 @@ return (
 				</div>
 			</div>
 
-			<button onClick={handleSubmit} type="submit" className="flex justify-center w-full p-4 bg-[#E95D2C] font-arcade text-[#B0CEE2] rounded-lg hover:ring hover:ring-[#B0CEE2] hover:bg-orange-600 hover:text-[#1A2730] transition">
+			<button  type="submit" className="flex justify-center w-full p-4 bg-[#E95D2C] font-arcade text-[#B0CEE2] rounded-lg hover:ring hover:ring-[#B0CEE2] hover:bg-orange-600 hover:text-[#1A2730] transition">
 					{/* log in */}
 					{loading ? 'Connexion...' : 'Log In'}
 			</button>
