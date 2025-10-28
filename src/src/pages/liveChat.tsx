@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
+import { useSocket } from "../context/SocketContext";
+import { useNotification } from "../context/NotificationContext";
 // import { Background } from "../../Game/background";
 import { Link } from "react-router-dom";
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000", { withCredentials: true, autoConnect: false });
+// const socket = io("http://localhost:3000", { withCredentials: true, autoConnect: false });
 
 function LiveChat() {
-	const [notifications, setNotifications] = useState<
-	{ id: number; type: string; text: string }[]
-	>([]);
-	const [connected, setConnected] = useState(false);
+	const { socket } = useSocket();
+	const { addNotification } = useNotification();
+	// const [notifications, setNotifications] = useState<
+	// { id: number; type: string; text: string }[]
+	// >([]);
+	// const [connected, setConnected] = useState(false);
 	const [messages, setMessages] = useState<string[]>([]);
 	const [privMessages, setPrivMessages] = useState<string[]>([]);
 	const [input, setInput] = useState("");
@@ -20,17 +24,18 @@ function LiveChat() {
 
 	// Connect socket
 	useEffect(() => {
+		if (!socket) return;
 		// const game = new Background();
 		// game.start();
 
-		socket.on("connect", () => console.log("✅ Connecté au serveur :", socket.id));
-		socket.on("connect_error", (err) => console.error("❌ Erreur Socket.IO:", err.message));
-		socket.on("disconnect", (reason) => console.log("⚠️ Déconnecté:", reason));
+		// socket.on("connect", () => console.log("✅ Connecté au serveur :", socket.id));
+		// socket.on("connect_error", (err) => console.error("❌ Erreur Socket.IO:", err.message));
+		// socket.on("disconnect", (reason) => console.log("⚠️ Déconnecté:", reason));
 
-		if (!connected) {
-			socket.connect();
-			setConnected(true);
-		}
+		// if (!connected) {
+		// 	socket.connect();
+		// 	setConnected(true);
+		// }
 
 		socket.on("message", (msg: string) => {
 			setMessages((prev) => [...prev, msg]);
@@ -44,46 +49,43 @@ function LiveChat() {
 			}
 		});
 
-		socket.on("connected-users", (users: string[]) => {
+		socket.on("users-connected", (users: string[]) => {
 			setConnectedUsers(users.filter((u) => u !== socket.id));
-			consol.log(users);
+			console.log(users);
 		});
 
-		socket.on("new-connected-user", (user: string) => {
+		socket.on("new-user-connected", (user: string) => {
 			setConnectedUsers((prev) => [...prev, user]);
-			consol.log(user);
+			console.log(user);
 		});
 
-		socket.on("disconected-user", (user: string) => {
-			setMessages((prev => [...prev, `⚠️ ${user} s'est déconnecté.`]));
+		socket.on("user-disconnected", (user: string) => {
 			setConnectedUsers((prev) => prev.filter((u) => u !== user));
-			//! suprimer le user de la liste
 		});
 
-		socket.on("user-blocked", (blocker: string, blocked: string) => {
-			if (blocked === socket.id) {
-				addNotification("blocked", `${blocker} vous a bloqué`);
-			}
-		});
+		// socket.on("user-blocked", (blocker: string, blocked: string) => {
+		// 	if (blocked === socket.id) {
+		// 		addNotification("blocked", `${blocker} has blocked you`);
+		// 	}
+		// });
 
-		socket.on("invit-game", (fromUser: string) => {
-			addNotification("invite", `Invitation à jouer de ${fromUser}`);
-		});
+		// socket.on("invit-game", (fromUser: string) => {
+		// 	addNotification("invite", `Invitation to play from ${fromUser}`);
+		// });
 
 		return () => {
-			socket.off("connect");
-			socket.off("connect_error");
-			socket.off("disconnect");
+			// socket.off("connect");
+			// socket.off("connect_error");
+			// socket.off("disconnect");
 			socket.off("message");
 			socket.off("priv-message");
-			socket.off("connected-users");
-			socket.off("new-connected-user");
-			socket.off("diconnected-user");
-			socket.off("user-blocked");
-			socket.off("invit-game");
-			socket.off("tournoi-notify");
+			socket.off("users-connected");
+			socket.off("new-user-connected");
+			socket.off("user-disconnected");
+			// socket.off("user-blocked");
+			// socket.off("invit-game");
 		};
-	}, [connected, selectedUser]);
+	}, [selectedUser, socket]);
 
 	const handleSend = () => {
 		if (input.trim() === "") return;
@@ -123,10 +125,15 @@ function LiveChat() {
 		});
 	};
 
-	const addNotification = (type: string, text: string) => {
-		setNotifications((prev) => [...prev, { id: Date.now(), type, text }]);
-		//! et y ajouter un bouton pour clique dessus
-	};
+	// const addNotification = (type: string, text: string) => {
+	// 	const id = Date.now();
+
+	// 	setNotifications((prev) => [...prev, { id, type, text }]);
+
+	// 	setTimeout(() => {
+	// 		setNotifications((prev) => prev.filter((n) => n.id !== id));
+	// 	}, 3000);
+	// };
 
 	return (
 		<div className="relative min-h-screen bg-gradient-to-r from-cyan-500/50 to-blue-500/50 text-white flex flex-col items-center justify-center space-y-12 p-10">
@@ -167,7 +174,7 @@ function LiveChat() {
 				</div>
 			</div>
 
-			{/* Notifications */}
+			{/* Notifications
 			<div className="absolute top-10 right-10 flex flex-col items-end space-y-2">
 			{notifications.map((notif) => (
 				<button
@@ -177,7 +184,7 @@ function LiveChat() {
 					{notif.text}
 				</button>
 			))}
-			</div>
+			</div> */}
 
 			{/* <canvas id="pongCanvas" width="1800" height="900" className="absolute top-0 left-0 w-full h-full z-1"></canvas>
 			<script type="module" src="../Game/main.ts"></script> */}

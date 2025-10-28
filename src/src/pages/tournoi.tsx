@@ -4,15 +4,15 @@ import { useEffect, useState } from "react";
 // import Game from "./Game";
 
 function Game(user1, user2) {
-	const winner = Math.random() < 0.5 ? user1 : user2;
+	const winner = Math.random() < 0.5 ? user1 : user2; //! lancer une vrai partie
 	return winner;
 }
 
 
 function Tournoi() {
-	const [notifications, setNotifications] = useState<
-	{ id: number; type: string; text: string }[]
-	>([]);
+	// const [notifications, setNotifications] = useState<
+	// { id: number; type: string; text: string }[]
+	// >([]);
 	const [player1, setPlayer1] = useState("");
 	const [player2, setPlayer2] = useState("");
 	const [player3, setPlayer3] = useState("");
@@ -40,7 +40,7 @@ function Tournoi() {
 		tournoi_logic(players);
 	};
 
-	const tournoi_logic = (users: string[]) => { // a verifier si le nombre de joueur est pair et faire des variantes de tournoi
+	const tournoi_logic = (users: string[]) => {
 		let currentRound = users;
 		let roundNumber = 1;
 
@@ -50,6 +50,12 @@ function Tournoi() {
 			let nextRound = [];
 
 			for (let i = 0; i < currentRound.length; i += 2) {
+				if (currentRound[i + 1] === undefined) {
+					addNotification("info", `${currentRound[i]} gets a bye to the next round.`);
+					console.log(`${currentRound[i]} gets a bye to the next round.`);
+					nextRound.push(currentRound[i]);
+					continue;
+				}
 				addNotification("info", `Match: ${currentRound[i]} vs ${currentRound[i + 1]}`);
 				const user1 = currentRound[i];
 				const user2 = currentRound[i + 1];
@@ -65,16 +71,15 @@ function Tournoi() {
 		console.log(`Tournament Winner: ${currentRound[0]}`);
 	};
 
-	const addNotification = (type: string, text: string) => {
-		const id = Date.now();
+	// const addNotification = (type: string, text: string) => {
+	// 	const id = Date.now();
 
-		setNotifications((prev) => [...prev, { id, type, text }]);
+	// 	setNotifications((prev) => [...prev, { id, type, text }]);
 
-		setTimeout(() => {
-			setNotifications((prev) => prev.filter((n) => n.id !== id));
-		}, 3000);
-		//! et y ajouter un bouton pour clique dessus ( seulement si message prive )
-	};
+	// 	setTimeout(() => {
+	// 		setNotifications((prev) => prev.filter((n) => n.id !== id));
+	// 	}, 3000);
+	// };
 
 	return (
 		<div className="relative min-h-screen bg-gradient-to-r from-cyan-500/50 to-blue-500/50 text-white flex flex-col items-center justify-center space-y-12 p-10">
@@ -123,7 +128,7 @@ function Tournoi() {
 				Tournament
 			</h1>
 
-			{/* Notifications */}
+			{/* Notifications
 			<div className="absolute top-10 right-10 flex flex-col items-end space-y-2">
 			{notifications.map((notif) => (
 				<button
@@ -133,7 +138,7 @@ function Tournoi() {
 					{notif.text}
 				</button>
 			))}
-			</div>
+			</div> */}
 
 			<div className="flex grid grid-cols-4 gap-4 m-4">
 				<div className="flex justify-center m-4 p-4 bg-orange-400/90 rounded-lg">

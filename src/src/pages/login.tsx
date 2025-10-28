@@ -68,7 +68,7 @@ return (
 				</div>
 
 				<div className="mb-6">
-					<input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+					<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} //! probleme
 					className="w-full border bordr-[#E95D2C] rounded-lg p-2 text-slate-300 	focus:outline-none focus:ring-3 focus:ring-[#B0CEE2]"
 					placeholder="••••••••"/>
 				</div>
