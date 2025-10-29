@@ -6,7 +6,7 @@ const fastifyBetterSqlite3 = require('./db.js');
 const registerPlugins = async (fastify) => {
 	// CORS
 	await fastify.register(cors, {
-		origin: 'http://localhost:8080',
+		origin: 'https://localhost:8443',
 		credentials: true,
 		methods: ['GET', 'POST']
 	});
@@ -20,7 +20,7 @@ const registerPlugins = async (fastify) => {
 	// Socket.IO
 	await fastify.register(fastifyIO, {
 		cors: {
-			origin: 'http://localhost:8080',
+			origin: 'https://localhost:8443',
 			methods: ['GET', 'POST'],
 			credentials: true,
 		}
