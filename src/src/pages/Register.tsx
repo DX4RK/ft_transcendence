@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
+import { useAuth } from "../context/AuthContext";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
   const [error, setError] = useState('');
+  const { register } = useAuth();
   const navigate = useNavigate();
 
 //	fonction du boutton connexion / recuperer les donnees de connexion ici <--
@@ -23,10 +25,14 @@ export default function RegisterPage() {
 	setError('');
 
 	try {
-		if ((password1 == password2) && password1) {
-			console.log("success !");
-			navigate('/profile');
-		}
+		// if ((password1 == password2) && password1) {
+		// 	const result = await register(email, password1);
+
+		// 	if (result.success) {
+		// 		console.log("success !");
+		// 		navigate('/profile');
+		// 	}
+		// }
 	}
 	catch (err) {
 		setError('Connexion error');

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import BabylonScene from "../../Game/Pong";
 import { useEffect } from "react";
@@ -7,6 +7,8 @@ import { useState } from "react";
 
 
 function Game() {
+	const location = useLocation();
+	const { user1, user2 } = location.state || {}; //! afficher les pseudo des joueurs
 
 		// Fonction appelée à la fois par le bouton et la touche Échap
 	const handleEscape = () => {
@@ -50,8 +52,9 @@ function Game() {
 		onScoreUpdate={(left, right) => {
 		setScoreLeft(left);
 		setScoreRight(right);
-		if(left == 18 )
-				return ; // return left ou right et le score
+		if (left >= 18 )
+			console.log("Left player wins!");
+			return ; // return left ou right et le score
 		}}
 	/>
 

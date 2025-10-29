@@ -1,15 +1,18 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { useNotification } from "../context/NotificationContext";
 // import { Background } from "../../Game/background";
 import { useEffect, useState } from "react";
 // import Game from "./Game";
 
 function Game(user1, user2) {
-	const winner = Math.random() < 0.5 ? user1 : user2; //! lancer une vrai partie
+	const winner = Math.random() < 0.5 ? user1 : user2;
 	return winner;
 }
 
 
 function Tournoi() {
+	const navigate = useNavigate();
+	const { addNotification } = useNotification();
 	// const [notifications, setNotifications] = useState<
 	// { id: number; type: string; text: string }[]
 	// >([]);
@@ -27,7 +30,9 @@ function Tournoi() {
 		// game.start();
 	}, []);
 
-	const statrtTournoi = () => {
+	const startTournoi = () => {
+
+
 		let players = [player1, player2, player3, player4, player5, player6, player7, player8];
 		players = players.filter(player => player && player.trim() !== "");
 
@@ -37,11 +42,8 @@ function Tournoi() {
 		}
 
 		console.log("Starting tournament with players:", players);
-		tournoi_logic(players);
-	};
-
-	const tournoi_logic = (users: string[]) => {
-		let currentRound = users;
+		
+		let currentRound = players;
 		let roundNumber = 1;
 
 		while (currentRound.length > 1) {
@@ -59,7 +61,10 @@ function Tournoi() {
 				addNotification("info", `Match: ${currentRound[i]} vs ${currentRound[i + 1]}`);
 				const user1 = currentRound[i];
 				const user2 = currentRound[i + 1];
-				const winner = Game(user1, user2);
+
+				const winner = Game(user1, user2); //! ennlever ca 
+				navigate("/game", { state: { user1, user2 } }); //! renvoyer la reponce du gagnant
+
 				addNotification("info", `Winner: ${winner}`);
 				console.log(`Match: ${user1} vs ${user2} => Winner: ${winner}`);
 				nextRound.push(winner);
@@ -69,7 +74,9 @@ function Tournoi() {
 		}
 		addNotification("info", `Tournament Winner: ${currentRound[0]}!`);
 		console.log(`Tournament Winner: ${currentRound[0]}`);
+
 	};
+
 
 	// const addNotification = (type: string, text: string) => {
 	// 	const id = Date.now();
@@ -217,7 +224,7 @@ function Tournoi() {
 
 			<button
 			className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-			onClick={statrtTournoi}>
+			onClick={startTournoi}>
 				Start
 			</button>
 

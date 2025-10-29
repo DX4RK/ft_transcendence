@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { useSocket } from "../context/SocketContext";
 import { useNotification } from "../context/NotificationContext";
 // import { Background } from "../../Game/background";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // import { io } from "socket.io-client";
 
 // const socket = io("http://localhost:3000", { withCredentials: true, autoConnect: false });
 
 function LiveChat() {
+	const navigate = useNavigate();
 	const { socket } = useSocket();
 	const { addNotification } = useNotification();
 	// const [notifications, setNotifications] = useState<
@@ -122,6 +123,35 @@ function LiveChat() {
 		if (!user) return;
 		socket.emit("invit-game", user, (callback) => {
 			console.log(callback);
+		});
+	};
+
+	const oppenProfile = (user: string | null) => {
+		if (!user) return;
+		addNotification("profil", `Profil de ${user}`);
+
+		const dataUserProfile = {
+			login: user,
+		};
+
+		fetch('http://localhost:3000/profil', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: "include",
+			body: JSON.stringify(dataUserProfile)
+		})
+		.then(res => res.json())
+		.then(data => {
+			if (data.success) {
+				console.log(data.message);
+				//const  gamePlayed  = data.gamePlayed; //! donner a recevoir avec le fetch
+				navigate("/profile", { login: user }); //! ouvrir la page profil avec les données reçues
+			} else {
+				console.error('Erreur : ' + data.message);
+			}
+		})
+		.catch(err => {
+			console.error("Erreur fetch :", err);
 		});
 	};
 
@@ -271,7 +301,7 @@ function LiveChat() {
 			{isPrivate && selectedUser && (
 			<div className="flex w-3/5 space-x-4 mt-4">
 				<button
-				onClick={() => addNotification("profil", `Profil de ${selectedUser}`)} //! À remplacer par l'ouverture du profil avec fetch
+				onClick={() => oppenProfile(selectedUser)}
 				className="px-6 py-3 rounded-full bg-blue-500 text-white font-bold shadow-md hover:bg-blue-600 hover:scale-105 transition">
 					Profile
 				</button>

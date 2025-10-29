@@ -50,45 +50,92 @@ const login = async(email: string, password: string): Promise<{ success: boolean
 	//! fake data before API check
     await new Promise(resolve => setTimeout(resolve, 500));
 
-	const data = {
-		id: '123',
-		email: email,
-		name: "jeanLeGoat",
-		stats: {
-		gamesPlayed: 42,
-		wins: 28,
-		level: 15,
-		xp: 3450
-		}
-	};
+	// const data = {
+	// 	id: '123',
+	// 	email: email,
+	// 	name: "jeanLeGoat",
+	// 	stats: {
+  //     gamesPlayed: 42,
+  //     wins: 28,
+  //     level: 15,
+  //     xp: 3450
+	// 	}
+	// };
+  const data = {
+    login: email,
+    password: password
+  };
+  
+  fetch('http://localhost:3000/sign/up', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: "include",
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            console.log(data.message);
+            return { success: true };
+        } else {
+          return { success: false };
+        }
+    })
+    .catch(err => {
+        console.error("Erreur fetch :", err);
+    });
 
-	setUser(data);
-	localStorage.setItem('user', JSON.stringify(data)); //* stocke les data en cas de refresh
-	console.log(data.name, data.id, data.email )
-	return { success: true };
+	// setUser(data);
+	// localStorage.setItem('user', JSON.stringify(data)); //* stocke les data en cas de refresh
+	// console.log(data.name, data.id, data.email )
+	// return { success: true };
 
   };
 
 
  	//$  --- REGISTER ---
-const register = async (email: string, password: string, name: string): Promise<{ success: boolean }> => {
+const register = async (email: string, password: string): Promise<{ success: boolean }> => {
 	await new Promise(resolve => setTimeout(resolve, 500));
 
-    const userData: User = {
-      id: Date.now().toString(),
-      email: email,
-      name: name,
-      stats: {
-        gamesPlayed: 0,
-        wins: 0,
-        level: 1,
-        xp: 0
-      }
-    };
+  //   const userData: User = {
+  //     id: Date.now().toString(),
+  //     email: email,
+  //     name: name,
+  //     stats: {
+  //       gamesPlayed: 0,
+  //       wins: 0,
+  //       level: 1,
+  //       xp: 0
+  //     }
+  //   };
 
-	setUser(userData);
-	localStorage.setItem('user', JSON.stringify(userData));
-	return { success: true };
+  const data = {
+    login: email,
+    password: password
+  };
+  
+  fetch('http://localhost:3000/sign/in', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: "include",
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            console.log(data.message);
+            return { success: true };
+        } else {
+          return { success: false };
+        }
+    })
+    .catch(err => {
+        console.error("Erreur fetch :", err);
+    });
+
+	// setUser(userData);
+	// localStorage.setItem('user', JSON.stringify(userData));
+	// return { success: true };
 };
 
 	//$  --- LOGOUT ---
