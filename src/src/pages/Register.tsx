@@ -11,7 +11,7 @@ export default function RegisterPage() {
   const navigate = useNavigate();
 
 //	fonction du boutton connexion / recuperer les donnees de connexion ici <--
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
 	e.preventDefault();
 	if (!email || !password1 || !password2) {

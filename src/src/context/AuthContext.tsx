@@ -24,7 +24,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<{ success: boolean }>;
-  register: (email: string, password: string, name: string) => Promise<{ success: boolean }>;
+  register: (email: string, password: string) => Promise<{ success: boolean }>;
   logout: () => void;
 //   updateStats: (newStats: Partial<UserStats>) => void;
   isAuthenticated: boolean;
@@ -65,7 +65,7 @@ const login = async(email: string, password: string): Promise<{ success: boolean
     login: email,
     password: password
   };
-  
+
   fetch('http://localhost:3000/sign/up', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -113,7 +113,7 @@ const register = async (email: string, password: string): Promise<{ success: boo
     login: email,
     password: password
   };
-  
+
   fetch('http://localhost:3000/sign/in', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
