@@ -19,7 +19,7 @@ function Home() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-r from-cyan-500/50 to-blue-500/50 ">
 		<div className="flex flex-row">
-			<Link to="/" className="flex-grow text-base text-cyan-300/70 text-xl font-arcade z-30">ft_transcendence</Link>
+			<Link to="/" className="flex-grow text-base text-cyan-300/70 text-xl font-arcade z-30">ft_transcendence test</Link>
 			<Link to= "/login" className="z-30">
 			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.3" stroke="currentColor" className=" size-16 m-4 z-30">
 				<defs>
