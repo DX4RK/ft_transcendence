@@ -1,3 +1,39 @@
+@font-face {
+  font-family: "arcade";
+  src: url(./assets/fonts/ARCADE_N.TTF);
+}
+
+@font-face {
+  font-family: "arcade-i";
+  src: url(./assets/fonts/ARCADE_I.TTF);
+}
+
+@font-face {
+  font-family: "arcade-r";
+  src: url(./assets/fonts/ARCADE_R.TTF);
+}
+
+@keyframes draw {
+  0% {
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+  }
+  100% {
+    stroke-dasharray: 40;
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-draw {
+  animation: draw 3s ease-out forwards;
+}
+
+@theme {
+  --font-arcade: "arcade", sans-serif;
+  --font-arcade-i: "arcade-i", sans-serif;
+  --font-arcade-r: "arcade-r", sans-serif;
+}
+
 @import "tailwindcss";
 @import "tw-animate-css";
 

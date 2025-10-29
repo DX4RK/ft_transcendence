@@ -1,25 +1,46 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { ThemeProvider } from "@/components/theme-provider"
-import { SocketProvider } from "@/contexts/SocketContext"
+
+import { SocketProvider } from "./context/SocketContext";
+import { NotificationProvider } from "./context/NotificationContext";
 
 import Home from "@/pages/Home"
-import LiveChat from "@/pages/LiveChat"
-import SignIn from "@/pages/login/page"
-import SignUp from "@/pages/signup/page"
+import Test from "@/pages/Test"
+import Profile from "@/pages/Profile"
+import Ladder from "@/pages/Ladder"
+import Game from "@/pages/Game"
+import Login from "@/pages/login"
+import SignIn from "@/pages/Register"
+import Tournoi from "@/pages/tournoi"
+import LiveChat from "@/pages/liveChat"
+
+import Testlog from "@/pages/testlog"
+
 
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <SocketProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/live" element={<LiveChat />} />
-            <Route path="/login" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-          </Routes>
-        </BrowserRouter>
-      </SocketProvider>
+      <BrowserRouter>
+        <NotificationProvider>
+          <SocketProvider>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/test" element={<Test />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/ladder" element={<Ladder />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signIn" element={<SignIn />} />
+              <Route path="/game" element={<Game />} />
+              <Route path="/tournoi" element={<Tournoi />} />
+              <Route path="/liveChat" element={<LiveChat />} />
+
+              <Route path="/testlog" element={<Testlog />} />
+
+
+            </Routes>
+          </SocketProvider>
+        </NotificationProvider>
+      </BrowserRouter>
     </ThemeProvider>
   )
 }
