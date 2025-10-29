@@ -25,14 +25,14 @@ export default function RegisterPage() {
 	setError('');
 
 	try {
-		// if ((password1 == password2) && password1) {
-		// 	const result = await register(email, password1);
+		if ((password1 == password2) && password1) {
+			const result = await register(email, password1);
 
-		// 	if (result.success) {
-		// 		console.log("success !");
-		// 		navigate('/profile');
-		// 	}
-		// }
+			if (result.success) {
+				console.log("success !");
+				navigate('/profile', { state: { login: email }});
+			}
+		}
 	}
 	catch (err) {
 		setError('Connexion error');

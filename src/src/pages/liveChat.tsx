@@ -144,8 +144,7 @@ function LiveChat() {
 		.then(data => {
 			if (data.success) {
 				console.log(data.message);
-				//const  gamePlayed  = data.gamePlayed; //! donner a recevoir avec le fetch
-				navigate("/profile", { login: user }); //! ouvrir la page profil avec les données reçues
+				navigate("/profile", { state: { login: user }});
 			} else {
 				console.error('Erreur : ' + data.message);
 			}

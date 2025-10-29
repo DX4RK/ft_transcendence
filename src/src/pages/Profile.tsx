@@ -6,6 +6,29 @@ function Profile() {
 
 	console.log(login);
 
+	const dataUserProfile = {
+		login: login,
+	};
+
+	fetch('http://localhost:3000/dataUser', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		credentials: "include",
+		body: JSON.stringify(dataUserProfile)
+	})
+	.then(res => res.json())
+	.then(data => {
+		if (data.success) {
+			console.log(data.message);
+			//! afficher les données reçues
+		} else {
+			console.error('Erreur : ' + data.message);
+		}
+	})
+	.catch(err => {
+		console.error("Erreur fetch :", err);
+	});
+
 
 
 

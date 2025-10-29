@@ -30,7 +30,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
 		if (result.success) {
 			console.log("success !");
-			navigate('/profile');
+			navigate('/profile', { state: { login: email }});
 		}
 	} catch (err) {
 		setError('Erreur de connexion');
