@@ -4,7 +4,7 @@ import { useNotification } from "../context/NotificationContext";
 import { useEffect, useState } from "react";
 // import Game from "./Game";
 
-function Game(user1, user2) {
+function Game(user1: string, user2: string) {
 	const winner = Math.random() < 0.5 ? user1 : user2;
 	return winner;
 }
@@ -42,7 +42,7 @@ function Tournoi() {
 		}
 
 		console.log("Starting tournament with players:", players);
-		
+
 		let currentRound = players;
 		let roundNumber = 1;
 
@@ -62,7 +62,7 @@ function Tournoi() {
 				const user1 = currentRound[i];
 				const user2 = currentRound[i + 1];
 
-				const winner = Game(user1, user2); //! ennlever ca 
+				const winner = Game(user1, user2); //! ennlever ca
 				navigate("/game", { state: { user1, user2 } }); //! renvoyer la reponce du gagnant
 
 				addNotification("info", `Winner: ${winner}`);

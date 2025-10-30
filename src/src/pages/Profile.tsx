@@ -19,7 +19,7 @@ function Profile() {
 	const radius = 80;
 	const circumference = 2 * Math.PI * radius;
 
-	const victoiresOffset = 0;
+	// const victoiresOffset = 0;
 	const defaitesOffset = (victoiresPct / 100) * circumference;
 	// const matchsNulsOffset = ((victoiresPct + defaitesPct) / 100) * circumference;
 

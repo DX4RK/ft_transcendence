@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
-import { Engine, Scene, MeshBuilder, Vector3, FreeCamera, StandardMaterial, Color4, HavokPlugin, PhysicsAggregate, PhysicsShapeType, DirectionalLight, ShadowGenerator, PhysicsMotionType, Quaternion } from "@babylonjs/core";
+import { Engine, Scene, MeshBuilder, Vector3, FreeCamera, StandardMaterial, Color4, HavokPlugin, PhysicsAggregate, PhysicsShapeType, DirectionalLight, ShadowGenerator, Quaternion } from "@babylonjs/core";
 import  HavokPhysics from "@babylonjs/havok";
-import * as earcut from 'earcut';
+// import * as earcut from 'earcut';
 
 interface GameSceneProps {
   onScoreUpdate?: (left: number, right: number) => void;
@@ -9,11 +9,13 @@ interface GameSceneProps {
 
 export default function BabylonScene({ onScoreUpdate }: GameSceneProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const scoreRef = useRef({ left: 0, right: 0 });
 
   useEffect(() => {
-	  if (!canvasRef.current) return;
+	if (!canvasRef.current) return;
 
 	const engine = new Engine(canvasRef.current, true);
+    let sceneTest: Scene | null = null;
 
 
 	const createScene = async function () {
@@ -23,11 +25,9 @@ export default function BabylonScene({ onScoreUpdate }: GameSceneProps) {
 
 		// Setup les plugins
 		const havokInstance = await HavokPhysics({ locateFile: (HavokPhysics) => "/havok/" + HavokPhysics });
-		// window.earcut = earcut; // 👈 Babylon en a besoin sur l’objet global
+		// window.earcut = earcut;
 
-		// pass the engine to the plugin
 		const hk = new HavokPlugin(true, havokInstance);
-		// enable physics in the scene with a gravity
 		scene.enablePhysics(new Vector3(0, -9.8, 0), hk);
 
 		//create Lumière
@@ -37,7 +37,12 @@ export default function BabylonScene({ onScoreUpdate }: GameSceneProps) {
 
 		// Create sphere.
 		var sphere = MeshBuilder.CreateSphere("sphere", { diameterX: 1, diameterY: 1, diameterZ: 1 }, scene);
-		sphere.position.y = 7;
+		let random = Math.floor(Math.random() * 2);
+		if (random == 0)
+			sphere.position = new Vector3(-1, 5, 0);
+		else
+			sphere.position = new Vector3(1, 5, 0);
+		// sphere.position.y = 7;
 		const sphereAgg = new PhysicsAggregate(sphere, PhysicsShapeType.SPHERE, { mass: 1, restitution: 0.5 }, scene);
 		shadowGenerator.addShadowCaster(sphere);
 
@@ -99,13 +104,13 @@ export default function BabylonScene({ onScoreUpdate }: GameSceneProps) {
 		goalR.position.x = 20;
 		goalR.position.y = 5;
 		goalR.material = goalAlpha;
-		const goalRAgg = new PhysicsAggregate( goalR, PhysicsShapeType.BOX, { mass: 0, restitution: 0	, friction: 0.3 }, scene);
+		new PhysicsAggregate( goalR, PhysicsShapeType.BOX, { mass: 0, restitution: 0	, friction: 0.3 }, scene);
 
 		const goalL = MeshBuilder.CreateBox("goalL", { width: 0.1, height: 10, depth: 16 }, scene);
 		goalL.position.x = -20;
 		goalL.position.y = 5;
 		goalL.material = goalAlpha;
-		const goalLAgg = new PhysicsAggregate( goalL, PhysicsShapeType.BOX, { mass: 0, restitution: 0, friction: 0.3 }, scene);
+		new PhysicsAggregate( goalL, PhysicsShapeType.BOX, { mass: 0, restitution: 0, friction: 0.3 }, scene);
 
 
 		//create pads
@@ -127,35 +132,43 @@ export default function BabylonScene({ onScoreUpdate }: GameSceneProps) {
 		// ];
 
 		//	Game logic
-		let scoreLeft = 0;
-		let scoreRight = 0;
-		let lastGoalTime = 0;
+		let resetCooldown = 0;
 
 		function resetBall() {
 			const body = sphereAgg.body;
+			if (!body || !body.transformNode) return;
+
+			// Reset immédiat des vélocités
 			body.setLinearVelocity(Vector3.Zero());
 			body.setAngularVelocity(Vector3.Zero());
-			console.log("reset ball called");
 
-			setTimeout(() => {
-			body.setTargetTransform(new Vector3(0, 5, 0), Quaternion.Identity());
-			}, 50);
+			// Reset position directement via le transform
+			let random = Math.floor(Math.random() * 2);
+
+			console.log(random)
+			// if (random == 0)
+			// 	sphere.position = new Vector3(-2, 5, -2);
+			// else
+			// 	sphere.position = new Vector3(2, 5, 2);
+
+			sphere.rotationQuaternion = Quaternion.Identity();
+
+			// Cooldown de 1 seconde avant la prochaine détection
+			resetCooldown = performance.now() + 1000;
 		}
-
 
 		scene.onBeforePhysicsObservable.add(() => {
 		const now = performance.now();
-		if (sphere.position.x < -3.9) { // x du goalL
-			lastGoalTime = now;
-			scoreLeft++;
-			console.log("Point pour joueur gauche :", scoreLeft, "-", scoreRight);
-			onScoreUpdate?.(scoreLeft, scoreRight);
+		if (now < resetCooldown) return;
+		if (sphere.position.x < -19) { // x du player L
+			scoreRef.current.left++;
+			console.log("Point pour joueur gauche :", scoreRef.current.left, "-", scoreRef.current.right);
+			onScoreUpdate?.(scoreRef.current.left, scoreRef.current.right);
 			resetBall();
-		} else if (sphere.position.x > 3.9) {
-			lastGoalTime = now;
-			scoreRight++;
-			console.log("Point pour joueur droit :", scoreLeft, "-", scoreRight);
-			onScoreUpdate?.(scoreLeft, scoreRight);
+		} else if (sphere.position.x > 19) {
+			scoreRef.current.right++;
+			console.log("Point pour joueur droit :", scoreRef.current.left, "-", scoreRef.current.right);
+			onScoreUpdate?.(scoreRef.current.left, scoreRef.current.right);
 			resetBall();
 		}
 		});
@@ -164,8 +177,12 @@ export default function BabylonScene({ onScoreUpdate }: GameSceneProps) {
 
 		// Keyboard control
 		const keys: Record<string, boolean> = {};
-		window.addEventListener("keydown", (e) => (keys[e.key.toLowerCase()] = true));
-		window.addEventListener("keyup", (e) => (keys[e.key.toLowerCase()] = false));
+
+		const handleKeyDown = (e: KeyboardEvent) => (keys[e.key.toLowerCase()] = true)
+		const handleKeyUp = (e: KeyboardEvent) => (keys[e.key.toLowerCase()] = false)
+
+		window.addEventListener("keydown", handleKeyDown);
+		window.addEventListener("keyup", handleKeyUp);
 
 		scene.onBeforeRenderObservable.add(() => {
 			const padBody1 = pad1Aggregate.body;
@@ -199,11 +216,16 @@ export default function BabylonScene({ onScoreUpdate }: GameSceneProps) {
 			padBody2.setLinearVelocity(velocity2);
 		});
 
+		scene.onDisposeObservable.add(() => {
+		window.removeEventListener("keydown", handleKeyDown);
+		window.removeEventListener("keyup", handleKeyUp);
+		});
 
         return scene;
 	};
 
 	createScene().then((scene) => {
+		sceneTest = scene;
 		engine.runRenderLoop(function () {
 			if (scene) {
 				scene.render();
@@ -211,7 +233,14 @@ export default function BabylonScene({ onScoreUpdate }: GameSceneProps) {
         });
 	});
 
-}, []);
+	return () => {
+		engine.stopRenderLoop();
+		if (sceneTest) {
+			sceneTest.dispose();
+		}
+		engine.dispose();
+	};
+}, [onScoreUpdate]);
 
   return <canvas ref={canvasRef} className="p-10 w-full h-screen" />;
 }

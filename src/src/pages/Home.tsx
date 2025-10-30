@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom"
 import { Background } from "../../Game/background";
 import { useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
+// import { useAuth } from "../context/AuthContext";
 
 
 function Home() {
