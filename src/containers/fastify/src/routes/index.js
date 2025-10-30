@@ -14,16 +14,16 @@ const socketAuthHandlers = require('../plugins/socket-handlers/auth.js');
 const socketChatHandlers = require('../plugins/socket-handlers/chat.js');
 const socketNotificationHandlers = require('../plugins/socket-handlers/notifications.js');
 
-const registerRoutes = async (fastify, { transporter, vonage, generateToken, verifyToken }) => {
+const registerRoutes = async (fastify, { transporter, vonage, generateToken }) => {
 	// Auth middleware
-	await fastify.register(authMiddlewareRoute, { verifyToken });
+	await fastify.register(authMiddlewareRoute);
 
 	// Stats
-	await fastify.register(getMatchStatsRoute, { prefix: '/stats', verifyToken });
-	await fastify.register(updateStatsOnMatchFinishRoute, { prefix: '/stats', verifyToken });
+	await fastify.register(getMatchStatsRoute, { prefix: '/stats' });
+	await fastify.register(updateStatsOnMatchFinishRoute, { prefix: '/stats' });
 
 	// My
-	await fastify.register(getSettings, { prefix: '/my', verifyToken });
+	await fastify.register(getSettings, { prefix: '/my' });
 
 	// Check
 	fastify.get('/', async (request, reply) => {
@@ -56,7 +56,7 @@ const registerRoutes = async (fastify, { transporter, vonage, generateToken, ver
 	});
 
 	// Socket handlers
-	await fastify.register(socketAuthHandlers, { verifyToken });
+	await fastify.register(socketAuthHandlers);
 	await fastify.register(socketChatHandlers);
 	await fastify.register(socketNotificationHandlers);
 
