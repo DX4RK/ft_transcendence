@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
   email TEXT NOT NULL UNIQUE,
   twofa_method TEXT DEFAULT NULL,
   password_hash TEXT NOT NULL,
+  settings JSON DEFAULT '{}',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -49,13 +50,6 @@ CREATE TABLE IF NOT EXISTS user_matches (
   user_id INTEGER PRIMARY KEY,
   match_won INTEGER DEFAULT 0,
   match_played INTEGER DEFAULT 0,
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS user_settings (
-  user_id INTEGER PRIMARY KEY,
-  theme TEXT DEFAULT 'light',
-  notifications_enabled INTEGER DEFAULT 1,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
