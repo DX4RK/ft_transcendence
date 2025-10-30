@@ -2,6 +2,7 @@ const cors = require('@fastify/cors');
 const cookie = require('@fastify/cookie');
 const fastifyIO = require('fastify-better-socket.io');
 const fastifyBetterSqlite3 = require('./db.js');
+const auth = require('./auth.js');
 
 const registerPlugins = async (fastify) => {
 	// CORS
@@ -31,6 +32,10 @@ const registerPlugins = async (fastify) => {
 		name: 'usersDb',
 		pathToDb: '/data/users.db',
 	});
+
+	// Auth
+
+	await fastify.register(auth);
 };
 
 module.exports = registerPlugins;
