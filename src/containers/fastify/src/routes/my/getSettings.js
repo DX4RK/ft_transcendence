@@ -1,9 +1,6 @@
-const { verifyToken } = require("../../service/jwt");
 const defaultSettings = require('../../config/defaultSettings');
 
 async function getSettings(fastify, opts) {
-	const { verifyToken } = opts;
-
 	fastify.get(
 		'/settings',
 		{ preValidation: [fastify.authenticate] },
