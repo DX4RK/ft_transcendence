@@ -86,7 +86,7 @@ return (
 					{/* log in */}
 					{loading ? 'Connexion...' : 'Log In'}
 			</button>
-			<Link to="/signIn" className="flex justify-center underline m-4">No account ? register</Link>
+			<Link to="/Register" className="flex justify-center underline m-4">No account ? register</Link>
 			</form>
 		</div>
 	</div>

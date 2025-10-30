@@ -62,11 +62,11 @@ const login = async(email: string, password: string): Promise<{ success: boolean
 	// 	}
 	// };
   const data = {
-    login: email,
+    username: email,
     password: password
   };
 
-  fetch('http://localhost:3000/sign/up', {
+  fetch('http://localhost:3000/sign/in', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: "include",
@@ -110,11 +110,12 @@ const register = async (email: string, password: string): Promise<{ success: boo
   //   };
 
   const data = {
-    login: email,
+    username: email,
+    email: email,
     password: password
   };
 
-  fetch('http://localhost:3000/sign/in', {
+  fetch('http://localhost:3000/sign/up', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: "include",
