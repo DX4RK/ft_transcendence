@@ -1,12 +1,8 @@
-const { verifyToken } = require("../../service/jwt");
-
 const isNumber = (result) => {
-  return typeof result === 'number';
+	return typeof result === 'number';
 };
 
 async function updateStatsOnMatchFinish(fastify, opts) {
-	const { verifyToken } = opts;
-
 	fastify.post(
 		'/match-finished',
 		{ preValidation: [fastify.authenticate] },
