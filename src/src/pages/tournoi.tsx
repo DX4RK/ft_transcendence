@@ -63,8 +63,8 @@ function Tournoi() {
 				const user2 = currentRound[i + 1];
 
 				const winner = Game(user1, user2); //! ennlever ca
-				navigate("/game", { state: { user1, user2 } }); //! renvoyer la reponce du gagnant
-
+				navigate("/game", { state: { user1, user2 } }); //! renvoyer la reponse du gagnant
+				// navigate('/game', { state: { mode: 1 } })}
 				addNotification("info", `Winner: ${winner}`);
 				console.log(`Match: ${user1} vs ${user2} => Winner: ${winner}`);
 				nextRound.push(winner);

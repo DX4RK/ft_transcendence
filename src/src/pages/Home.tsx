@@ -1,5 +1,5 @@
 // import { Button } from "@/components/ui/button"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom";
 import { Background } from "../../Game/background";
 import { useEffect } from "react";
 // import { useAuth } from "../context/AuthContext";
@@ -7,14 +7,16 @@ import { useEffect } from "react";
 
 function Home() {
 
-	// const { isLoggedIn } = useAuth();
 
+	const navigate = useNavigate();
 
 	useEffect(() => {
-	const game = new Background();
-	game.start();
+		const game = new Background();
+		game.start();
 	}, []);
 
+	// const { isLoggedIn } = useAuth();
+	// navigate("/profile", { state: { login: user }});
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-r from-cyan-500/50 to-blue-500/50 ">
@@ -72,14 +74,14 @@ function Home() {
 		<script type="module" src="../Game/main.ts"></script>
 
 
-		<div className="flex flex-col items-center">
+		<div className="flex flex-col justify-center items-center min-h-screen">
 			<input id="welcome" type="checkbox" className="peer hidden"/>
 			<label htmlFor="welcome" className="peer absolute inset-0 w-full h-full opacity-0 cursor-pointer z-45 transition-opacity peer-checked: peer-checked:z-0"></label>
 
 			<div className="fixed inset-0 bg-black/60 peer-checked:hidden transition z-40"></div>
 
-			<a className="text-base text-2xl text-[#6fc8dc] translate-y-100 font-arcade transition-transform duration-1700 peer-checked:-translate-y-400 z-45">W E L C O M E</a>
-			<Link to="/game" className="flex rounded-full items-center translate-y-300 justify-center w-128 z-10 transition ease-in-out duration-1700 bg-gradient-to-br from-pink-500/90 to-orange-400/90 font-bold p-5 shadow-xl text-white text-2xl font-arcade dark:bg-black-950  hover:bg-yellow-500/80 hoer:italic hover:text-white-500 hover:shadow-inner hover:outline hover:ouline-8 hover:scale-110 hover:duration-300 peer-checked:translate-y-100"> PLAY </Link>
+			<a className="text-base text-2xl text-[#6fc8dc] font-arcade transition-transform duration-1700 peer-checked:-translate-y-400 z-45">W E L C O M E</a>
+			<button onClick={() => navigate('/game', { state: { mode: 1 } })} className="flex rounded-full items-center translate-y-300 justify-center w-128 z-10 transition ease-in-out duration-1700 bg-gradient-to-br from-pink-500/80 to-orange-400/80 font-bold p-5 shadow-xl text-white text-2xl font-arcade dark:bg-black-950  hover:bg-yellow-500/80 hoer:italic hover:text-white-500 hover:shadow-inner hover:outline hover:ouline-8 hover:scale-110 hover:duration-300 peer-checked:translate-y-0"> PLAY </button>
 		</div>
 
 	</div>
