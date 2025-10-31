@@ -6,7 +6,7 @@ const { port } = require('./config/env');
 // Services
 const { createEmailTransporter } = require('./service/email');
 const { createVonageClient } = require('./service/sms');
-const { generateToken, verifyToken } = require('./service/jwt');
+const { generateToken } = require('./service/jwt');
 
 // Plugins and Routes
 const registerPlugins = require('./plugins');
@@ -25,8 +25,7 @@ const start = async () => {
 		await registerRoutes(fastify, {
 			transporter,
 			vonage,
-			generateToken,
-			verifyToken
+			generateToken
 		});
 
 		// Start server

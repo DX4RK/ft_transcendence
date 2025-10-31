@@ -10,6 +10,7 @@
   "dependencies": {
     "fastify": "^5.6.1",
     "@fastify/cors": "^11.1.0",
+    "@fastify/jwt": "^10.0.0",
     "@fastify/cookie": "^11.0.2",
     "@vonage/server-sdk": "^3.25.1",
     "fastify-better-socket.io": "1.0.0",
