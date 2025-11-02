@@ -1,37 +1,54 @@
 import { Link, useLocation } from "react-router-dom"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 function Profile() {
 
-	const [stats] = useState({ // stats de l user
-		victoires: 68,
+	const [stats] = useState({ // stats de l user a recup
+		login: "TheWizzler",
+		victoires: 25,
 		defaites: 22,
-		// matchsNuls: 10,
-		precision: 85
+		goalTaken: 42,
+		goalScored: 65,
+		xp: 8.6
 	});
 
 	const total = stats.victoires + stats.defaites;
 	const victoiresPct = (stats.victoires / total) * 100;
 	const defaitesPct = (stats.defaites / total) * 100;
-	// const matchsNulsPct = (stats.matchsNuls / total) * 100;
-
-	// Calcul des angles pour le cercle SVG
+	const level = Math.floor(stats.xp);
+	const xpProgress = (stats.xp - level) * 100;
 	const radius = 80;
 	const circumference = 2 * Math.PI * radius;
-
-	// const victoiresOffset = 0;
 	const defaitesOffset = (victoiresPct / 100) * circumference;
-	// const matchsNulsOffset = ((victoiresPct + defaitesPct) / 100) * circumference;
 
-//	---------------------------
+	//! -----REPLACE WITH SQL ------
+	const [games, setGames] = useState([]);
+	const [page, setPage] = useState(1);
+	const [totalPages, setTotalPages] = useState(1);
+	const [loading, setLoading] = useState(false);
+
+
+	//	---------------------------
 
 	const location = useLocation();
-	const { login } = location.state || {}; //! afficher les donner ressus
-
-	console.log(login);
+	const { login } = location.state || {}; //! afficher les donnees recues
 
 	const dataUserProfile = {
 		login: login,
+	};
+
+
+	useEffect(() => {
+		loadHistory();
+	}, [page]);
+
+	const loadHistory = async () => {
+		setLoading(true);
+		const res = await fetch(`/api/history?page=${page}&limit=20`); //! API HISTORY REQUEST 
+		const data = await res.json();
+		setGames(data.games);
+		setTotalPages(data.totalPages);
+		setLoading(false);
 	};
 
 	fetch('http://localhost:3000/dataUser', {
@@ -59,10 +76,10 @@ function Profile() {
 
 
   return (
-    <div className="bg-gradient-to-r from-cyan-500/50 to-blue-500/50 h-screen w-screen     ">
+    <div className="bg-gradient-to-r from-cyan-500/50 to-blue-500/50 min-h-screen">
 
 
-      	<Link to="/" className="text-base text-xl font-arcade z-50">ft_transcendence</Link>
+      	<Link to="/" className="text-base text-xl text-cyan-300/70 font-arcade z-50">ft_transcendence</Link>
 
 		<div>
 			<input type="checkbox" id="menu-toggle" className="hidden peer"></input>
@@ -101,38 +118,62 @@ function Profile() {
 
 		<script type="module" src="./../../Game/main"></script>
 
-{/*
-
-		<div className="flex flex-col justify-center gap-8 sm:grid sm:grid-cols-2">
-			<div>
-				<dl>
-					<dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Stats</dt>
-					<dd className="flex items-center mb-3">
-						<div className="w-full bg-gray-200 rounded-sm h-5 dark:bg-gray-700 me-2">
-							<div className="bg-blue-600 h-5 rounded-sm bg-gradient-to-br from-pink-500/90 to-orange-400/90" style={{width: '61%'}}></div>
-						</div>
-						<span className="text-sm font-medium text-gray-500 dark:text-gray-400">8.8</span>
-					</dd>
-				</dl>
-				<dl>
-					<dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Comfort</dt>
-					<dd className="flex items-center mb-3">
-						<div className="w-full bg-gray-200 rounded-sm h-5 dark:bg-gray-700 me-2">
-							<div className="bg-blue-600 h-5 rounded-sm bg-gradient-to-br from-pink-500/90 to-orange-400/90" style={{width: '89%'}}></div>
-						</div>
-						<span className="text-sm font-medium text-gray-500 dark:text-gray-400">8.9</span>
-					</dd>
-				</dl>
-			</div>
-		</div> */}
-
-		{/* --------------------------------------------------------------------- */}
-
   <div className="min-h-screen flex items-center justify-center p-8">
-      <div className="max-w-4xl w-full">
+
+		<div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl">
+			<h1 className="text-3xl font-bold text-cyan-300/70 underline mb-8 text-center">{stats.login}</h1>
+
+			{/* Niveau actuel */}
+			<div className="flex items-center justify-between mb-4">
+			<div className="flex items-center gap-3">
+				<div className="bg-gradient-to-br from-gray-400/80 to-slate-500/80 rounded-lg p-3 shadow-lg">
+				<span className="text-2xl font-bold text-slate-900">LVL</span>
+				</div>
+				<span className="text-5xl font-bold text-gray-300">{level}</span>
+			</div>
+			<div className="text-right">
+				<div className="text-sm text-slate-400">Prochain niveau</div>
+				<div className="text-2xl font-bold text-purple-400">{level + 1}</div>
+			</div>
+			</div>
+
+			{/* Info détaillée */}
+
+			<div className="mt-4 text-center text-slate-300 text-sm">
+			{xpProgress < 100 ? (
+				<span>Il vous reste <span className="font-bold text-purple-400">{(100 - xpProgress).toFixed(0)}%</span> pour atteindre le niveau {level + 1}</span>
+			) : (
+				<span className="text-green-400 font-bold">Niveau max atteint !</span>
+			)}
+			</div>
+
+			{/* Barre d'XP */}
+			<div className="relative">
+			{/* Fond de la barre */}
+			<div className="h-8 bg-slate-700/50 rounded-full overflow-hidden border-2 border-slate-600/50 shadow-inner">
+				{/* Progression animée */}
+				<div
+				className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-1000 ease-out relative overflow-hidden"
+				style={{ width: `${xpProgress}%` }}
+				>
+				{/* Effet de brillance */}
+				<div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
+				</div>
+			</div>
+
+
+            {/* Pourcentage */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-sm font-bold text-white drop-shadow-lg">
+                {xpProgress.toFixed(0)}%
+              </span>
+            </div>
+          </div>
+
+	  <div className="max-w-4xl w-full">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-white mb-2">Name</h1>
-          <p className="text-purple-300">Analyse de vos performances</p>
+          {/* <h1 className="text-5xl font-bold text-white mb-2">{stats.login}</h1> */}
+          <p className="text-purple-300">Analyse des performances</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -154,52 +195,37 @@ function Profile() {
                   strokeWidth="40"
                 />
 
-                {/* Segment Victoires */}
+                {/* Victoires */}
                 <circle
                   cx="100"
                   cy="100"
                   r={radius}
                   fill="none"
-                  stroke="#10b981"
+                  stroke="#22ac5cff"
                   strokeWidth="40"
                   strokeDasharray={`${(victoiresPct / 100) * circumference} ${circumference}`}
                   strokeDashoffset={0}
                   className="transition-all duration-1000"
-                  style={{ filter: 'drop-shadow(0 0 8px rgba(16, 185, 129, 0.5))' }}
+                  style={{ filter: 'drop-shadow(0 0 8px rgba(8, 207, 141, 0.5))' }}
                 />
 
-                {/* Segment Défaites */}
+                {/* Défaites */}
                 <circle
                   cx="100"
                   cy="100"
                   r={radius}
                   fill="none"
-                  stroke="#ef4444"
+                  stroke="#aa1616ff"
                   strokeWidth="40"
                   strokeDasharray={`${(defaitesPct / 100) * circumference} ${circumference}`}
                   strokeDashoffset={-defaitesOffset}
                   className="transition-all duration-1000"
                   style={{ filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.5))' }}
                 />
-
-                {/* Segment Matchs Nuls */}
-                {/* <circle
-                  cx="100"
-                  cy="100"
-                  r={radius}
-                  fill="none"
-                  stroke="#f59e0b"
-                  strokeWidth="40"
-                  strokeDasharray={`${(matchsNulsPct / 100) * circumference} ${circumference}`}
-                  strokeDashoffset={-matchsNulsOffset}
-                  className="transition-all duration-1000"
-                  style={{ filter: 'drop-shadow(0 0 8px rgba(245, 158, 11, 0.5))' }}
-                /> */}
               </svg>
 
               {/* Contenu central */}
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                {/* <Trophy className="w-12 h-12 text-yellow-400 mb-2" /> */}
                 <div className="text-5xl font-bold text-white">{victoiresPct.toFixed(0)}%</div>
                 <div className="text-sm text-purple-300 mt-1">Taux de victoire</div>
               </div>
@@ -212,7 +238,6 @@ function Profile() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
-                    {/* <Trophy className="w-6 h-6 text-green-400" /> */}
                   </div>
                   <div>
                     <div className="text-gray-400 text-sm">Victoires</div>
@@ -242,23 +267,6 @@ function Profile() {
               </div>
             </div>
 
-            {/* <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-amber-500/20 rounded-full flex items-center justify-center">
-                     <Zap className="w-6 h-6 text-amber-400" />
-                  </div>
-                  <div>
-                    <div className="text-gray-400 text-sm">Matchs Nuls</div>
-                    <div className="text-3xl font-bold text-white">{stats.matchsNuls}</div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-amber-400">{matchsNulsPct.toFixed(1)}%</div>
-                </div>
-              </div>
-            </div> */}
-
             <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/30 hover:scale-105 transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
@@ -274,18 +282,53 @@ function Profile() {
             </div>
           </div>
         </div>
-
-        {/* Résumé total */}
+				{/* TOTAL SCORED */}
         <div className="mt-12 text-center bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
           <div className="text-gray-400 mb-2">Total but marque</div>
-          <div className="text-4xl font-bold text-white">160</div>
+          <div className="text-4xl font-bold text-white">{stats.goalScored}</div>
         </div>
       </div>
     </div>
 
-		{/* --------------------------------------------------------------------- */}
 
 	</div>
+
+		{/* --------------------------------------------------------------------- */}
+
+
+	<div className="flex flex-col items-center justify-center">
+		{/* {games.map(game => ( */}
+		<div className="bg-slate-800/50  backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl m-2">
+			{/* <div>{game.result === 'win' ? '🏆' : ''} vs {opponent_name}</div> */}
+			<div>win 🏆 vs Jeremy
+			Score: 5 - 2</div>
+			{/* <div>{new Date(game.played_at).toLocaleDateString()}</div> */}
+		</div>
+		<div className="bg-slate-800/50  backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl m-2">
+			<div>Lost ❌ vs Timothe
+			Score: 4 - 5</div>
+		</div>
+	</div>
+
+
+		{/* Pagination */}
+	<div className="flex items-center justify-center gap-2 mt-4">
+		<button
+			disabled={page === 1}
+			onClick={() => setPage(p => p - 1)}
+		>
+			Précédent
+		</button>
+		<span>Page {page} / {totalPages}</span>
+		<button
+			disabled={page === totalPages}
+			onClick={() => setPage(p => p + 1)}
+		>
+			Suivant
+		</button>
+	</div>
+	</div>
+
 	)
 }
 

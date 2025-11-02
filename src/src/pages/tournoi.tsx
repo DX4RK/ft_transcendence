@@ -45,6 +45,7 @@ function Tournoi() {
 
 		let currentRound = players;
 		let roundNumber = 1;
+		const mode = 2;
 
 		while (currentRound.length > 1) {
 			addNotification("info", `Round ${roundNumber} is starting!`);
@@ -63,7 +64,7 @@ function Tournoi() {
 				const user2 = currentRound[i + 1];
 
 				const winner = Game(user1, user2); //! ennlever ca
-				navigate("/game", { state: { user1, user2 } }); //! renvoyer la reponse du gagnant
+				navigate("/game", { state: { mode, user1, user2 } }); //! renvoyer la reponse du gagnant
 				// navigate('/game', { state: { mode: 1 } })}
 				addNotification("info", `Winner: ${winner}`);
 				console.log(`Match: ${user1} vs ${user2} => Winner: ${winner}`);
@@ -90,7 +91,7 @@ function Tournoi() {
 
 	return (
 		<div className="relative min-h-screen bg-gradient-to-r from-cyan-500/50 to-blue-500/50 text-white flex flex-col items-center justify-center space-y-12 p-10">
-			<Link to="/" className="text-base text-xl opacity-50 font-arcade z-0">ft_transcendence</Link>
+			<Link to="/" className="text-base text-xl text-cyan-300/70 opacity-50 font-arcade z-0">ft_transcendence</Link>
 
 			<div>
 				<input type="checkbox" id="menu-toggle" className="hidden peer"></input>
@@ -224,7 +225,8 @@ function Tournoi() {
 
 			<button
 			className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-			onClick={startTournoi}>
+			// onClick={() => navigate('/game', { state: { mode: 2 } })}>
+			onClick={() => startTournoi()}>
 				Start
 			</button>
 

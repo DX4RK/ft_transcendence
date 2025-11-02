@@ -5,7 +5,7 @@ function Test() {
   return (
 	<div className="bg-black">
 
-		<Link to="/" className="text-base text-xl font-arcade">ft_transcendence</Link>
+		<Link to="/" className="text-base text-xl text-cyan-300/70 font-arcade">ft_transcendence</Link>
 
 	  <div className="flex flex-col items-center justify-center">
         <Button onClick={() => alert("Hello !")}>Test Button</Button>

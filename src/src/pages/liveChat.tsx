@@ -166,7 +166,7 @@ function LiveChat() {
 
 	return (
 		<div className="relative min-h-screen bg-gradient-to-r from-cyan-500/50 to-blue-500/50 text-white flex flex-col items-center justify-center space-y-12 p-10">
-			<Link to="/" className="text-base text-xl opacity-50 font-arcade z-0">ft_transcendence</Link>
+			<Link to="/" className="text-base text-xl opacity-50 text-cyan-300/70 font-arcade z-0">ft_transcendence</Link>
 
 			<div>
 				<input type="checkbox" id="menu-toggle" className="hidden peer"></input>

@@ -143,9 +143,9 @@ export default function BabylonScene({ onScoreUpdate }: GameSceneProps) {
 			body.setAngularVelocity(Vector3.Zero());
 
 			// Reset position directement via le transform
-			let random = Math.floor(Math.random() * 2);
+			// let random = Math.floor(Math.random() * 2);
 
-			console.log(random)
+			// console.log(random)
 			// if (random == 0)
 			// 	sphere.position = new Vector3(-2, 5, -2);
 			// else

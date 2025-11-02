@@ -4,7 +4,7 @@ import BabylonScene from "../../Game/Pong";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import type { int } from "@babylonjs/core";
+// import type { int } from "@babylonjs/core";
 
 
 
@@ -12,7 +12,7 @@ function Game() {
 
 	const location = useLocation();
 	const mode = location.state?.mode || 1; // valeur par défaut si undefined
-	// const { user1, user2 } = location.state || {}; //! afficher les pseudo des joueurs
+	const { user1, user2 } = location.state || {}; //! afficher les pseudo des joueurs
 	const navigate = useNavigate();
 
 	const handleEscape = () => {
@@ -43,11 +43,11 @@ function Game() {
 	return (
 	<div className="bg-gradient-to-r from-cyan-500/50 to-blue-500/50">
 
-	<Link to="/" className="text-base text-xl font-arcade">ft_transcendence</Link>
+	<Link to="/" className="text-base text-cyan-300/70 text-xl font-arcade">ft_transcendence</Link>
 
 	<div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-2xl font-bold">
 		<div>
-			User - {scoreLeft} | {scoreRight} - Guest -- {mode}
+			{user1} - {scoreLeft} | {scoreRight} - {user2}
 		</div>
 		<div>
 			{winner === 1 && <h2>🏆 User a gagné !</h2>}
@@ -64,20 +64,27 @@ function Game() {
 		onScoreUpdate={(left, right) => {
 		setScoreLeft(left);
 		setScoreRight(right);
-		if (left >= 2 )
+		if (left >= 2 ) //$ END FUNCTION - HANDLE DATA REQUEST HERE
 		{
 			console.log("Left player wins!");
 			setWinner(1);
-			navigate("/tournoi", { state: { winner: right }});
-
+			setTimeout(() => {
+				if (mode == 1)
+					navigate("/", { state: { winner: left }});
+				else if (mode == 2)
+					navigate("/tournoi", { state: { winner: left ,scoreL: left}});
+			}, 5000);
 		}
 		else if (right >= 2)
 		{
 			console.log("Right player wins!");
 			setWinner(2);
 			setTimeout(() => {
-				navigate("/tournoi", { state: { winner: left }});
-			}, 5000);
+				if (mode == 1)
+					navigate("/", { state: { winner: right }});
+				else if (mode == 2)
+					navigate("/tournoi", { state: { winner: right }});
+			}, 3000);
 		}
 		return ;
 		}
