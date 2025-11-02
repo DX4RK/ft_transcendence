@@ -4,6 +4,7 @@
 
   --  FRONT --
 
+ - HOME
 - [ ] Reactive size ? 
 - [x] overall ok ???	                      	
 
