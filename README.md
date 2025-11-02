@@ -49,3 +49,7 @@
 - [ ] Finish WAF compatibility ?
 - [ ] browser compatibility 
 - [ ] make Live chat work
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4c638507 (update ReadME)
