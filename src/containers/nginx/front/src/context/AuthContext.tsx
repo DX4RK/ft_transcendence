@@ -88,8 +88,8 @@ const login = async(email: string, password: string): Promise<{ success: boolean
 	// setUser(data);
 	// localStorage.setItem('user', JSON.stringify(data)); //* stocke les data en cas de refresh
 	// console.log(data.name, data.id, data.email )
-	// return { success: true };
 	return { success: true };
+
   };
 
 
@@ -135,7 +135,7 @@ const register = async (email: string, password: string): Promise<{ success: boo
 
 	// setUser(userData);
 	// localStorage.setItem('user', JSON.stringify(userData));
-	 return { success: true };
+	return { success: true };
 };
 
 	//$  --- LOGOUT ---

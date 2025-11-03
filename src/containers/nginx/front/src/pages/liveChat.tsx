@@ -90,17 +90,17 @@ function LiveChat() {
 
 	const handleSend = () => {
 		if (input.trim() === "") return;
-		// socket.emit("message", input, (callback) => {
-		// 	console.log(callback);
-		// });
+		socket.emit("message", input, (callback) => {
+			console.log(callback);
+		});
 		setInput("");
 	};
 
 	const handlePrivSend = () => {
 		if (!selectedUser || privInput.trim() === "") return;
-		// socket.emit("priv-message", selectedUser, privInput , (callback) => {
-		// 	console.log(callback);
-		// });
+		socket.emit("priv-message", selectedUser, privInput , (callback) => {
+			console.log(callback);
+		});
 		setPrivInput("");
 	};
 
@@ -113,17 +113,17 @@ function LiveChat() {
 
 	const blockUser = (user: string | null) => {
 		if (!user) return;
-		// socket.emit("block-user", user, (callback) => {
-		// 	console.log(callback);
-		// });
+		socket.emit("block-user", user, (callback) => {
+			console.log(callback);
+		});
 		addNotification("blocked", `Vous avez bloqué ${user}`);
 	};
 
 	const inviteUser = (user: string | null) => {
 		if (!user) return;
-		// socket.emit("invit-game", user, (callback) => {
-		// 	console.log(callback);
-		// });
+		socket.emit("invit-game", user, (callback) => {
+			console.log(callback);
+		});
 	};
 
 	const oppenProfile = (user: string | null) => {
@@ -166,7 +166,7 @@ function LiveChat() {
 
 	return (
 		<div className="relative min-h-screen bg-gradient-to-r from-cyan-500/50 to-blue-500/50 text-white flex flex-col items-center justify-center space-y-12 p-10">
-			<Link to="/" className="text-base text-xl opacity-50 font-arcade z-0">ft_transcendence</Link>
+			<Link to="/" className="text-base text-xl opacity-50 text-cyan-300/70 font-arcade z-0">ft_transcendence</Link>
 
 			<div>
 				<input type="checkbox" id="menu-toggle" className="hidden peer"></input>
