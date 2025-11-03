@@ -9,7 +9,7 @@ function Profile() {
 		defaites: 22,
 		goalTaken: 42,
 		goalScored: 65,
-		xp: 8.6
+		xp: 7.6
 	});
 
 	const total = stats.victoires + stats.defaites;
@@ -25,8 +25,7 @@ function Profile() {
 	const [games, setGames] = useState([]);
 	const [page, setPage] = useState(1);
 	const [totalPages, setTotalPages] = useState(1);
-	const [loading, setLoading] = useState(false);
-
+	// const [loading, setLoading] = useState(false);
 
 	//	---------------------------
 
@@ -43,12 +42,13 @@ function Profile() {
 	}, [page]);
 
 	const loadHistory = async () => {
-		setLoading(true);
-		const res = await fetch(`/api/history?page=${page}&limit=20`); //! API HISTORY REQUEST 
+		// setLoading(true);
+		const res = await fetch(`/api/history?page=${page}&limit=20`); //! API HISTORY REQUEST
 		const data = await res.json();
+		console.log(games);
 		setGames(data.games);
 		setTotalPages(data.totalPages);
-		setLoading(false);
+		// setLoading(false);
 	};
 
 	fetch('http://localhost:3000/dataUser', {
@@ -121,7 +121,7 @@ function Profile() {
   <div className="min-h-screen flex items-center justify-center p-8">
 
 		<div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl">
-			<h1 className="text-3xl font-bold text-cyan-300/70 underline mb-8 text-center">{stats.login}</h1>
+			<h1 className="text-3xl font-bold text-cyan-300/70 mb-8 text-center font-arcade">{stats.login}</h1>
 
 			{/* Niveau actuel */}
 			<div className="flex items-center justify-between mb-4">
@@ -129,7 +129,7 @@ function Profile() {
 				<div className="bg-gradient-to-br from-gray-400/80 to-slate-500/80 rounded-lg p-3 shadow-lg">
 				<span className="text-2xl font-bold text-slate-900">LVL</span>
 				</div>
-				<span className="text-5xl font-bold text-gray-300">{level}</span>
+				<span className="text-5xl font-arcade text-gray-300">{level}</span>
 			</div>
 			<div className="text-right">
 				<div className="text-sm text-slate-400">Prochain niveau</div>
@@ -201,12 +201,12 @@ function Profile() {
                   cy="100"
                   r={radius}
                   fill="none"
-                  stroke="#22ac5cff"
+                  stroke="#709e1aff"
                   strokeWidth="40"
                   strokeDasharray={`${(victoiresPct / 100) * circumference} ${circumference}`}
                   strokeDashoffset={0}
                   className="transition-all duration-1000"
-                  style={{ filter: 'drop-shadow(0 0 8px rgba(8, 207, 141, 0.5))' }}
+                //   style={{ filter: 'drop-shadow(0 0 8px rgba(8, 207, 141, 0.5))' }}
                 />
 
                 {/* Défaites */}
@@ -215,12 +215,12 @@ function Profile() {
                   cy="100"
                   r={radius}
                   fill="none"
-                  stroke="#aa1616ff"
+                  stroke="#bd2727ff"
                   strokeWidth="40"
                   strokeDasharray={`${(defaitesPct / 100) * circumference} ${circumference}`}
                   strokeDashoffset={-defaitesOffset}
                   className="transition-all duration-1000"
-                  style={{ filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.5))' }}
+                //   style={{ filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.5))' }}
                 />
               </svg>
 
@@ -241,7 +241,7 @@ function Profile() {
                   </div>
                   <div>
                     <div className="text-gray-400 text-sm">Victoires</div>
-                    <div className="text-3xl font-bold text-white">{stats.victoires}</div>
+                    <div className="text-3xl font-arcade text-white">{stats.victoires}</div>
                   </div>
                 </div>
                 <div className="text-right">
@@ -258,7 +258,7 @@ function Profile() {
                   </div>
                   <div>
                     <div className="text-gray-400 text-sm">Défaites</div>
-                    <div className="text-3xl font-bold text-white">{stats.defaites}</div>
+                    <div className="text-3xl font-arcade text-white">{stats.defaites}</div>
                   </div>
                 </div>
                 <div className="text-right">
@@ -275,7 +275,7 @@ function Profile() {
                   </div>
                   <div>
                     <div className="text-purple-200 text-sm">Total des parties jouées</div>
-                    <div className="text-3xl font-bold text-white">{total}</div>
+                    <div className="text-3xl font-arcade text-white">{total}</div>
                   </div>
                 </div>
               </div>
@@ -283,10 +283,14 @@ function Profile() {
           </div>
         </div>
 				{/* TOTAL SCORED */}
-        <div className="mt-12 text-center bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
-          <div className="text-gray-400 mb-2">Total but marque</div>
-          <div className="text-4xl font-bold text-white">{stats.goalScored}</div>
-        </div>
+		<div className="mt-12 text-center bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
+			<div className="text-gray-400 mb-2">Total but marque</div>
+			<div className="text-4xl font-arcade text-white">{stats.goalScored}</div>
+		</div>
+		<div className="mt-6 text-center bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
+			<div className="text-gray-400 mb-2">Total but encaisse</div>
+			<div className="text-4xl font-arcade text-white">{stats.goalTaken}</div>
+		</div>
       </div>
     </div>
 

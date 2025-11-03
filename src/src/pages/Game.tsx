@@ -14,7 +14,8 @@ function Game() {
 	const mode = location.state?.mode || 1; // valeur par défaut si undefined
 	const { user1, user2 } = location.state || {}; //! afficher les pseudo des joueurs
 	const navigate = useNavigate();
-
+	const name1 = user1 || "User";
+	const name2 = user2 || "Guest";
 	const handleEscape = () => {
 	alert("- Game paused -");
 	};
@@ -45,13 +46,13 @@ function Game() {
 
 	<Link to="/" className="text-base text-cyan-300/70 text-xl font-arcade">ft_transcendence</Link>
 
-	<div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-2xl font-bold">
+	<div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-2xl text-purple-400 font-arcade">
 		<div>
-			{user1} - {scoreLeft} | {scoreRight} - {user2}
+			{name1} - {scoreLeft} | {scoreRight} - {name2}
 		</div>
 		<div>
-			{winner === 1 && <h2>🏆 User a gagné !</h2>}
-			{winner === 2 && <h2>🏆 Guest a gagné !</h2>}
+			{winner === 1 && <h2>🏆 User a gagne !</h2>}
+			{winner === 2 && <h2>🏆 Guest a gagne !</h2>}
 		</div>
 	</div>
 
@@ -68,6 +69,9 @@ function Game() {
 		{
 			console.log("Left player wins!");
 			setWinner(1);
+
+			// sendGameData();//! API SENDER !!!
+
 			setTimeout(() => {
 				if (mode == 1)
 					navigate("/", { state: { winner: left }});
@@ -79,6 +83,9 @@ function Game() {
 		{
 			console.log("Right player wins!");
 			setWinner(2);
+
+			// sendGameData(winner, left, right, );//! API SENDER !!!
+
 			setTimeout(() => {
 				if (mode == 1)
 					navigate("/", { state: { winner: right }});

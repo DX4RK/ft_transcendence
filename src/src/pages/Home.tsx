@@ -81,7 +81,7 @@ function Home() {
 			<div className="fixed inset-0 bg-black/60 peer-checked:hidden transition z-40"></div>
 
 			<a className="text-base text-2xl text-[#6fc8dc] font-arcade transition-transform duration-1700 peer-checked:-translate-y-400 z-45">W E L C O M E</a>
-			<button onClick={() => navigate('/game', { state: { mode: 1 } })} className="flex rounded-full items-center translate-y-300 justify-center w-128 z-10 transition ease-in-out duration-1700 bg-gradient-to-br from-pink-500/80 to-orange-400/80 font-bold p-5 shadow-xl text-white text-2xl font-arcade dark:bg-black-950  hover:bg-yellow-500/80 hoer:italic hover:text-white-500 hover:shadow-inner hover:outline hover:ouline-8 hover:scale-110 hover:duration-300 peer-checked:translate-y-0"> PLAY </button>
+			<button onClick={() => navigate('/game', { state: { mode: 1,  } })} className="flex rounded-full items-center translate-y-300 justify-center w-128 z-10 transition ease-in-out duration-1700 bg-gradient-to-br from-pink-500/80 to-orange-400/80 font-bold p-5 shadow-xl text-white text-2xl font-arcade dark:bg-black-950  hover:bg-yellow-500/80 hoer:italic hover:text-white-500 hover:shadow-inner hover:outline hover:ouline-8 hover:scale-110 hover:duration-300 peer-checked:translate-y-0"> PLAY </button>
 		</div>
 
 	</div>
