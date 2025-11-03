@@ -2,18 +2,32 @@ const isNumber = (result) => {
 	return typeof result === 'number';
 };
 
+const isValidData = (data) =>
+	typeof data?.score === "number" &&
+	typeof data?.name === "string" &&
+	data.name.length > 0;
+
 async function updateStatsOnMatchFinish(fastify, opts) {
 	fastify.post(
 		'/match-finished',
 		{ preValidation: [fastify.authenticate] },
 		async (request, reply) => {
 			const decoded = request.user;
-			const { userResult, guestResult } = request.body;
+			const { userData, guestData } = request.body;
 
-			if (!isNumber(userResult) || !isNumber(guestResult))
+			if (!isValidData(userResult) || !isValidData(guestResult))
 				return reply.code(401).send({ success: false, message: 'Invalid parameters' });
 
 			console.log(decoded.userId);
+
+			const history = {
+				players: [userData.name, guestData.name],
+				score: {
+					[userData.name]: userData.score,
+					[guestData.name]: guestData.score
+				},
+				date: new Date().toISOString()
+			};
 
 			const userWon = userResult > guestResult ? 1 : 0;
 			fastify.usersDb.prepare(`
