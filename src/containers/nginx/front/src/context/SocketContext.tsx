@@ -1,8 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import type { ReactNode } from "react";
 import { useNotification } from "../context/NotificationContext";
-import { io } from "socket.io-client";
-import type { Socket } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
+import type { ReactNode }from "react"
 
 type SocketContextType = {
 	socket: Socket | null;
@@ -24,14 +23,15 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
 		newSocket.connect(); //! connecter seulement si user login
 
+
 		newSocket.on("connect", () => {
-			console.log("✅ Socket connected");
-			setIsConnected(true);
+				console.log("✅ Socket connected");
+				setIsConnected(true);
 		});
 
 		newSocket.on("connect_error", (err) => {
-			console.error("❌ Erreur Socket.IO:", (err as Error).message);
-			setIsConnected(false);
+				console.error("❌ Erreur Socket.IO:", err.message);
+				setIsConnected(false);
 		});
 
 		newSocket.on("disconnect", () => {
@@ -51,6 +51,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
 		setSocket(newSocket);
 
+
 		return () => {
 			newSocket.disconnect();
 		};
@@ -65,6 +66,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
 export const useSocket = () => {
 	const context = useContext(SocketContext);
-	if (!context) throw new Error("useSocket must be used within a SocketProvider");
+	if (!context)
+		throw new Error("useSocket must be used within a SocketProvider");
 	return context;
 };

@@ -14,7 +14,7 @@ import SignIn from "@/pages/Register"
 import Tournoi from "@/pages/tournoi"
 import LiveChat from "@/pages/liveChat"
 
-import Testlog from "@/pages/testlog"
+// import Testlog from "@/pages/testlog"
 
 
 function App() {
@@ -34,7 +34,7 @@ function App() {
               <Route path="/tournoi" element={<Tournoi />} />
               <Route path="/liveChat" element={<LiveChat />} />
 
-              <Route path="/testlog" element={<Testlog />} />
+              {/* <Route path="/testlog" element={<Testlog />} /> */}
 
 
             </Routes>
