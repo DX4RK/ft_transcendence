@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSocket } from "../context/SocketContext";
+import { useSocket, useSocketEvent } from "../context/SocketContext";
 import { useNotification } from "../context/NotificationContext";
 // import { Background } from "../../Game/background";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,15 +7,18 @@ import { Link, useNavigate } from "react-router-dom";
 
 // const socket = io("http://localhost:3000", { withCredentials: true, autoConnect: false });
 
+interface Message {
+	id: string;
+	text: string;
+	userId: string;
+	timestamp: number;
+}
+
 function LiveChat() {
 	const navigate = useNavigate();
-	const { socket } = useSocket();
 	const { addNotification } = useNotification();
-	// const [notifications, setNotifications] = useState<
-	// { id: number; type: string; text: string }[]
-	// >([]);
-	// const [connected, setConnected] = useState(false);
-	const [messages, setMessages] = useState<string[]>([]);
+
+	//const [messages, setMessages] = useState<string[]>([]);
 	const [privMessages, setPrivMessages] = useState<string[]>([]);
 	const [input, setInput] = useState("");
 	const [privInput, setPrivInput] = useState("");
@@ -23,86 +26,77 @@ function LiveChat() {
 	const [connectedUsers, setConnectedUsers] = useState<string[]>([]);
 	const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
-	// Connect socket
+	const { socket, isConnected } = useSocket();
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+	const [messages, setMessages] = useState<Message[]>([]);
+	const [inputText, setInputText] = useState('');
+
 	useEffect(() => {
-		if (!socket) return;
-		// const game = new Background();
-		// game.start();
+		if (!socket || !isConnected) return;
 
-		// socket.on("connect", () => console.log("✅ Connecté au serveur :", socket.id));
-		// socket.on("connect_error", (err) => console.error("❌ Erreur Socket.IO:", err.message));
-		// socket.on("disconnect", (reason) => console.log("⚠️ Déconnecté:", reason));
+		const token = document.cookie
+			.split('; ')
+			.find(row => row.startsWith('token='))
+			?.split('=')[1];
 
-		// if (!connected) {
-		// 	socket.connect();
-		// 	setConnected(true);
-		// }
+		console.log("token fetch");
+		console.log(`token: ${token}`);
+		if (token) {
+			socket.emit('authenticate', token);
+		} else {
+			console.error('Auth error: no token provided');
+			setIsAuthenticated(false);
+			window.location.href = '/login';
+		}
+	}, [socket, isConnected]);
 
-		socket.on("message", (msg: string) => {
-			setMessages((prev) => [...prev, msg]);
+	useSocketEvent('authenticated', (data) => {
+		console.log('Authenticated as user:', data.userId);
+		setIsAuthenticated(true);
+	});
+
+	useSocketEvent('auth-error', (data) => {
+		console.error('Auth error:', data.message);
+		setIsAuthenticated(false);
+		window.location.href = '/login';
+	});
+
+	useSocketEvent<Message>('new-message', (message) => {
+		setMessages(prev => [...prev, message]);
+	});
+
+	// Utils
+
+	const canInteract = () => {
+		if (!socket || !isConnected || !isAuthenticated)
+			return false;
+		return true;
+	}
+
+	// Methods
+
+	const sendMessage = () => {
+		if (!canInteract()) return;
+
+		console.log(inputText);
+		socket?.emit('send-message', {
+			roomId: 'general',
+			message: inputText
 		});
 
-		socket.on("priv-message", (user: string, msg: string) => {
-			if (user === selectedUser || user === socket.id) {
-				setPrivMessages((prev) => [...prev, msg]);
-			} else {
-				addNotification("priv-message", `Message privé de ${user}`);
-			}
-		});
+		setInputText('');
+	}
 
-		socket.on("users-connected", (users: string[]) => {
-			setConnectedUsers(users.filter((u) => u !== socket.id));
-			console.log(users);
-		});
+	useEffect(() => {
+		if (!canInteract()) return;
 
-		socket.on("new-user-connected", (user: string) => {
-			setConnectedUsers((prev) => [...prev, user]);
-			console.log(user);
-		});
-
-		socket.on("user-disconnected", (user: string) => {
-			setConnectedUsers((prev) => prev.filter((u) => u !== user));
-		});
-
-		// socket.on("user-blocked", (blocker: string, blocked: string) => {
-		// 	if (blocked === socket.id) {
-		// 		addNotification("blocked", `${blocker} has blocked you`);
-		// 	}
-		// });
-
-		// socket.on("invit-game", (fromUser: string) => {
-		// 	addNotification("invite", `Invitation to play from ${fromUser}`);
-		// });
-
+		socket?.emit('join-room', 'general');
+		socket?.emit('subscribe-notifications', 'test');
 		return () => {
-			// socket.off("connect");
-			// socket.off("connect_error");
-			// socket.off("disconnect");
-			socket.off("message");
-			socket.off("priv-message");
-			socket.off("users-connected");
-			socket.off("new-user-connected");
-			socket.off("user-disconnected");
-			// socket.off("user-blocked");
-			// socket.off("invit-game");
+			socket?.emit('leave-room', 'general');
 		};
-	}, [selectedUser, socket]);
-
-	const handleSend = () => {
-		if (input.trim() === "") return;
-		socket.emit("message", input, (callback) => {
-			console.log(callback);
-		});
-		setInput("");
-	};
-
-	const handlePrivSend = () => {
-		if (!selectedUser || privInput.trim() === "") return;
-		socket.emit("priv-message", selectedUser, privInput , (callback) => {
-			console.log(callback);
-		});
-		setPrivInput("");
-	};
+	}, [socket, isConnected, isAuthenticated]);
 
 	const switchMode = (privateMode: boolean) => {
 		setIsPrivate(privateMode);
@@ -262,7 +256,12 @@ function LiveChat() {
 
 			{/* Zone Chat */}
 			<div className="flex flex-col bg-white/10 backdrop-blur-md w-3/5 h-96 rounded-2xl border-2 border-white/30 shadow-lg p-5 overflow-y-auto space-y-2">
-				{(isPrivate ? privMessages : messages).length === 0 ? (
+				{messages.map((message) => (
+					<div key={message.id} className="text-white text-lg">
+						{message.text}
+					</div>
+				))}
+				{/* {(isPrivate ? privMessages : messages).length === 0 ? (
 					<p className="opacity-60 text-center italic mt-20">
 						{isPrivate
 							? selectedUser
@@ -276,7 +275,7 @@ function LiveChat() {
 						{msg}
 					</div>
 					))
-				)}
+				)} */}
 			</div>
 
 			{/* Input et boutons */}
@@ -285,12 +284,12 @@ function LiveChat() {
 				type="text"
 				placeholder={isPrivate && !selectedUser ? "Select a user..." : "Write your message..."}
 				className="flex-1 px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-				value={isPrivate ? privInput : input}
-				onChange={(e) => (isPrivate ? setPrivInput(e.target.value) : setInput(e.target.value))}
-				onKeyDown={(e) => e.key === "Enter" && (isPrivate ? handlePrivSend() : handleSend())}
+				value={inputText}
+				onChange={(e) => setInputText(e.target.value)}
+				onKeyDown={(e) => e.key === "Enter" && (sendMessage())}
 				disabled={isPrivate && !selectedUser}/>
 				<button
-				onClick={isPrivate ? handlePrivSend : handleSend}
+				onClick={sendMessage}
 				className="px-6 py-3 rounded-full bg-pink-500 text-white font-bold shadow-md hover:bg-pink-600 hover:scale-105 transition">
 					Send
 				</button>
