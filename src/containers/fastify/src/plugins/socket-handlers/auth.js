@@ -20,7 +20,9 @@ async function socketAuthHandlers(fastify, opts) {
 					socket.userId = decoded.userId;
 					socket.join(`user:${decoded.userId}`);
 					fastify.log.info(`User ${decoded.userId} authenticated`);
+
 					socket.emit('authenticated', { userId: decoded.userId });
+					fastify.socketIO.emit('user-added', { userId: decoded.userId });
 				} catch (err) {
 					fastify.log.error('Authentication failed:', err);
 					socket.emit('auth-error', { message: 'Invalid token' });
@@ -40,6 +42,8 @@ async function socketAuthHandlers(fastify, opts) {
 
 			socket.on('disconnect', () => {
 				fastify.log.info(`Client disconnected: ${socket.id}`);
+				if (socket.userId)
+					fastify.socketIO.emit('user-removed', { userId: decoded.userId });
 			});
 
 		});
