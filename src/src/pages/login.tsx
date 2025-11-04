@@ -26,7 +26,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 	setLoading(true);
 
 	try {
-		const result = await login(email, password);
+		const result = await login(email, password); //! REQUETE API 
 
 		if (result.success) {
 			console.log("success !");

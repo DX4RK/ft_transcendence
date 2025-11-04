@@ -16,6 +16,8 @@ function Game() {
 	const navigate = useNavigate();
 	const name1 = user1 || "User";
 	const name2 = user2 || "Guest";
+
+
 	const handleEscape = () => {
 	alert("- Game paused -");
 	};
@@ -28,7 +30,6 @@ function Game() {
 	};
 
 	window.addEventListener("keydown", handleKeyDown);
-
 	// Nettoyage à la fin du cycle de vie du composant
 	return () => {
 		window.removeEventListener("keydown", handleKeyDown);
@@ -77,7 +78,7 @@ function Game() {
 					navigate("/", { state: { winner: left }});
 				else if (mode == 2)
 					navigate("/tournoi", { state: { winner: left ,scoreL: left}});
-			}, 5000);
+			}, 3000);
 		}
 		else if (right >= 2)
 		{
