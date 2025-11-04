@@ -26,12 +26,12 @@ function Profile() {
 //	---------------------------
 
 	const location = useLocation();
-	const { login } = location.state || {}; //! afficher les donner ressus
+	const { username } = location.state || {}; //! afficher les donner ressus
 
-	console.log(login);
+	console.log(username);
 
 	const dataUserProfile = {
-		login: login,
+		username: username,
 	};
 
 	fetch('http://localhost:3000/dataUser', {

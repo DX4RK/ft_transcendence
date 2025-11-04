@@ -40,9 +40,21 @@ async function socketAuthHandlers(fastify, opts) {
 				next();
 			});
 
+			// socket.on('disconnect', () => {
+			// 	fastify.log.info(`Client disconnected: ${socket.id}`);
+			// });
+
 			socket.on('disconnect', () => {
-				fastify.log.info(`Client disconnected: ${socket.id}`);
-			});
+                socket.broadcast.emit('disconnected-user', socket.id);
+                // const index = clients.indexOf(socket.id);
+                // if (index > -1)
+                //     clients.splice(index, 1);
+                // delete blockedUser[socket.id];
+                // for (const user in blockedUser) {
+                //     blockedUser[user].delete(socket.id);
+                // }
+                fastify.log.info(`Client déconnecté : ${socket.id}`);
+            });
 
 		});
 	});

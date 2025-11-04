@@ -30,7 +30,7 @@ export default function RegisterPage() {
 
 			if (result.success) {
 				console.log("success !");
-				navigate('/profile', { state: { login: email }});
+				navigate('/Twofa', { state: { username: email.split("@")[0] }});
 			}
 		}
 	}
@@ -62,7 +62,7 @@ export default function RegisterPage() {
 		<div className="flex min-h-screen items-center justify-center ">
 			<form onSubmit={handleSubmit} className="bg-gradient-to-r from-[#45586c] to-[#424048] p-8 rounded-lg shadow-xl shadow-cyan-500/30 w-80">
 			<h2 className="text-2xl font-arcade text-center mb-6 text-slate-300">
-				Sign In
+				Register
 			</h2>
 			{error && (
 				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -86,7 +86,7 @@ export default function RegisterPage() {
 			</div>
 
 			<button type="submit" className="w-full bg-[#E95D2C] font-arcade text-[#B0CEE2] py-2 rounded-lg hover:ring hover:ring-[#B0CEE2] hover:bg-orange-600 hover:text-[#1A2730] transition">
-					log in
+					Register
 			</button>
 			</form>
 		</div>

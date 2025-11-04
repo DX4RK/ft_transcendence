@@ -22,7 +22,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 			autoConnect: false,
 		});
 
-		newSocket.connect(); //! connecter seulement si user login
+		// newSocket.connect(); //! connecter seulement si user login
 
 		newSocket.on("connect", () => {
 			console.log("✅ Socket connected");

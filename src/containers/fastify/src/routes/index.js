@@ -36,7 +36,11 @@ const registerRoutes = async (fastify, { transporter, vonage, generateToken }) =
 		transporter,
 		vonage
 	});
-	await fastify.register(signUpRoute, { prefix: '/sign' });
+	
+	await fastify.register(signUpRoute, {
+		prefix: '/sign',
+		transporter
+	});
 
 	await fastify.register(verifyRoute, {
 		prefix: '/twofa',

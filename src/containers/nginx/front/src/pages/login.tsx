@@ -30,7 +30,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
 		if (result.success) {
 			console.log("success !");
-			navigate('/profile', { state: { login: email }});
+				navigate('/Twofa', { state: { username: email.split("@")[0] }});
 		}
 	} catch (err) {
 		setError('Erreur de connexion');

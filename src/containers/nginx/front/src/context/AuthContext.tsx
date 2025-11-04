@@ -62,34 +62,37 @@ const login = async(email: string, password: string): Promise<{ success: boolean
 	// 	}
 	// };
   const data = {
-    username: email,
+    username: email.split("@")[0],
     password: password
   };
 
-  fetch('http://localhost:3000/sign/in', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: "include",
-        body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            console.log(data.message);
-            return { success: true };
-        } else {
-          return { success: false };
-        }
-    })
-    .catch(err => {
-        console.error("Erreur fetch :", err);
-    });
+  try {
+		const response = await fetch('http://localhost:3000/sign/in', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: "include",
+			body: JSON.stringify(data)
+		});
+
+		const result = await response.json();
+
+		if (result.success) {
+			console.log(result.message);
+			return { success: true };
+		} else {
+			console.log(result.message);
+			return { success: false };
+		}
+	} catch (err) {
+		console.error("Erreur fetch :", err);
+		return { success: false };
+	}
 
 	// setUser(data);
 	// localStorage.setItem('user', JSON.stringify(data)); //* stocke les data en cas de refresh
 	// console.log(data.name, data.id, data.email )
 	// return { success: true };
-	return { success: true };
+	return { success: false }; 
   };
 
 
@@ -110,33 +113,36 @@ const register = async (email: string, password: string): Promise<{ success: boo
   //   };
 
   const data = {
-    username: email,
+    username: email.split("@")[0],
     email: email,
     password: password
   };
 
-  fetch('http://localhost:3000/sign/up', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: "include",
-        body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            console.log(data.message);
-            return { success: true };
-        } else {
-          return { success: false };
-        }
-    })
-    .catch(err => {
-        console.error("Erreur fetch :", err);
-    });
+  try {
+		const response = await fetch('http://localhost:3000/sign/up', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: "include",
+			body: JSON.stringify(data)
+		});
+
+		const result = await response.json();
+
+		if (result.success) {
+			console.log(result.message);
+			return { success: true };
+		} else {
+			console.log(result.message);
+			return { success: false };
+		}
+	} catch (err) {
+		console.error("Erreur fetch :", err);
+		return { success: false };
+	}
 
 	// setUser(userData);
 	// localStorage.setItem('user', JSON.stringify(userData));
-	 return { success: true };
+	 return { success: false };
 };
 
 	//$  --- LOGOUT ---

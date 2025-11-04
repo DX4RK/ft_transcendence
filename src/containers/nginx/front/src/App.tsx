@@ -13,6 +13,7 @@ import Login from "@/pages/login"
 import Register from "@/pages/Register"
 import Tournoi from "@/pages/tournoi"
 import LiveChat from "@/pages/liveChat"
+import Twofa from "@/pages/Twofa"
 
 import Testlog from "@/pages/testlog"
 
@@ -33,6 +34,7 @@ function App() {
               <Route path="/game" element={<Game />} />
               <Route path="/tournoi" element={<Tournoi />} />
               <Route path="/liveChat" element={<LiveChat />} />
+              <Route path="/Twofa" element={<Twofa />} />
 
               <Route path="/testlog" element={<Testlog />} />
 
