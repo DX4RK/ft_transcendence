@@ -42,6 +42,13 @@ async function updateStatsOnMatchFinish(fastify, opts) {
 			}
 			newHistory.push(history);
 
+			const points = userWon ? 8.5 : 3.5;
+			fastify.usersDb.prepare(`
+			  UPDATE users
+			  SET experience_point = experience_point + ?
+			  WHERE id = ?
+			`).run(points, decoded.userId);
+
 			fastify.usersDb.prepare(`
 				INSERT INTO user_matches (user_id, match_played, match_won, history)
 				VALUES (?, 1, ?, json(?))
