@@ -12,8 +12,20 @@ async function getMatchStats(fastify, opts) {
 				return reply.send({
 					success: true,
 					message: 'No stats yet.',
-					data: { matchWon: 0, matchPlayed: 0 }
+					data: {
+						history: {},
+						matchWon: 0,
+						matchLost: 0,
+						matchPlayed: 0,
+					}
 				});
+			}
+
+			let history = {};
+			try {
+				history = JSON.parse(userStats.history || '{}');
+			} catch (e) {
+				history = {};
 			}
 
 			return reply.send({
@@ -21,8 +33,9 @@ async function getMatchStats(fastify, opts) {
 				message: 'User stats retrieved successfully.',
 				data: {
 					matchWon: userStats.match_won,
-					matchLost: userStats.match_played - userStats.match_won,
+					matchLost: (userStats.match_played - userStats.match_won),
 					matchPlayed: userStats.match_played,
+					history: history,
 				}
 			}
 		);
