@@ -1,8 +1,7 @@
 const fp = require('fastify-plugin');
+const { verifyToken } = require('../../service/jwt')
 
 async function socketAuthHandlers(fastify, opts) {
-	const { verifyToken } = opts;
-
 	fastify.addHook('onReady', async () => {
 		fastify.socketIO.on('connection', (socket) => {
 			fastify.log.info(`Client connected: ${socket.id}`);
@@ -20,7 +19,6 @@ async function socketAuthHandlers(fastify, opts) {
 
 					socket.userId = decoded.userId;
 					socket.join(`user:${decoded.userId}`);
-
 					fastify.log.info(`User ${decoded.userId} authenticated`);
 					socket.emit('authenticated', { userId: decoded.userId });
 				} catch (err) {
