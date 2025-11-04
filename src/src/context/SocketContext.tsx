@@ -70,3 +70,20 @@ export const useSocket = () => {
 		throw new Error("useSocket must be used within a SocketProvider");
 	return context;
 };
+
+export function useSocketEvent<T = any>(
+	eventName: string,
+	callback: (data: T) => void
+  ) {
+	const { socket, isConnected } = useSocket();
+
+	useEffect(() => {
+	  if (!socket || !isConnected) return;
+
+	  socket.on(eventName, callback);
+
+	  return () => {
+		socket.off(eventName, callback);
+	  };
+	}, [socket, isConnected, eventName, callback]);
+  }
