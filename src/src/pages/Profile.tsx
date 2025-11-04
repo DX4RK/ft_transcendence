@@ -43,7 +43,7 @@ function Profile() {
 
 	const loadHistory = async () => {
 		// setLoading(true);
-		const res = await fetch(`/api/history?page=${page}&limit=20`); //! API HISTORY REQUEST
+		const res = await fetch(`https/`); //! API HISTORY REQUEST
 		const data = await res.json();
 		console.log(games);
 		setGames(data.games);
@@ -51,9 +51,9 @@ function Profile() {
 		// setLoading(false);
 	};
 
-	fetch('http://localhost:3000/dataUser', {
+	fetch('http://localhost:3000/stats/matches/me', {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
+		headers: { 'Content-Type': 'application/json', 'authorization': 'token' },
 		credentials: "include",
 		body: JSON.stringify(dataUserProfile)
 	})

@@ -2,7 +2,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Background } from "../../Game/background";
 import { useEffect } from "react";
-// import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 
 
 function Home() {
@@ -15,14 +15,20 @@ function Home() {
 		game.start();
 	}, []);
 
-	// const { isLoggedIn } = useAuth();
+	const { user } = useAuth();
+		const handleButtonClick = () => {
+		if (user)
+			navigate('/dashboard');
+		else
+			navigate('/login');
+	};
 	// navigate("/profile", { state: { login: user }});
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-r from-cyan-500/50 to-blue-500/50 ">
 		<div className="flex flex-row">
 			<Link to="/" className="flex-grow text-base text-cyan-300/70 text-xl font-arcade z-30">ft_transcendence</Link>
-			<Link to= "/login" className="z-30">
+			<button onClick={handleButtonClick} className="z-30">
 			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.3" stroke="currentColor" className=" size-16 m-4 z-30">
 				<defs>
 					<linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -31,7 +37,7 @@ function Home() {
 					</linearGradient>
 				</defs>
   				<path strokeLinecap="round" strokeLinejoin="round" stroke="url(#orangeGradient)" className="" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-			</svg> </Link>
+			</svg> </button>
 		</div>
 
 
