@@ -3,76 +3,82 @@ import { useState, useEffect } from "react"
 
 function Profile() {
 
-	const [stats] = useState({ // stats de l user a recup
-		login: "TheWizzler",
-		victoires: 25,
-		defaites: 22,
-		goalTaken: 42,
-		goalScored: 65,
-		xp: 7.6
-	});
-
-	const total = stats.victoires + stats.defaites;
-	const victoiresPct = (stats.victoires / total) * 100;
-	const defaitesPct = (stats.defaites / total) * 100;
-	const level = Math.floor(stats.xp);
-	const xpProgress = (stats.xp - level) * 100;
-	const radius = 80;
-	const circumference = 2 * Math.PI * radius;
-	const defaitesOffset = (victoiresPct / 100) * circumference;
-
-	//! -----REPLACE WITH SQL ------
-	const [games, setGames] = useState([]);
-	const [page, setPage] = useState(1);
-	const [totalPages, setTotalPages] = useState(1);
-	// const [loading, setLoading] = useState(false);
-
-	//	---------------------------
-
 	const location = useLocation();
-	const { login } = location.state || {}; //! afficher les donnees recues
+	const { login } = location.state || {};
+	const { token } = location.state || {};
 
-	const dataUserProfile = {
-		login: login,
-	};
+	interface UserStats {
+    "success": true,
+    "message": "User stats retrieved successfully.",
+    "data": {
+        "matchWon": 0,
+        "matchLost": 0,
+        "matchPlayed": 0,
+		"xp" : 0,
+		"history": []
+    }
+}
 
+	//$ ------------ NOLAN CODE -------
+
+	let [data, setData] = useState<UserStats | null>(null);
+	const [error, setError] = useState(null);
 
 	useEffect(() => {
-		loadHistory();
-	}, [page]);
+	const fetchData = async () => {
+		const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc2MjI3MjAyMywiZXhwIjoxNzYyODc2ODIzfQ.pozKlm_064QVFoPtmTzG889jZvcERnv4wYuBD9HEYJQ"; // Put your JWT or API token here
 
-	const loadHistory = async () => {
-		// setLoading(true);
-		const res = await fetch(`https/`); //! API HISTORY REQUEST
-		const data = await res.json();
-		console.log(games);
-		setGames(data.games);
-		setTotalPages(data.totalPages);
-		// setLoading(false);
-	};
+		try {
+		const response = await fetch("http://localhost:3000/stats/matches/me", {
+			method: "GET",
+			headers: {
+				"Authorization": `Bearer ${token}`,
+			"Content-Type": "application/json",
+			},
+		});
 
-	fetch('http://localhost:3000/stats/matches/me', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json', 'authorization': 'token' },
-		credentials: "include",
-		body: JSON.stringify(dataUserProfile)
-	})
-	.then(res => res.json())
-	.then(data => {
-		if (data.success) {
-			console.log(data.message);
-			//! afficher les données reçues
-		} else {
-			console.error('Erreur : ' + data.message);
+		if (!response.ok) {
+			throw new Error(`HTTP error! Status: ${response.status}`);
 		}
-	})
-	.catch(err => {
-		console.error("Erreur fetch :", err);
-	});
+
+		const result = await response.json(); // use .json() instead of .text()
+		console.log(result);
+		console.log("test");
+		setData(result);
+	} catch (	err) {
+		console.error("Fetch error:", err);
+		setError(err.message);
+	}
+};
+
+fetchData();
+}, []);
 
 
+if (!data )
+{
+	// data = {
+	// 	matchWon: 0,
+	// 	matchLost: 0,
+	// 	victoiresPct: 0,
+	// 	defaitesPct: 0,
+	// 	total: 0,
+	// }
+	return ;
+
+}
 
 
+const total = data.data.matchWon + data.data.matchLost;
+const victoiresPct = data ? (data.data.matchWon / total) * 100 : 0;
+const defaitesPct = data ? (data.data.matchLost / total) * 100 : 0;
+const level = data ? Math.floor(data.data.xp) : 0;
+const xpProgress = data ? (data.data.xp - level) * 100 : 0;
+const radius = 80;
+const circumference = 2 * Math.PI * radius;
+const defaitesOffset = (victoiresPct / 100) * circumference;
+
+	console.log(data);
 
 
   return (
@@ -121,7 +127,7 @@ function Profile() {
   <div className="min-h-screen flex items-center justify-center p-8">
 
 		<div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl">
-			<h1 className="text-3xl font-bold text-cyan-300/70 mb-8 text-center font-arcade">{stats.login}</h1>
+			<h1 className="text-3xl font-bold text-cyan-300/70 mb-8 text-center font-arcade">{login}</h1>
 
 			{/* Niveau actuel */}
 			<div className="flex items-center justify-between mb-4">
@@ -241,7 +247,7 @@ function Profile() {
                   </div>
                   <div>
                     <div className="text-gray-400 text-sm">Victoires</div>
-                    <div className="text-3xl font-arcade text-white">{stats.victoires}</div>
+                    <div className="text-3xl font-arcade text-white">{data ? data.data.matchWon : 0}</div>
                   </div>
                 </div>
                 <div className="text-right">
@@ -258,7 +264,7 @@ function Profile() {
                   </div>
                   <div>
                     <div className="text-gray-400 text-sm">Défaites</div>
-                    <div className="text-3xl font-arcade text-white">{stats.defaites}</div>
+                    <div className="text-3xl font-arcade text-white">{data ? data.data.matchLost : 0}</div>
                   </div>
                 </div>
                 <div className="text-right">
@@ -285,11 +291,11 @@ function Profile() {
 				{/* TOTAL SCORED */}
 		<div className="mt-12 text-center bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
 			<div className="text-gray-400 mb-2">Total but marque</div>
-			<div className="text-4xl font-arcade text-white">{stats.goalScored}</div>
+			<div className="text-4xl font-arcade text-white">{95}</div>
 		</div>
 		<div className="mt-6 text-center bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
 			<div className="text-gray-400 mb-2">Total but encaisse</div>
-			<div className="text-4xl font-arcade text-white">{stats.goalTaken}</div>
+			<div className="text-4xl font-arcade text-white">{40}</div>
 		</div>
       </div>
     </div>
@@ -316,7 +322,7 @@ function Profile() {
 
 
 		{/* Pagination */}
-	<div className="flex items-center justify-center gap-2 mt-4">
+	{/* <div className="flex items-center justify-center gap-2 mt-4">
 		<button
 			disabled={page === 1}
 			onClick={() => setPage(p => p - 1)}
@@ -330,7 +336,7 @@ function Profile() {
 		>
 			Suivant
 		</button>
-	</div>
+	</div> */}
 	</div>
 
 	)

@@ -10,6 +10,19 @@ import { useLocation } from "react-router-dom";
 
 function Game() {
 
+	interface data {
+	"userData": {
+		"name": string,
+		"score": number
+	},
+	"guestData": {
+		"name": string,
+		"score": number
+	}
+	}
+
+	let [data, setData] = useState<data | null>(null);
+
 	const location = useLocation();
 	const mode = location.state?.mode || 1; // valeur par défaut si undefined
 	const { user1, user2 } = location.state || {}; //! afficher les pseudo des joueurs
@@ -17,6 +30,18 @@ function Game() {
 	const name1 = user1 || "User";
 	const name2 = user2 || "Guest";
 
+	// data ? data.userData.name = user1 : null;
+	// data ? data.guestData.name = user2 : null;
+
+	// setData({
+	// ...data!,
+	// userData: {
+	// 	...data!.userData,
+	// 	name: "Nouveau nom"
+	// }
+	// });
+
+	// setData(data ? data.userData.name = user1 : null);
 
 	const handleEscape = () => {
 	alert("- Game paused -");
@@ -36,11 +61,24 @@ function Game() {
 	};
 	}, []);
 
+	//$------------------------------------------------
+	const myHeaders = new Headers();
 
-	// export default function Game() {
+	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc2MjI3MjAyMywiZXhwIjoxNzYyODc2ODIzfQ.pozKlm_064QVFoPtmTzG889jZvcERnv4wYuBD9HEYJQ";
+	myHeaders.append("Authorization", `Bearer ${token}`);
+	myHeaders.append("Content-Type", "application/json");
+
+	const raw = JSON.stringify(data);
+
+
+
+
+	//$  export default function Game()  ??
 	const [scoreLeft, setScoreLeft] = useState(0);
 	const [scoreRight, setScoreRight] = useState(0);
 	const [winner, setWinner] = useState(0);
+
+
 
 	return (
 	<div className="bg-gradient-to-r from-cyan-500/50 to-blue-500/50">
@@ -70,8 +108,16 @@ function Game() {
 		{
 			console.log("Left player wins!");
 			setWinner(1);
+			data ? data.userData.score = left : 0;
+			data ? data.guestData.score = right : 0;
 
-			// sendGameData();//! API SENDER !!!
+			console.log(data?.userData.name);
+
+			fetch("http://localhost:3000/stats/match-finished", {method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
+			.then((response) => response.text())
+			.then((result) => console.log(result))
+			.catch((error) => console.error(error));
+
 
 			setTimeout(() => {
 				if (mode == 1)
@@ -84,8 +130,17 @@ function Game() {
 		{
 			console.log("Right player wins!");
 			setWinner(2);
+			data ? data.userData.score = left : 0;
+			data ? data.guestData.score = right : 0;
 
-			// sendGameData(winner, left, right, );//! API SENDER !!!
+			console.log(data?.userData.name);
+
+
+			fetch("http://localhost:3000/stats/match-finished", {method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
+			.then((response) => response.text())
+			.then((result) => console.log(result))
+			.catch((error) => console.error(error));
+
 
 			setTimeout(() => {
 				if (mode == 1)
