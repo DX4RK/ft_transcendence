@@ -15,9 +15,9 @@ interface Message {
 }
 
 interface ConnectedUser {
+	id: string;
 	userId: number;
-	socketId: string;
-  }
+}
 
 function LiveChat() {
 	const navigate = useNavigate();
@@ -28,6 +28,7 @@ function LiveChat() {
 	const [isPrivate, setIsPrivate] = useState(false);
 
 	const { socket, isConnected } = useSocket();
+	const [roomId, setRommId] = useState('general');
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([]);
 	const [selectedUser, setSelectedUser] = useState<ConnectedUser>();
@@ -113,6 +114,9 @@ function LiveChat() {
 		});
 	})
 
+	selectedUser
+	//socket?.emit('join-private-room')
+
 	// Methods
 
 	const sendMessage = () => {
@@ -120,7 +124,7 @@ function LiveChat() {
 
 		console.log(inputText);
 		socket?.emit('send-message', {
-			roomId: 'general',
+			roomId: {roomId},
 			message: inputText
 		});
 
@@ -130,18 +134,22 @@ function LiveChat() {
 	useEffect(() => {
 		if (!canInteract()) return;
 
-		socket?.emit('join-room', 'general');
-		socket?.emit('subscribe-notifications', 'test');
+		if (isPrivate && selectedUser) {
+			console.log(selectedUser);
+			socket?.emit('join-private-room', selectedUser.id);
+		} else if (!isPrivate)
+			socket?.emit('join-room', {roomId});
+
 		return () => {
-			socket?.emit('leave-room', 'general');
+			socket?.emit('leave-room', {roomId});
 		};
-	}, [socket, isConnected, isAuthenticated]);
+	}, [socket, isConnected, isAuthenticated, selectedUser]);
 
 	const switchMode = (privateMode: boolean) => {
 		setIsPrivate(privateMode);
 		setMessages([]);
 		setPrivMessages([]);
-		setSelectedUser(null);
+		setSelectedUser(undefined);
 	};
 
 	const blockUser = (user: string | null) => {
