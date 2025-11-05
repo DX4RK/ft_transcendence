@@ -14,6 +14,11 @@ interface Message {
 	timestamp: number;
 }
 
+interface ConnectedUser {
+	userId: number;
+	socketId: string;
+  }
+
 function LiveChat() {
 	const navigate = useNavigate();
 	const { addNotification } = useNotification();
@@ -23,8 +28,8 @@ function LiveChat() {
 	const [input, setInput] = useState("");
 	const [privInput, setPrivInput] = useState("");
 	const [isPrivate, setIsPrivate] = useState(false);
-	const [connectedUsers, setConnectedUsers] = useState<string[]>([]);
-	const [selectedUser, setSelectedUser] = useState<string | null>(null);
+	const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([]);
+	const [selectedUser, setSelectedUser] = useState<ConnectedUser>();
 
 	const { socket, isConnected } = useSocket();
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -64,6 +69,10 @@ function LiveChat() {
 
 	useSocketEvent<Message>('new-message', (message) => {
 		setMessages(prev => [...prev, message]);
+	});
+
+	useSocketEvent('connected-users', (data) => {
+		setConnectedUsers(data);
 	});
 
 	// Utils
@@ -243,10 +252,10 @@ function LiveChat() {
 				<div className="flex flex-wrap gap-3">
 					{connectedUsers.map((user) => (
 					<button
-						key={user}
+						key={user.socketId}
 						onClick={() => setSelectedUser(user)}
 						className={`px-4 py-2 rounded-full text-sm font-bold transition ${selectedUser === user ? "bg-pink-500" : "bg-white/20 hover:bg-white/40"}`}>
-						{user}
+						{user.userId}
 					</button>
 					))}
 				</div>
