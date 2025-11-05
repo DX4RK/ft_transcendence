@@ -1,5 +1,13 @@
 const fp = require('fastify-plugin');
-const { verifyToken } = require('../../service/jwt')
+const { verifyToken } = require('../../service/jwt');
+
+const connectedSockets = new Map();
+
+function getAllConnectedSockets() {
+	return Array.from(connectedSockets.values()).map(socket => {
+		return { id: socket.id, userId: socket.userId };
+	});
+}
 
 async function socketAuthHandlers(fastify, opts) {
 	fastify.addHook('onReady', async () => {
@@ -21,9 +29,14 @@ async function socketAuthHandlers(fastify, opts) {
 					socket.join(`user:${decoded.userId}`);
 					fastify.log.info(`User ${decoded.userId} authenticated`);
 
+					console.log(getAllConnectedSockets());
+					socket.emit('connected-users', getAllConnectedSockets());
+
+					connectedSockets.set(socket.id, socket);
 					socket.emit('authenticated', { userId: decoded.userId });
 					fastify.socketIO.emit('user-added', { userId: decoded.userId });
 				} catch (err) {
+					console.log(err);
 					fastify.log.error('Authentication failed:', err);
 					socket.emit('auth-error', { message: 'Invalid token' });
 					socket.disconnect();
@@ -42,8 +55,10 @@ async function socketAuthHandlers(fastify, opts) {
 
 			socket.on('disconnect', () => {
 				fastify.log.info(`Client disconnected: ${socket.id}`);
-				if (socket.userId)
-					fastify.socketIO.emit('user-removed', { userId: decoded.userId });
+				if (socket.userId) {
+					connectedSockets.delete(socket.id);
+					fastify.socketIO.emit('user-removed', { userId: socket.userId });
+				}
 			});
 
 		});
