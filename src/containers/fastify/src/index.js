@@ -1,4 +1,5 @@
-const fastify = require('fastify')({ logger: true });
+const loggerConfig = require('./config/loggerConfig')
+const fastify = require('fastify')({ logger: loggerConfig });
 
 // Config
 const { port } = require('./config/env');
