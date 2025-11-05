@@ -25,17 +25,25 @@ function LiveChat() {
 
 	//const [messages, setMessages] = useState<string[]>([]);
 	const [privMessages, setPrivMessages] = useState<string[]>([]);
-	const [input, setInput] = useState("");
-	const [privInput, setPrivInput] = useState("");
 	const [isPrivate, setIsPrivate] = useState(false);
-	const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([]);
-	const [selectedUser, setSelectedUser] = useState<ConnectedUser>();
 
 	const { socket, isConnected } = useSocket();
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([]);
+	const [selectedUser, setSelectedUser] = useState<ConnectedUser>();
 
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [inputText, setInputText] = useState('');
+
+	// Utils
+
+	const canInteract = () => {
+		if (!socket || !isConnected || !isAuthenticated)
+			return false;
+		return true;
+	}
+
+	// Auth
 
 	useEffect(() => {
 		if (!socket || !isConnected) return;
@@ -58,7 +66,7 @@ function LiveChat() {
 
 	useSocketEvent('authenticated', (data) => {
 		console.log('Authenticated as user:', data.userId);
-		setIsAuthenticated(true);
+		setIsAuthenticated(data.userId);
 	});
 
 	useSocketEvent('auth-error', (data) => {
@@ -66,6 +74,8 @@ function LiveChat() {
 		setIsAuthenticated(false);
 		window.location.href = '/login';
 	});
+
+	// Events
 
 	useSocketEvent<Message>('new-message', (message) => {
 		setMessages(prev => [...prev, message]);
@@ -75,13 +85,33 @@ function LiveChat() {
 		setConnectedUsers(data);
 	});
 
-	// Utils
+	useSocketEvent('user-added', (data) => {
+		console.log(data.userId);
+		console.log(isAuthenticated);
 
-	const canInteract = () => {
-		if (!socket || !isConnected || !isAuthenticated)
-			return false;
-		return true;
-	}
+		if (!canInteract()) return;
+		if (data.userId == isAuthenticated) return;
+
+		setConnectedUsers((prevUsers) => {
+			const userExists = prevUsers.some(user => user.userId === data.userId);
+
+			if (userExists) {
+				return prevUsers.map(user =>
+					user.userId === data.userId
+						? { ...user, socketId: data.socketId }
+						: user
+				);
+			} else {
+				return [...prevUsers, { userId: data.userId, socketId: data.socketId }];
+			}
+		});
+	})
+
+	useSocketEvent('user-removed', (data) => {
+		setConnectedUsers((prevUsers) => {
+			return prevUsers.filter(user => user.userId !== data.userId);
+		});
+	})
 
 	// Methods
 
