@@ -34,7 +34,7 @@ async function socketAuthHandlers(fastify, opts) {
 
 					connectedSockets.set(socket.id, socket);
 					socket.emit('authenticated', { userId: decoded.userId });
-					fastify.socketIO.emit('user-added', { userId: decoded.userId });
+					fastify.socketIO.emit('user-added', { id: socket.id, userId: decoded.userId });
 				} catch (err) {
 					console.log(err);
 					fastify.log.error('Authentication failed:', err);
@@ -57,7 +57,7 @@ async function socketAuthHandlers(fastify, opts) {
 				fastify.log.info(`Client disconnected: ${socket.id}`);
 				if (socket.userId) {
 					connectedSockets.delete(socket.id);
-					fastify.socketIO.emit('user-removed', { userId: socket.userId });
+					fastify.socketIO.emit('user-removed', { id: socket.id, userId: socket.userId });
 				}
 			});
 
