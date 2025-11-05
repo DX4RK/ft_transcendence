@@ -26,7 +26,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 	setLoading(true);
 
 	try {
-		const result = await login(email, password); //! REQUETE API 
+		const result = await login(email, password); //! REQUETE API
 
 		if (result.success) {
 			console.log("success !");
@@ -86,7 +86,7 @@ return (
 					{/* log in */}
 					{loading ? 'Connexion...' : 'Log In'}
 			</button>
-			<Link to="/signIn" className="flex justify-center underline m-4">No account ? register</Link>
+			<Link to="/signIn" className="flex justify-center underline m-4">No bitches ? register</Link>
 			</form>
 		</div>
 	</div>

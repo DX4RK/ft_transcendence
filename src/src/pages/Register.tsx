@@ -7,46 +7,68 @@ export default function RegisterPage() {
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
   const [error, setError] = useState('');
+
   const { register } = useAuth();
   const navigate = useNavigate();
 
-//	fonction du boutton connexion / recuperer les donnees de connexion ici <--
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
-	e.preventDefault();
-	if (!email || !password1 || !password2) {
-		setError('Tous les champs sont requis');
-		return;
-	} else 	if (password1 !== password2) {
-		setError('Les mots de passe ne correspondent pas');
-		return;
-	}
+	const myHeaders = new Headers();
+	myHeaders.append("Content-Type", "application/json");
+
+	//	fonction du boutton connexion / recuperer les donnees de connexion ici <--
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
+		e.preventDefault();
+		if (!email || !password1 || !password2) {
+			setError('Tous les champs sont requis');
+			return;
+		} else 	if (password1 !== password2) {
+			setError('Les mots de passe ne correspondent pas');
+			return;
+		}
 
 	setError('');
 
 	try {
 		if ((password1 == password2) && password1) {
-			const result = await register(email, password1);
 
-			if (result.success) {
+			const raw = JSON.stringify({
+				"username": email,
+				"password": password1,
+				"email": email
+			});
+
+			const response = await fetch("http://localhost:3000/sign/up", {
+				method: "POST",
+				headers: myHeaders,
+				body: raw
+			});
+			const data = await response.text();
+
+			console.log("Response:", data);
+
+			if (response.ok) { // Vérifie le statut HTTP
 				console.log("success !");
 				navigate('/profile', { state: { login: email }});
+			} else {
+				setError('Inscription échouée');
 			}
+
+		}	else {
+			setError('Les mots de passe ne correspondent pas');
 		}
 	}
 	catch (err) {
-		setError('Connexion error');
-	}
+			setError('Connexion error');
+			console.error(err);
+			console.log(error)
+		}
 
-
-	console.log("Email:", email);
-	console.log("Mot de passe:", password1);
-	console.log("Mot de passe:", password2);
   };
 
   return (
 
-	<div className="bg-gradient-to-r from-[#1A2730] to-[#45586c]">
+	  <div className="min-h-screen bg-gradient-to-r from-[#1A2730] to-[#45586c]">
 
 
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 14" className="absolute bottom-0 left-0 w-full blur-xs z-0 pointer-events-none	">
@@ -57,10 +79,12 @@ export default function RegisterPage() {
 			<path d="M 0 7 L 9 14 Z M 15 0 L 24 7 Z" stroke="#e95d2c" strokeWidth="0.05" fill="none" className="animate-draw"/>
 		</svg>
 
-		<Link to="/" className="text-base text-cyan-300/70  text-xl hover:shadow-lg font-arcade z-50">ft_transcendence</Link>
+		<Link to="/" className="absolute text-base text-cyan-300/70  text-xl hover:shadow-lg font-arcade z-50">ft_transcendence</Link>
 
-		<div className="flex min-h-screen items-center justify-center ">
-			<form onSubmit={handleSubmit} className="bg-gradient-to-r from-[#45586c] to-[#424048] p-8 rounded-lg shadow-xl shadow-cyan-500/30 w-80">
+
+		<div className="flex items-center justify-center">
+		<div className="min-h-screen flex items-center justify-center">
+			<form onSubmit={handleSubmit} className="bg-gradient-to-t from-[#1A2730] to-[#45586c] justify-center p-8 rounded-lg shadow-xl shadow-cyan-500/30 w-80">
 			<h2 className="text-2xl font-arcade text-center mb-6 text-slate-300">
 				Sign In
 			</h2>
@@ -70,7 +94,9 @@ export default function RegisterPage() {
 				</div>
 			)}
 			<div className="mb-4">
-				<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border text-gray-500 order-[#E95D2C] rounded-lg p-2 focus:outline-none focus:text-[#B0CEE2] focus:ring-2 focus:ring-[#B0CEE2]" placeholder="exemple@email.com"/>
+				<input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+				className="w-full border text-gray-500 order-[#E95D2C] rounded-lg p-2 focus:outline-none focus:text-[#B0CEE2] focus:ring-2 focus:ring-[#B0CEE2]"
+				placeholder="exemple@email.com"/>
 			</div>
 
 			<div className="mb-6">
@@ -85,10 +111,12 @@ export default function RegisterPage() {
 				placeholder="Confirm Password"/>
 			</div>
 
-			<button type="submit" className="w-full bg-[#E95D2C] font-arcade text-[#B0CEE2] py-2 rounded-lg hover:ring hover:ring-[#B0CEE2] hover:bg-orange-600 hover:text-[#1A2730] transition">
+			<button type="submit" className="w-full bg-[#E95D2C] font-arcade text-[#B0CEE2] py-2 rounded-lg
+				hover:ring hover:ring-[#B0CEE2] hover:bg-orange-600 hover:text-[#1A2730] transition">
 					log in
 			</button>
 			</form>
+		</div>
 		</div>
 	</div>
   );

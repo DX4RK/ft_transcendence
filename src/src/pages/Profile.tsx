@@ -5,7 +5,7 @@ function Profile() {
 
 	const location = useLocation();
 	const { login } = location.state || {};
-	const { token } = location.state || {};
+	const { token } = location.state || {}; //! gestion du token dynamique
 
 	interface UserStats {
     "success": true,
@@ -18,8 +18,6 @@ function Profile() {
 		"history": []
     }
 }
-
-	//$ ------------ NOLAN CODE -------
 
 	let [data, setData] = useState<UserStats | null>(null);
 	const [error, setError] = useState(null);
@@ -42,10 +40,10 @@ function Profile() {
 		}
 
 		const result = await response.json(); // use .json() instead of .text()
-		console.log(result);
-		console.log("test");
+		// console.log(result);
+		// console.log("test");
 		setData(result);
-	} catch (	err) {
+	} catch (err) {
 		console.error("Fetch error:", err);
 		setError(err.message);
 	}
@@ -55,7 +53,7 @@ fetchData();
 }, []);
 
 
-if (!data )
+if (!data ) //! gestion si les data sont nulles / fetch error
 {
 	// data = {
 	// 	matchWon: 0,
@@ -78,7 +76,6 @@ const radius = 80;
 const circumference = 2 * Math.PI * radius;
 const defaitesOffset = (victoiresPct / 100) * circumference;
 
-	console.log(data);
 
 
   return (

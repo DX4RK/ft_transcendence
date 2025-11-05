@@ -21,8 +21,6 @@ function Game() {
 	}
 	}
 
-	let [data, setData] = useState<data | null>(null);
-
 	const location = useLocation();
 	const mode = location.state?.mode || 1; // valeur par défaut si undefined
 	const { user1, user2 } = location.state || {}; //! afficher les pseudo des joueurs
@@ -30,17 +28,23 @@ function Game() {
 	const name1 = user1 || "User";
 	const name2 = user2 || "Guest";
 
-	// data ? data.userData.name = user1 : null;
-	// data ? data.guestData.name = user2 : null;
+	let [data, setData] = useState<data | null>({
+		userData: { name: name1, score: 0 },
+		guestData: { name: name2, score: 0 }
+	});;
 
-	// setData({
-	// ...data!,
-	// userData: {
-	// 	...data!.userData,
-	// 	name: "Nouveau nom"
+	//  const handleEnd = () => {
+	// 		setData({
+	// 	userData: {
+	// 		name: "Alice",
+	// 		score: 100
+	// 	},
+	// 	guestData: {
+	// 		name: "Bob",
+	// 		score: 85
+	// 	}
+	// 	});
 	// }
-	// });
-
 	// setData(data ? data.userData.name = user1 : null);
 
 	const handleEscape = () => {
@@ -68,7 +72,7 @@ function Game() {
 	myHeaders.append("Authorization", `Bearer ${token}`);
 	myHeaders.append("Content-Type", "application/json");
 
-	const raw = JSON.stringify(data);
+	// const raw = JSON.stringify(data);
 
 
 
@@ -108,18 +112,25 @@ function Game() {
 		{
 			console.log("Left player wins!");
 			setWinner(1);
-			data ? data.userData.score = left : 0;
-			data ? data.guestData.score = right : 0;
 
-			console.log(data?.userData.name);
+			console.log(data);
+			console.log(left);
+			console.log(right);
 
-			fetch("http://localhost:3000/stats/match-finished", {method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
-			.then((response) => response.text())
-			.then((result) => console.log(result))
-			.catch((error) => console.error(error));
+			setData({
+			userData: { name: user1, score: left },
+			guestData: { name: user2, score: right }
+			});
+
 
 
 			setTimeout(() => {
+				console.log(data);
+				const raw = JSON.stringify(data);
+				fetch("http://localhost:3000/stats/match-finished", {method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
+				.then((response) => response.text())
+				.then((result) => console.log(result))
+				.catch((error) => console.error(error));
 				if (mode == 1)
 					navigate("/", { state: { winner: left }});
 				else if (mode == 2)
@@ -130,19 +141,26 @@ function Game() {
 		{
 			console.log("Right player wins!");
 			setWinner(2);
-			data ? data.userData.score = left : 0;
-			data ? data.guestData.score = right : 0;
+			// data ? data.userData.score = left : 0;
+			// data ? data.guestData.score = right : 0;
 
-			console.log(data?.userData.name);
-
-
-			fetch("http://localhost:3000/stats/match-finished", {method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
-			.then((response) => response.text())
-			.then((result) => console.log(result))
-			.catch((error) => console.error(error));
+			console.log(data);
+			console.log(left);
+			console.log(right);
+			setData({
+			userData: { name: user1, score: left },
+			guestData: { name: user2, score: right }
+			});
 
 
 			setTimeout(() => {
+				console.log(data);
+				const raw = JSON.stringify(data);
+				fetch("http://localhost:3000/stats/match-finished", {method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
+				.then((response) => response.text())
+				.then((result) => console.log(result))
+				.catch((error) => console.error(error));
+				
 				if (mode == 1)
 					navigate("/", { state: { winner: right }});
 				else if (mode == 2)
