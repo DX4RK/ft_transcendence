@@ -26,12 +26,24 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 	setLoading(true);
 
 	try {
-		const result = await login(email, password); //! REQUETE API
+		const myHeaders = new Headers();
+		myHeaders.append("Content-Type", "application/json");
 
-		if (result.success) {
+		const raw = JSON.stringify({
+		"username": email,
+		"password": password
+		});
+
+
+		const result = await fetch("http://localhost:3000/sign/in", { method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
+
+		if (result.ok) {
 			console.log("success !");
-			navigate('/profile', { state: { login: email }});
+			console.log(result);
+			navigate('/tfa', { state: { login: email }});
 		}
+		else
+			setError('Login failed, Error status :' + result.status)
 	} catch (err) {
 		setError('Erreur de connexion');
 	}
