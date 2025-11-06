@@ -22,9 +22,14 @@ async function socketChatHandlers(fastify, opts) {
 			socket.on('invite', async (targetSocketId) => {
 				if (!socket.userId || typeof targetSocketId !== 'string') return;
 
-				try {
-						console.log("blocked");
+				const targetSocket = fastify.io.sockets.sockets.get(targetSocketId);
+				if (!targetSocket) return;
 
+				try {
+					if (isUserBlocked(fastify.usersDb, socket.userId, targetId))
+						return;
+
+					// invnite context
 				} catch (err) {
 					fastify.log.error(`Error handling private room join: ${err.message}`);
 				}
