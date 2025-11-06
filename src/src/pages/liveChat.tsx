@@ -58,8 +58,6 @@ function LiveChat() {
 			.find(row => row.startsWith('token='))
 			?.split('=')[1];
 
-		console.log("token fetch");
-		console.log(`token: ${token}`);
 		if (token) {
 			socket.emit('authenticate', token);
 		} else {
@@ -91,9 +89,6 @@ function LiveChat() {
 	});
 
 	useSocketEvent('user-added', (data) => {
-		console.log(data.userId);
-		console.log(isAuthenticated);
-
 		if (!canInteract()) return;
 		if (data.userId == isAuthenticated) return;
 
