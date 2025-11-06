@@ -26,7 +26,7 @@ function Profile() {
 	const fetchData = async () => {
 		const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc2MjI3MjAyMywiZXhwIjoxNzYyODc2ODIzfQ.pozKlm_064QVFoPtmTzG889jZvcERnv4wYuBD9HEYJQ"; // Put your JWT or API token here
 
-		try {
+	try {
 		const response = await fetch("http://localhost:3000/stats/matches/me", {
 			method: "GET",
 			headers: {
@@ -40,12 +40,10 @@ function Profile() {
 		}
 
 		const result = await response.json(); // use .json() instead of .text()
-		// console.log(result);
-		// console.log("test");
 		setData(result);
 	} catch (err) {
 		console.error("Fetch error:", err);
-		setError(err.message);
+		setError(err);
 	}
 };
 
