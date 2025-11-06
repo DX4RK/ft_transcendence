@@ -30,8 +30,6 @@ async function getSettings(fastify, opts) {
 				updateStmt.run(JSON.stringify(mergedSettings), decoded.userId);
 			}
 
-			console.log(mergedSettings);
-
 			return reply.send({
 				success: true,
 				message: 'User settings retrieved successfully.',

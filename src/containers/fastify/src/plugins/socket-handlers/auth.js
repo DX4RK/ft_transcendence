@@ -29,14 +29,12 @@ async function socketAuthHandlers(fastify, opts) {
 					socket.join(`user:${decoded.userId}`);
 					fastify.log.info(`User ${decoded.userId} authenticated`);
 
-					console.log(getAllConnectedSockets());
 					socket.emit('connected-users', getAllConnectedSockets());
 
 					connectedSockets.set(socket.id, socket);
 					socket.emit('authenticated', { userId: decoded.userId });
 					fastify.socketIO.emit('user-added', { id: socket.id, userId: decoded.userId });
 				} catch (err) {
-					console.log(err);
 					fastify.log.error('Authentication failed:', err);
 					socket.emit('auth-error', { message: 'Invalid token' });
 					socket.disconnect();

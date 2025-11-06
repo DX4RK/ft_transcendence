@@ -5,7 +5,6 @@ async function socketNotificationHandlers(fastify, opts) {
 		fastify.socketIO.on('connection', (socket) => {
 
 			socket.on('subscribe-notifications', () => {
-				console.log("yes?");
 				if (!socket.userId) return;
 
 				socket.join(`notifications:${socket.userId}`);

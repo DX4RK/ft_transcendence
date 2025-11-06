@@ -18,8 +18,6 @@ async function updateStatsOnMatchFinish(fastify, opts) {
 			if (!isValidData(userData) || !isValidData(guestData))
 				return reply.code(401).send({ success: false, message: 'Invalid parameters' });
 
-			console.log(decoded.userId);
-
 			const history = {
 				players: [userData.name, guestData.name],
 				score: {

@@ -111,7 +111,6 @@ async function socketChatHandlers(fastify, opts) {
 				if (!socket.userId) return;
 
 				const { roomId, message } = data;
-				console.log(roomId, message);
 				try {
 					const msg = await fastify.usersDb.prepare(
 						'INSERT INTO messages (room_id, user_id, message) VALUES (?, ?, ?)'
