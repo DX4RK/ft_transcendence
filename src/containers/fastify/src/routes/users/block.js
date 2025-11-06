@@ -10,7 +10,7 @@ async function blockUser(fastify, opts) {
 			const decoded = request.user;
 			const { userId } = request.body;
 
-			if (!isNumber(userId))
+			if (!isNumber(userId) || userId == decoded.userId)
 				return reply.code(401).send({ success: false, message: 'Invalid parameters' });
 
 			const stmt = fastify.usersDb.prepare('SELECT * FROM users WHERE id = ?');
