@@ -24,15 +24,13 @@ function LiveChat() {
 	const navigate = useNavigate();
 	const { addNotification } = useNotification();
 
-	//const [messages, setMessages] = useState<string[]>([]);
-	const [privMessages, setPrivMessages] = useState<string[]>([]);
-	const [isPrivate, setIsPrivate] = useState(false);
-
 	const { socket, isConnected } = useSocket();
+
 	const [roomId, setRoomId] = useState('general');
-	const [ token, setToken ] = useState('null');
+	const [token, setToken] = useState('null');
+	const [isPrivate, setIsPrivate] = useState(false);
 	const [isAuthenticated, setIsAuthenticated] = useState(0);
-	const [blockedUsers, setBlokedUsers] = useState<ConnectedUser[]>([]);
+	const [blockedUsers, setBlockedUsers] = useState<number[]>([]);
 	const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([]);
 	const [selectedUser, setSelectedUser] = useState<ConnectedUser>();
 
@@ -49,6 +47,11 @@ function LiveChat() {
 
 	const getPrivateRoomId = (userId: number, targetId: number) => {
 		return [userId, targetId].sort().join('-');
+	}
+
+	const isUserBlocked = (user: ConnectedUser) => {
+		console.log(blockedUsers);
+		return blockedUsers.includes(user.userId)
 	}
 
 	// Auth
@@ -136,7 +139,7 @@ function LiveChat() {
 			.then(data => {
 				if (data.success) {
 					console.log(data.data);
-					setBlokedUsers(data.data);
+					setBlockedUsers(data.data);
 				}
 			});
 	}, [isAuthenticated]);
@@ -158,7 +161,6 @@ function LiveChat() {
 	const switchMode = (privateMode: boolean) => {
 		setIsPrivate(privateMode);
 		setMessages([]);
-		setPrivMessages([]);
 		setSelectedUser(undefined);
 	};
 
@@ -192,23 +194,45 @@ function LiveChat() {
 		})
 			.then(response => response.json())
 			.then(data => {
-				if (data.success)
-					setBlokedUsers(prev => [...prev, user]);
+				if (data.success) {
+					setBlockedUsers(prev => [...prev, user.userId]);
+					addNotification("blocked", `You blocked ${user.userId}`);
+				}
 			});
-
-		addNotification("blocked", `Vous avez bloqué ${user}`);
 	};
 
-	const inviteUser = (user: string | null) => {
-		if (!user) return;
-		socket?.emit("invit-game", user, (callback) => {
-			console.log(callback);
-		});
+	const unblockUser = (user: ConnectedUser | null) => {
+		if (!user || !canInteract()) return;
+		console.log("yes");
+		fetch('http://localhost:3000/users/unblock', {
+			method: 'POST',
+			headers: {
+				'Authorization': `Bearer ${token}`,
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({'userId': user.userId})
+		})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					let blocked = blockedUsers;
+					const blockedIndex = blocked.indexOf(user.userId);
+					if (blockedIndex > -1)
+						blocked.splice(blockedIndex, 1);
+					setBlockedUsers(blocked);
+					addNotification("unblocked", `You unblocked ${user.userId}`);
+				}
+			});
 	};
 
-	const oppenProfile = (user: string | null) => {
+	const inviteUser = (user: ConnectedUser | null) => {
 		if (!user) return;
-		addNotification("profil", `Profil de ${user}`);
+		socket?.emit('invite', user);
+	};
+
+	const oppenProfile = (user: ConnectedUser | null) => {
+		if (!user) return;
+		addNotification("profil", `Profil of ${user.userId}`);
 
 		const dataUserProfile = {
 			login: user,
@@ -382,21 +406,21 @@ function LiveChat() {
 			</div>
 
 			{/* Profil / Block / Invite */}
-			{isPrivate && selectedUser && (
+			{isPrivate && selectedUser && blockedUsers && (
 			<div className="flex w-3/5 space-x-4 mt-4">
 				<button
-				onClick={() => oppenProfile(selectedUser)}
-				className="px-6 py-3 rounded-full bg-blue-500 text-white font-bold shadow-md hover:bg-blue-600 hover:scale-105 transition">
+					onClick={() => oppenProfile(selectedUser)}
+					className="px-6 py-3 rounded-full bg-blue-500 text-white font-bold shadow-md hover:bg-blue-600 hover:scale-105 transition">
 					Profile
 				</button>
 				<button
-				onClick={() => blockUser(selectedUser)}
-				className="px-6 py-3 rounded-full bg-red-500 text-white font-bold shadow-md hover:bg-red-600 hover:scale-105 transition">
-					Block
+					onClick={() => isUserBlocked(selectedUser) ? unblockUser(selectedUser) : blockUser(selectedUser)}
+					className="px-6 py-3 rounded-full bg-red-500 text-white font-bold shadow-md hover:bg-red-600 hover:scale-105 transition">
+					{isUserBlocked(selectedUser) ? "Unblock" : "Block"}
 				</button>
 				<button
-				onClick={() => inviteUser(selectedUser)}
-				className="px-6 py-3 rounded-full bg-green-500 text-white font-bold shadow-md hover:bg-green-600 hover:scale-105 transition">
+					onClick={() => inviteUser(selectedUser)}
+					className="px-6 py-3 rounded-full bg-green-500 text-white font-bold shadow-md hover:bg-green-600 hover:scale-105 transition">
 					Invite
 				</button>
 			</div>
