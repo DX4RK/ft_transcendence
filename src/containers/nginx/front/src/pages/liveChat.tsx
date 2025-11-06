@@ -38,6 +38,7 @@ function LiveChat() {
 		// 	setConnected(true);
 		// }
 
+
 		socket.on("message", (msg: string) => {
 			setMessages((prev) => [...prev, msg]);
 		});
@@ -89,18 +90,21 @@ function LiveChat() {
 	}, [selectedUser, socket]);
 
 	const handleSend = () => {
+		console.log(socket);
+		console.log("Sending message:", input);
 		if (input.trim() === "") return;
-		// socket.emit("message", input, (callback) => {
-		// 	console.log(callback);
-		// });
+		socket?.emit("message", input, (callback: string) => {
+			console.log(callback);
+		});
 		setInput("");
 	};
 
 	const handlePrivSend = () => {
+		console.log("Sending private message to", selectedUser, ":", privInput);
 		if (!selectedUser || privInput.trim() === "") return;
-		// socket.emit("priv-message", selectedUser, privInput , (callback) => {
-		// 	console.log(callback);
-		// });
+		socket?.emit("priv-message", selectedUser, privInput , (callback: string) => {
+			console.log(callback);
+		});
 		setPrivInput("");
 	};
 
@@ -112,21 +116,24 @@ function LiveChat() {
 	};
 
 	const blockUser = (user: string | null) => {
+		console.log("Blocking user:", user);
 		if (!user) return;
-		// socket.emit("block-user", user, (callback) => {
-		// 	console.log(callback);
-		// });
+		socket?.emit("block-user", user, (callback: string) => {
+			console.log(callback);
+		});
 		addNotification("blocked", `Vous avez bloqué ${user}`);
 	};
 
 	const inviteUser = (user: string | null) => {
+		console.log("Inviting user:", user);
 		if (!user) return;
-		// socket.emit("invit-game", user, (callback) => {
-		// 	console.log(callback);
-		// });
+		socket?.emit("invit-game", user, (callback: string) => {
+			console.log(callback);
+		});
 	};
 
 	const oppenProfile = (user: string | null) => {
+		console.log("Opening profile of user:", user);
 		if (!user) return;
 		addNotification("profil", `Profil de ${user}`);
 
@@ -166,7 +173,7 @@ function LiveChat() {
 
 	return (
 		<div className="relative min-h-screen bg-gradient-to-r from-cyan-500/50 to-blue-500/50 text-white flex flex-col items-center justify-center space-y-12 p-10">
-			<Link to="/" className="text-base text-xl opacity-50 font-arcade z-0">ft_transcendence</Link>
+			<Link to="/" className="text-base text-xl opacity-50 text-cyan-300/70 font-arcade z-0">ft_transcendence</Link>
 
 			<div>
 				<input type="checkbox" id="menu-toggle" className="hidden peer"></input>

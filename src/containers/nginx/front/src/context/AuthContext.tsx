@@ -142,7 +142,7 @@ const register = async (email: string, password: string): Promise<{ success: boo
 
 	// setUser(userData);
 	// localStorage.setItem('user', JSON.stringify(userData));
-	 return { success: false };
+	return { success: false };
 };
 
 	//$  --- LOGOUT ---

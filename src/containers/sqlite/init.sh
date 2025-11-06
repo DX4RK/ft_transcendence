@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
   twofa_method TEXT DEFAULT NULL,
   password_hash TEXT NOT NULL,
   settings JSON DEFAULT '{}',
+  experience_point REAL DEFAULT 0,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -51,6 +52,7 @@ CREATE TABLE IF NOT EXISTS user_matches (
   user_id INTEGER PRIMARY KEY,
   match_won INTEGER DEFAULT 0,
   match_played INTEGER DEFAULT 0,
+  history JSON DEFAULT '{}',
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 

@@ -15,7 +15,7 @@ import Tournoi from "@/pages/tournoi"
 import LiveChat from "@/pages/liveChat"
 import Twofa from "@/pages/Twofa"
 
-import Testlog from "@/pages/testlog"
+// import Testlog from "@/pages/testlog"
 
 
 function App() {
@@ -36,7 +36,7 @@ function App() {
               <Route path="/liveChat" element={<LiveChat />} />
               <Route path="/Twofa" element={<Twofa />} />
 
-              <Route path="/testlog" element={<Testlog />} />
+              {/* <Route path="/testlog" element={<Testlog />} /> */}
 
 
             </Routes>

@@ -9,6 +9,7 @@ const updateStatsOnMatchFinishRoute = require('./stats/updateStatsOnMatchFinish'
 const authMiddlewareRoute = require('./auth/authMiddleware');
 
 const getSettings = require('./my/getSettings');
+const updateSettings = require('./my/updateSettings');
 
 const socketAuthHandlers = require('../plugins/socket-handlers/auth.js');
 const socketChatHandlers = require('../plugins/socket-handlers/chat.js');
@@ -24,6 +25,7 @@ const registerRoutes = async (fastify, { transporter, vonage, generateToken }) =
 
 	// My
 	await fastify.register(getSettings, { prefix: '/my' });
+	await fastify.register(updateSettings, { prefix: '/my' });
 
 	// Check
 	fastify.get('/', async (request, reply) => {
