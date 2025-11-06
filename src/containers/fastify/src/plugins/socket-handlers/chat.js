@@ -5,6 +5,27 @@ const fp = require('fastify-plugin');
 // 	socketId: string;
 // }
 
+const getPrivateRoomId = (userId, targetId) => {
+	return [userId, targetId].sort().join('-');
+}
+
+const getRoomMessage = (usersDb, roomId) => {
+	const stmt = usersDb.prepare(`
+		SELECT
+		  m.id,
+		  m.room_id,
+		  m.user_id,
+		  u.username,
+		  m.message,
+		  m.created_at
+		FROM messages m
+		LEFT JOIN users u ON u.id = m.user_id
+		WHERE m.room_id = ?
+		ORDER BY m.created_at ASC
+	`);
+	return stmt.all(roomId);
+}
+
 async function socketChatHandlers(fastify, opts) {
 	fastify.addHook('onReady', async () => {
 		fastify.socketIO.on('connection', (socket) => {
@@ -12,6 +33,13 @@ async function socketChatHandlers(fastify, opts) {
 				if (!socket.userId) return;
 
 				socket.join(`room:${roomId}`);
+				const messages = getRoomMessage(fastify.usersDb, roomId);
+				fastify.socketIO.to(`room:${roomId}`).emit('room-messages', messages.map(m => ({
+					id: String(m.id),
+					text: m.message,
+					userId: String(m.user_id),
+					timestamp: new Date(m.created_at).getTime()
+				})));
 				fastify.log.info(`User ${socket.userId} joined room ${roomId}`);
 
 				socket.to(`room:${roomId}`).emit('user-joined', {
@@ -26,34 +54,35 @@ async function socketChatHandlers(fastify, opts) {
 				const targetSocket = fastify.io.sockets.sockets.get(targetSocketId);
 				if (!targetSocket) return;
 
-				const userIds = [socket.userId, targetSocket.userId];
-				userIds.sort((a, b) => a - b);
-
-				const roomIndex = `${userIds[0]}:${userIds[1]}`;
-
+				const roomIndex = getPrivateRoomId(socket.userId, targetSocket.userId);
 				try {
-					const roomExists = await fastify.usersDb.get(
-						'SELECT 1 FROM rooms WHERE room_id = $roomId LIMIT 1',
-						{ $roomId: roomIndex }
-					);
+					const stmt = fastify.usersDb.prepare('SELECT 1 FROM rooms WHERE room_id = ? LIMIT 1');
+					const roomExists = stmt.get(roomIndex);
 
 					if (!roomExists) {
 						await fastify.usersDb.prepare(
-							`INSERT INTO rooms (room_id, name, description, is_public, created_by)
-							VALUES ($roomId, 'Private Chat', 'Private chat room for two users', 0, NULL)`
-						).run({
-							$roomId: roomIndex
-						});
+							`INSERT OR IGNORE INTO rooms (room_id, name, description, is_public, created_by)
+							VALUES (?, ?, ?, ?, ?);`
+						).run(roomIndex, 'Private Messages', 'Private chat witht the user', 0, socket.userId);
 					}
 
 					socket.join(`private:${roomIndex}`);
 					targetSocket.join(`private:${roomIndex}`);
 
-					socket.set(`private:${roomIndex}`, true);
+					const messages = getRoomMessage(fastify.usersDb, roomIndex);
+					fastify.socketIO.to(`private:${roomIndex}`).emit('room-messages', messages.map(m => ({
+						id: String(m.id),
+						text: m.message,
+						userId: String(m.user_id),
+						timestamp: new Date(m.created_at).getTime()
+					})));
+
+					socket.data.privateRoom = roomIndex;
 
 					fastify.log.info(`User ${socket.userId} joined private room ${roomIndex}`);
 				} catch (err) {
-					fastify.log.error('Error handling private room join:', err);
+					fastify.log.error(`Error handling private room join: ${err.message}`);
+					console.error(err);
 				}
 			});
 
@@ -74,7 +103,28 @@ async function socketChatHandlers(fastify, opts) {
 						timestamp: Date.now()
 					});
 				} catch (err) {
-					fastify.log.error('Error sending message:', err);
+					fastify.log.error(`Error sending message: ${err.message}`);
+				}
+			});
+
+			socket.on('send-private-message', async (data) => {
+				if (!socket.userId) return;
+
+				const { roomId, message } = data;
+				console.log(roomId, message);
+				try {
+					const msg = await fastify.usersDb.prepare(
+						'INSERT INTO messages (room_id, user_id, message) VALUES (?, ?, ?)'
+					).run(roomId, socket.userId, message);
+
+					fastify.socketIO.to(`private:${roomId}`).emit('new-message', {
+						id: msg.lastInsertRowid,
+						userId: socket.userId,
+						text: message,
+						timestamp: Date.now()
+					});
+				} catch (err) {
+					fastify.log.error(`Error sending private message: ${err.message}`);
 				}
 			});
 
