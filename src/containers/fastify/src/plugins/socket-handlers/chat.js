@@ -137,9 +137,8 @@ async function socketChatHandlers(fastify, opts) {
 					const roomMembers = extractPrivateRoomMembers(roomId);
 					const targetId = roomMembers[0] === socket.userId ? roomMembers[1] : roomMembers[0];
 
-					if (isUserBlocked(fastify.usersDb, socket.userId, targetId)) {
+					if (isUserBlocked(fastify.usersDb, socket.userId, targetId))
 						return;
-					}
 
 					const msg = await fastify.usersDb.prepare(
 						'INSERT INTO messages (room_id, user_id, message) VALUES (?, ?, ?)'

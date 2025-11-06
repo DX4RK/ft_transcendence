@@ -23,7 +23,8 @@ async function socketChatHandlers(fastify, opts) {
 				if (!socket.userId || typeof targetSocketId !== 'string') return;
 
 				try {
-					
+						console.log("blocked");
+
 				} catch (err) {
 					fastify.log.error(`Error handling private room join: ${err.message}`);
 				}
