@@ -11,6 +11,8 @@ const verifyTokenRoute = require('./auth/verifyToken');
 const getSettings = require('./my/getSettings');
 const updateSettings = require('./my/updateSettings');
 
+const blockUser = require('./users/block');
+
 const socketAuthHandlers = require('../plugins/socket-handlers/auth.js');
 const socketChatHandlers = require('../plugins/socket-handlers/chat.js');
 const socketNotificationHandlers = require('../plugins/socket-handlers/notifications.js');
@@ -18,6 +20,10 @@ const socketNotificationHandlers = require('../plugins/socket-handlers/notificat
 const registerRoutes = async (fastify, { transporter, vonage, generateToken }) => {
 	// Auth
 	await fastify.register(verifyTokenRoute, { prefix: '/auth' });
+
+	// Users
+	await fastify.register(blockUser, { prefix: '/block' });
+	//await fastify.register(blockUser, { prefix: '/block' });
 
 	// Stats
 	await fastify.register(getMatchStatsRoute, { prefix: '/stats' });
