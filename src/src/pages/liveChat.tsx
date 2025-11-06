@@ -3,6 +3,7 @@ import { useSocket, useSocketEvent } from "../context/SocketContext";
 import { useNotification } from "../context/NotificationContext";
 // import { Background } from "../../Game/background";
 import { Link, useNavigate } from "react-router-dom";
+import { Coins, DoorClosed } from "lucide-react";
 // import { io } from "socket.io-client";
 
 // const socket = io("http://localhost:3000", { withCredentials: true, autoConnect: false });
@@ -29,7 +30,9 @@ function LiveChat() {
 
 	const { socket, isConnected } = useSocket();
 	const [roomId, setRoomId] = useState('general');
+	const [ token, setToken ] = useState('null');
 	const [isAuthenticated, setIsAuthenticated] = useState(0);
+	const [blockedUsers, setBlokedUsers] = useState<ConnectedUser[]>([]);
 	const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([]);
 	const [selectedUser, setSelectedUser] = useState<ConnectedUser>();
 
@@ -53,13 +56,14 @@ function LiveChat() {
 	useEffect(() => {
 		if (!socket || !isConnected) return;
 
-		const token = document.cookie
+		const docToken = document.cookie
 			.split('; ')
 			.find(row => row.startsWith('token='))
 			?.split('=')[1];
 
-		if (token) {
-			socket.emit('authenticate', token);
+		if (docToken && docToken != undefined) {
+			setToken(docToken);
+			socket.emit('authenticate', docToken);
 		} else {
 			console.error('Auth error: no token provided');
 			setIsAuthenticated(0);
@@ -117,27 +121,25 @@ function LiveChat() {
 		setMessages(data);
 	});
 
-	selectedUser
-	//socket?.emit('join-private-room')
-
 	// Methods
 
-	const sendMessage = () => {
-		if (!canInteract()) return;
-
-		if (selectedUser && isPrivate) {
-			socket?.emit('send-private-message', {
-				roomId: roomId,
-				message: inputText
+	useEffect(() => {
+		if (!isAuthenticated) return;
+		fetch('http://localhost:3000/users/blocked', {
+			method: 'GET',
+			headers: {
+				'Authorization': `Bearer ${token}`,
+				'Content-Type': 'application/json'
+			}
+		})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					console.log(data.data);
+					setBlokedUsers(data.data);
+				}
 			});
-		} else if (!isPrivate) {
-			socket?.emit('send-message', {
-				roomId: roomId,
-				message: inputText
-			});
-		}
-		setInputText('');
-	}
+	}, [isAuthenticated]);
 
 	useEffect(() => {
 		if (!canInteract()) return;
@@ -160,17 +162,46 @@ function LiveChat() {
 		setSelectedUser(undefined);
 	};
 
-	const blockUser = (user: string | null) => {
-		if (!user) return;
-		socket.emit("block-user", user, (callback) => {
-			console.log(callback);
-		});
+	const sendMessage = () => {
+		if (!canInteract()) return;
+
+		if (selectedUser && isPrivate) {
+			socket?.emit('send-private-message', {
+				roomId: roomId,
+				message: inputText
+			});
+		} else if (!isPrivate) {
+			socket?.emit('send-message', {
+				roomId: roomId,
+				message: inputText
+			});
+		}
+		setInputText('');
+	}
+
+	const blockUser = (user: ConnectedUser | null) => {
+		if (!user || !canInteract()) return;
+
+		fetch('http://localhost:3000/users/block', {
+			method: 'POST',
+			headers: {
+				'Authorization': `Bearer ${token}`,
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({'userId': user.userId})
+		})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success)
+					setBlokedUsers(prev => [...prev, user]);
+			});
+
 		addNotification("blocked", `Vous avez bloqué ${user}`);
 	};
 
 	const inviteUser = (user: string | null) => {
 		if (!user) return;
-		socket.emit("invit-game", user, (callback) => {
+		socket?.emit("invit-game", user, (callback) => {
 			console.log(callback);
 		});
 	};
