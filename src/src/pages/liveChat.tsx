@@ -28,8 +28,8 @@ function LiveChat() {
 	const [isPrivate, setIsPrivate] = useState(false);
 
 	const { socket, isConnected } = useSocket();
-	const [roomId, setRommId] = useState('general');
-	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [roomId, setRoomId] = useState('general');
+	const [isAuthenticated, setIsAuthenticated] = useState(0);
 	const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([]);
 	const [selectedUser, setSelectedUser] = useState<ConnectedUser>();
 
@@ -42,6 +42,10 @@ function LiveChat() {
 		if (!socket || !isConnected || !isAuthenticated)
 			return false;
 		return true;
+	}
+
+	const getPrivateRoomId = (userId: number, targetId: number) => {
+		return [userId, targetId].sort().join('-');
 	}
 
 	// Auth
@@ -60,7 +64,8 @@ function LiveChat() {
 			socket.emit('authenticate', token);
 		} else {
 			console.error('Auth error: no token provided');
-			setIsAuthenticated(false);
+			setIsAuthenticated(0);
+			console.log("eojfoej");
 			window.location.href = '/login';
 		}
 	}, [socket, isConnected]);
@@ -72,7 +77,8 @@ function LiveChat() {
 
 	useSocketEvent('auth-error', (data) => {
 		console.error('Auth error:', data.message);
-		setIsAuthenticated(false);
+		setIsAuthenticated(0);
+		console.log("lool");
 		window.location.href = '/login';
 	});
 
@@ -114,6 +120,11 @@ function LiveChat() {
 		});
 	})
 
+	useSocketEvent('room-messages', (data) => {
+		setMessages(data);
+		console.log(data);
+	});
+
 	selectedUser
 	//socket?.emit('join-private-room')
 
@@ -123,11 +134,17 @@ function LiveChat() {
 		if (!canInteract()) return;
 
 		console.log(inputText);
-		socket?.emit('send-message', {
-			roomId: {roomId},
-			message: inputText
-		});
-
+		if (selectedUser && isPrivate) {
+			socket?.emit('send-private-message', {
+				roomId: roomId,
+				message: inputText
+			});
+		} else if (!isPrivate) {
+			socket?.emit('send-message', {
+				roomId: roomId,
+				message: inputText
+			});
+		}
 		setInputText('');
 	}
 
@@ -137,11 +154,12 @@ function LiveChat() {
 		if (isPrivate && selectedUser) {
 			console.log(selectedUser);
 			socket?.emit('join-private-room', selectedUser.id);
+			setRoomId(getPrivateRoomId(isAuthenticated, selectedUser.userId))
 		} else if (!isPrivate)
-			socket?.emit('join-room', {roomId});
+			socket?.emit('join-room', roomId);
 
 		return () => {
-			socket?.emit('leave-room', {roomId});
+			socket?.emit('leave-room', roomId);
 		};
 	}, [socket, isConnected, isAuthenticated, selectedUser]);
 
