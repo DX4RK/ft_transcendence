@@ -11,8 +11,9 @@ const verifyTokenRoute = require('./auth/verifyToken');
 const getSettings = require('./my/getSettings');
 const updateSettings = require('./my/updateSettings');
 
-const blockUser = require('./users/block');
-const unBlockUser = require('./users/unblock');
+const blockUserRoute = require('./users/block');
+const unBlockUserRoute = require('./users/unblock');
+const getBlockedRoute = require('./users/getBlocked');
 
 const socketAuthHandlers = require('../plugins/socket-handlers/auth.js');
 const socketChatHandlers = require('../plugins/socket-handlers/chat.js');
@@ -23,8 +24,9 @@ const registerRoutes = async (fastify, { transporter, vonage, generateToken }) =
 	await fastify.register(verifyTokenRoute, { prefix: '/auth' });
 
 	// Users
-	await fastify.register(blockUser, { prefix: '/users' });
-	await fastify.register(unBlockUser, { prefix: '/users' });
+	await fastify.register(blockUserRoute, { prefix: '/users' });
+	await fastify.register(unBlockUserRoute, { prefix: '/users' });
+	await fastify.register(getBlockedRoute, { prefix: '/users' });
 
 	// Stats
 	await fastify.register(getMatchStatsRoute, { prefix: '/stats' });
