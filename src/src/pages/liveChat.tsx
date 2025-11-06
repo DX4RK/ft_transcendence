@@ -65,7 +65,6 @@ function LiveChat() {
 		} else {
 			console.error('Auth error: no token provided');
 			setIsAuthenticated(0);
-			console.log("eojfoej");
 			window.location.href = '/login';
 		}
 	}, [socket, isConnected]);
@@ -78,7 +77,6 @@ function LiveChat() {
 	useSocketEvent('auth-error', (data) => {
 		console.error('Auth error:', data.message);
 		setIsAuthenticated(0);
-		console.log("lool");
 		window.location.href = '/login';
 	});
 
@@ -122,7 +120,6 @@ function LiveChat() {
 
 	useSocketEvent('room-messages', (data) => {
 		setMessages(data);
-		console.log(data);
 	});
 
 	selectedUser
@@ -133,7 +130,6 @@ function LiveChat() {
 	const sendMessage = () => {
 		if (!canInteract()) return;
 
-		console.log(inputText);
 		if (selectedUser && isPrivate) {
 			socket?.emit('send-private-message', {
 				roomId: roomId,
@@ -152,7 +148,6 @@ function LiveChat() {
 		if (!canInteract()) return;
 
 		if (isPrivate && selectedUser) {
-			console.log(selectedUser);
 			socket?.emit('join-private-room', selectedUser.id);
 			setRoomId(getPrivateRoomId(isAuthenticated, selectedUser.userId))
 		} else if (!isPrivate)
