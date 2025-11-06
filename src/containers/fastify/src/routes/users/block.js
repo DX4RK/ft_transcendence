@@ -31,12 +31,12 @@ async function blockUser(fastify, opts) {
 				blocked.push(userId);
 			}
 
-			if (!userData.blocked || userData.blocked === '[]') {
+			//if (!userData.blocked || userData.blocked === '[]') {
 				const updateStmt = fastify.usersDb.prepare(
 					'UPDATE users SET blocked = ? WHERE id = ?'
 				);
 				updateStmt.run(JSON.stringify(blocked), decoded.userId);
-			}
+			//}
 
 			return reply.send({
 				success: true,

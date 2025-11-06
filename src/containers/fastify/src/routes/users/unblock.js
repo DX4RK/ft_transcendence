@@ -29,14 +29,14 @@ async function unBlockUser(fastify, opts) {
 
 			const blockedIndex = blocked.indexOf(userId);
 			if (blockedIndex > -1)
-				blocked.splice(index, 1);
-
-			if (!userData.blocked || userData.blocked === '[]') {
+				blocked.splice(blockedIndex, 1);
+			console.log(blocked);
+			//if (!userData.blocked || userData.blocked === '[]') {
 				const updateStmt = fastify.usersDb.prepare(
 					'UPDATE users SET blocked = ? WHERE id = ?'
 				);
 				updateStmt.run(JSON.stringify(blocked), decoded.userId);
-			}
+			//}
 
 			return reply.send({
 				success: true,
