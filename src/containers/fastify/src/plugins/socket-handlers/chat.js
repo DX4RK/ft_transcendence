@@ -138,7 +138,6 @@ async function socketChatHandlers(fastify, opts) {
 					const targetId = roomMembers[0] === socket.userId ? roomMembers[1] : roomMembers[0];
 
 					if (isUserBlocked(fastify.usersDb, socket.userId, targetId)) {
-						console.log("blocked");
 						return;
 					}
 
