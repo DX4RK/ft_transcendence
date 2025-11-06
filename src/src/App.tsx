@@ -14,6 +14,7 @@ import SignIn from "@/pages/Register"
 import Tournoi from "@/pages/tournoi"
 import LiveChat from "@/pages/liveChat"
 import TFA from "@/pages/tfa"
+import Settings from "@/pages/Settings"
 
 // import Testlog from "@/pages/testlog"
 
@@ -35,6 +36,7 @@ function App() {
               <Route path="/tournoi" element={<Tournoi />} />
               <Route path="/liveChat" element={<LiveChat />} />
               <Route path="/tfa" element={<TFA />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
           </SocketProvider>
         </NotificationProvider>
