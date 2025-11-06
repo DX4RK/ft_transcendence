@@ -9,6 +9,27 @@ const getPrivateRoomId = (userId, targetId) => {
 	return [userId, targetId].sort().join('-');
 }
 
+const extractPrivateRoomMembers = (roomId) => {
+	const parts = roomId.split(':');
+	return [parseInt(parts[0], 10), parseInt(parts[1], 10)];
+}
+
+const isUserBlocked = (usersDb, userId, targetId) => {
+	const stmt = usersDb.prepare('SELECT * FROM users WHERE id = ?');
+	const userData = stmt.get(targetId);
+
+	if (!userData) return false;
+
+	let blocked = [];
+	try {
+		blocked = JSON.parse(userData.blocked || '[]');
+	} catch (e) {
+		blocked = [];
+	}
+
+	return blocked.includes(userId);
+}
+
 const getRoomMessage = (usersDb, roomId) => {
 	const stmt = usersDb.prepare(`
 		SELECT
@@ -111,7 +132,16 @@ async function socketChatHandlers(fastify, opts) {
 				if (!socket.userId) return;
 
 				const { roomId, message } = data;
+
 				try {
+					const roomMembers = extractPrivateRoomMembers(roomId);
+					const targetId = roomMembers[0] === socket.userId ? roomMembers[1] : roomMembers[0];
+
+					if (isUserBlocked(fastify.usersDb, socket.userId, targetId)) {
+						console.log("blocked");
+						return;
+					}
+
 					const msg = await fastify.usersDb.prepare(
 						'INSERT INTO messages (room_id, user_id, message) VALUES (?, ?, ?)'
 					).run(roomId, socket.userId, message);
