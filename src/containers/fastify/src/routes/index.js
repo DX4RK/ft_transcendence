@@ -6,7 +6,7 @@ const verifyRoute = require('./2FA/verify');
 const getMatchStatsRoute = require('./stats/getMatchStats');
 const updateStatsOnMatchFinishRoute = require('./stats/updateStatsOnMatchFinish');
 
-const authMiddlewareRoute = require('./auth/authMiddleware');
+const verifyTokenRoute = require('./auth/verifyToken');
 
 const getSettings = require('./my/getSettings');
 const updateSettings = require('./my/updateSettings');
@@ -16,8 +16,8 @@ const socketChatHandlers = require('../plugins/socket-handlers/chat.js');
 const socketNotificationHandlers = require('../plugins/socket-handlers/notifications.js');
 
 const registerRoutes = async (fastify, { transporter, vonage, generateToken }) => {
-	// Auth middleware
-	await fastify.register(authMiddlewareRoute);
+	// Auth
+	await fastify.register(verifyTokenRoute, { prefix: '/auth' });
 
 	// Stats
 	await fastify.register(getMatchStatsRoute, { prefix: '/stats' });

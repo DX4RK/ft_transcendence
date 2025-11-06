@@ -1,6 +1,6 @@
-async function authMiddleware(fastify, opts) {
-	fastify.post(
-		'/test',
+async function verifyToken(fastify, opts) {
+	fastify.get(
+		'/verify',
 		{ preValidation: [fastify.authenticate] },
 		async (request, reply) => {
 			const decoded = request.user;
@@ -14,4 +14,4 @@ async function authMiddleware(fastify, opts) {
 	});
 }
 
-module.exports = authMiddleware;
+module.exports = verifyToken;
