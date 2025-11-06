@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
   twofa_method TEXT DEFAULT NULL,
   password_hash TEXT NOT NULL,
   settings JSON DEFAULT '{}',
+  blocked JSON DEFAULT '{}',
   experience_point REAL DEFAULT 0,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
