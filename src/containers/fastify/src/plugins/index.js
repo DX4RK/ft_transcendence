@@ -7,7 +7,7 @@ const auth = require('./auth.js');
 const registerPlugins = async (fastify) => {
 	// CORS
 	await fastify.register(cors, {
-		origin: 'https://localhost:8443',
+		origin: 'http://localhost:5173',
 		credentials: true,
 		methods: ['GET', 'POST']
 	});
@@ -21,7 +21,7 @@ const registerPlugins = async (fastify) => {
 	// Socket.IO
 	await fastify.register(fastifyIO, {
 		cors: {
-			origin: 'https://localhost:8443',
+			origin: 'http://localhost:5173',
 			methods: ['GET', 'POST'],
 			credentials: true,
 		}
