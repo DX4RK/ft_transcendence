@@ -35,8 +35,9 @@ async function getSettings(fastify, opts) {
 
 			mergedSettings.user = userData.username;
 			mergedSettings.email = userData.email;
+			mergedSettings.twofa_method = userData.twofa_method;
 
-			if (!userData.phoneNumber || userData.phoneNumber.trim() === '') {
+			if (!userData.phone_number || userData.phone_number.trim() === '') {
 				mergedSettings.phone = 'none';
 			} else {
 				mergedSettings.phone = userData.phone_number;
