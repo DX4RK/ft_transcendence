@@ -34,18 +34,22 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		"password": password
 		});
 
+		const response = await fetch("http://localhost:3000/sign/in", { method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
+		const result = await response.json();
 
-		const result = await fetch("http://localhost:3000/sign/in", { method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
+		if (!result.success) {
+			throw new Error(`Error Status: ${result.message}`);
+		}
 
-		if (result.ok) {
+		if (result.success) {
 			console.log("success !");
+			console.log(result.message);
 			console.log(result);
 			navigate('/tfa', { state: { login: email }});
 		}
-		else
-			setError('Login failed, Error status :' + result.status)
-	} catch (err) {
-		setError('Erreur de connexion');
+	}
+	catch (err) {
+		setError(err.message);
 	}
 	finally {
 		setLoading(false);

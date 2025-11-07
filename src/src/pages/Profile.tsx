@@ -6,44 +6,36 @@ function Profile() {
 	const location = useLocation();
 	const { login } = location.state || {};
 	const { token } = location.state || {}; //! gestion du token dynamique
+	const [error, setError] = useState('');
 
 	interface UserStats {
-    "success": true,
-    "message": "User stats retrieved successfully.",
-    "data": {
-        "matchWon": 0,
-        "matchLost": 0,
-        "matchPlayed": 0,
+	"success": true,
+	"message": "User stats retrieved successfully.",
+	"data": {
+		"matchWon": 0,
+		"matchLost": 0,
+		"matchPlayed": 0,
 		"xp" : 0,
 		"history": []
-    }
+	}
 }
 
 	let [data, setData] = useState<UserStats | null>(null);
-	const [error, setError] = useState(null);
 
 	useEffect(() => {
 	const fetchData = async () => {
 		const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc2MjI3MjAyMywiZXhwIjoxNzYyODc2ODIzfQ.pozKlm_064QVFoPtmTzG889jZvcERnv4wYuBD9HEYJQ"; // Put your JWT or API token here
 
 	try {
-		const response = await fetch("http://localhost:3000/stats/matches/me", {
-			method: "GET",
-			headers: {
-				"Authorization": `Bearer ${token}`,
-			"Content-Type": "application/json",
-			},
-		});
+		const response = await fetch("http://localhost:3000/stats/matches/me", {method: "GET", headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json",},});
+		const result = await response.json();
 
 		if (!response.ok) {
-			throw new Error(`HTTP error! Status: ${response.status}`);
+			throw new Error(`Error Status: ${result.message}`);
 		}
-
-		const result = await response.json(); // use .json() instead of .text()
 		setData(result);
 	} catch (err) {
-		console.error("Fetch error:", err);
-		setError(err);
+		setError(err.message);
 	}
 };
 
@@ -60,6 +52,11 @@ if (!data ) //! gestion si les data sont nulles / fetch error
 	// 	defaitesPct: 0,
 	// 	total: 0,
 	// }
+	// setError('Bad user');
+
+	// setTimeout(() => {
+	// 			return;	}, 3000);
+
 	return ;
 
 }

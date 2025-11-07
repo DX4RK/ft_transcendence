@@ -85,7 +85,7 @@ function Game() {
 
 
 	return (
-	<div className="bg-gradient-to-r from-cyan-500/50 to-blue-500/50">
+	<div className="bg-gradient-to-r from-cyan-500/50 to-blue-500/50 overflow-hidden">
 
 	<Link to="/" className="text-base text-cyan-300/70 text-xl font-arcade">ft_transcendence</Link>
 
@@ -160,7 +160,7 @@ function Game() {
 				.then((response) => response.text())
 				.then((result) => console.log(result))
 				.catch((error) => console.error(error));
-				
+
 				if (mode == 1)
 					navigate("/", { state: { winner: right }});
 				else if (mode == 2)

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 import { useAuth } from "../context/AuthContext";
 
 export default function tfa() {
@@ -11,7 +11,8 @@ export default function tfa() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-
+	const location = useLocation();
+	const { email } = location.state || {};
 
 const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
@@ -20,45 +21,37 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		setError('Tous les champs sont requis');
 		return;
 	}
-	// } else 	if (code < 999 || code > 9999) {
-	// 	setError('Les mots de passe ne correspondent pas');
-	// 	return;
-	// }
 
 	setError('');
 	setLoading(true);
 
 
 	try {
-		// if ((password1 == password2) && password1) {
-
 			const myHeaders = new Headers();
 			myHeaders.append("Content-Type", "application/json");
 
 			const raw = JSON.stringify({
-			"username": "user",
+			"username": email,
 			"code": code
 			});
 
-			const result = await fetch("http://localhost:3000/twofa/verify", { method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
+			const response = await fetch("http://localhost:3000/twofa/verify" ,{method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
+			const result = await response.json();
 
 			console.log(result);
 
-			// if (result.success) {
-			// 	console.log("success !");
-			// 	navigate('/2FA', { state: { login: email }});
-			// } else
-			// 	setError('Register failed : Error status ' + response.status);
+			if (!result.success) {
+				throw new Error(`Error Status: ${result.message}`);
+			}
 
-
-		// }	else {
-		// 	setError('Les mots de passe ne correspondent pas');
-		// }
+			if (result.success) {
+				console.log("success !");
+				console.log(result.code);
+				navigate('/profile', { state: { result }});
+			}
 	}
 	catch (err) {
-			setError('Connexion error');
-			console.error(err);
-			console.log(error)
+			setError(err.message);
 		}
 	finally {
 		setLoading(false);

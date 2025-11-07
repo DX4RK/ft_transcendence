@@ -42,28 +42,24 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 				"email": email
 			});
 
-			const response = await fetch("http://localhost:3000/sign/up", {
-				method: "POST",
-				headers: myHeaders,
-				body: raw
-			});
+			const response = await fetch("http://localhost:3000/sign/up", { method: "POST", headers: myHeaders, body: raw });
+			const result = await response.json();
 
-			if (response.ok) {
+			console.log(result);
+
+			if (!result.success) {
+				throw new Error(`Error Status: ${result.message}`);
+			}
+
+			if (result.success) {
 				console.log("success !");
 				navigate('/tfa', { state: { login: email }});
-			} else
-				setError('Register failed : Error status ' + response.status);
-
-
-		}	else {
-			setError('Les mots de passe ne correspondent pas');
+			}
 		}
 	}
 	catch (err) {
-			setError('Connexion error');
-			console.error(err);
-			console.log(error)
-		}
+			setError(err.message);
+	}
 	finally {
 		setLoading(false);
 	}
@@ -89,7 +85,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		<div className="min-h-screen flex items-center justify-center">
 			<form onSubmit={handleSubmit} className="bg-gradient-to-t from-[#1A2730] to-[#45586c] justify-center p-8 rounded-lg shadow-xl shadow-cyan-500/30 w-80">
 			<h2 className="text-2xl font-arcade text-center mb-6 text-slate-300">
-				Sign In
+				Register
 			</h2>
 			{error && (
 				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
