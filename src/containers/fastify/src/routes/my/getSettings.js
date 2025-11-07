@@ -30,6 +30,24 @@ async function getSettings(fastify, opts) {
 				updateStmt.run(JSON.stringify(mergedSettings), decoded.userId);
 			}
 
+			const toptpStmt = fastify.usersDb.prepare('SELECT * FROM totp_2fa WHERE user_id = ?');
+			const totp = toptpStmt.get(decoded.userId);
+
+			mergedSettings.user = userData.username;
+			mergedSettings.email = userData.email;
+
+			if (!userData.phoneNumber || userData.phoneNumber.trim() === '') {
+				mergedSettings.phone = 'none';
+			} else {
+				mergedSettings.phone = userData.phone_number;
+			}
+
+			if (!totp) {
+				mergedSettings.totp = 'unlinked';
+			} else {
+				mergedSettings.totp = 'linked';
+			}
+
 			return reply.send({
 				success: true,
 				message: 'User settings retrieved successfully.',
