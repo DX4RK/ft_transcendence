@@ -10,7 +10,8 @@ interface Settings {
 	user?: string,
 	email?: string,
 	phone?: string,
-	totp?: string
+	totp?: string,
+	twofa_method?: string
 }
 
 function Settings() {
@@ -23,6 +24,10 @@ function Settings() {
 		const e164Regex = /^\+[1-9]\d{1,14}$/;
 		return e164Regex.test(phone);
 	}
+
+	const isValidTwofa = (option) => {
+		return typeof option === 'string' && (option === 'email' || option === 'phone' || option === 'totp');
+	};
 
 	const handleEditPhone = () => {
 		const newPhone = window.prompt('Enter your new phone number:', settings?.phone || '');
@@ -61,6 +66,10 @@ function Settings() {
 			console.error(err);
 			setErrorMessage(err.message);
 		});
+	}
+
+	const setSelectedOption = (option: string) => {
+
 	}
 
 	useEffect(() => {
@@ -148,7 +157,11 @@ function Settings() {
 								<span>Receive unique security codes at your specified email.</span>
 							</div>
 							<div>
-								<input className="w-5 h-5" type="radio"></input>
+								<input
+									className="w-5 h-5"
+									type="radio"
+									checked={settings.twofa_method === 'email'}
+								/>
 							</div>
 						</div>
 						<div className="flex border-2 p-3 rounded-lg max-w-175">
@@ -157,7 +170,12 @@ function Settings() {
 								<span>Receive unique security codes at your specified phone number.</span>
 							</div>
 							<div>
-								<input className="w-5 h-5" type="radio"></input>
+								<input
+									className="w-5 h-5"
+									type="radio"
+									checked={settings.twofa_method === 'phone'}
+									onChange={() => setSelectedOption('email')}
+								/>
 							</div>
 						</div>
 						<div className="flex border-2 p-3 rounded-lg max-w-175">
@@ -166,7 +184,11 @@ function Settings() {
 								<span>Download an app on your phone to generate unique security codes. Suggested apps include Google Authenticator, Microsoft Authenticator, and Twilio's Authy.</span>
 							</div>
 							<div>
-								<input className="w-5 h-5" type="radio"></input>
+								<input
+									className="w-5 h-5"
+									type="radio"
+									checked={settings.twofa_method === 'totp'}
+								/>
 							</div>
 						</div>
 					</div>
