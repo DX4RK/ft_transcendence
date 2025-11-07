@@ -4,6 +4,10 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { SocketProvider } from "./context/SocketContext";
 import { NotificationProvider } from "./context/NotificationContext";
 
+import i18n from "./i18n";
+import LanguageSelector from "@/components/language-selector";
+import { useTranslation } from 'react-i18next';
+
 import Home from "@/pages/Home"
 import Test from "@/pages/Test"
 import Profile from "@/pages/Profile"
@@ -20,6 +24,11 @@ import Settings from "@/pages/Settings"
 
 
 function App() {
+	const changeLang = (lang: string) => {
+		i18n.changeLanguage(lang);
+		localStorage.setItem('lang', lang);
+	};
+
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <BrowserRouter>

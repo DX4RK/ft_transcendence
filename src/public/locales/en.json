@@ -1,0 +1,42 @@
+{
+	"title": "Welcome to Pong!",
+	"play": "Play",
+	"login": "Login",
+	"logout": "Logout",
+	"settings": "Settings",
+
+	"game": {
+	  "userWon": "User won!",
+	  "guestWon": "Guest won!",
+	  "paused": "Game paused."
+	},
+
+	"home": {
+		"welcome": "WELCOME"
+	  },
+
+	  "ladder": {
+			"home": "Home",
+		  "test": "Test",
+		  "profile": "Profile",
+		  "ladder": "Ladder"
+	  },
+	  "profile": {
+		  "level": "Level",
+		  "nextLevel": "Next level",
+		  "remainingXP": "Remaining XP",
+		  "maxLevel": "Max level reached!",
+		  "performanceAnalysis": "Performance analysis",
+		  "winRate": "Win rate",
+		  "wins": "Wins",
+		  "losses": "Losses",
+		  "totalGamesPlayed": "Total games played",
+		  "totalGoalsScored": "Total goals scored",
+		  "totalGoalsConceded": "Total goals conceded",
+		  "score": "Score: {{left}} - {{right}}",
+		  "previous": "Previous",
+		  "next": "Next",
+		  "matchResult": "{{result}} 🆚 vs {{opponent}}",
+		  "lostAgainst": "Lost ❌ vs {{opponent}}"
+	  }
+  }

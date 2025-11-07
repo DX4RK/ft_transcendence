@@ -1,0 +1,44 @@
+{
+	"title": "Bienvenue sur Pong !",
+	"play": "Jouer",
+	"login": "Connexion",
+	"logout": "Déconnexion",
+	"settings": "Paramètres",
+
+	"game": {
+	  "userWon": "Utilisateur a gagné !",
+	  "guestWon": "Invité a gagné !",
+	  "paused": "Jeu en pause."
+	  },
+
+	  "home": {
+			"welcome": "BIENVENUE"
+	  },
+
+	  "ladder": {
+			"home": "Accueil",
+		  "test": "Essai",
+		  "profile": "Profil",
+		  "ladder": "Classement"
+	  },
+
+	  "profile": {
+		  "level": "Niveau",
+		  "nextLevel": "Prochain niveau",
+		  "remainingXP": "Il vous reste",
+		  "maxLevel": "Niveau max atteint !",
+		  "performanceAnalysis": "Analyse des performances",
+		  "winRate": "Taux de victoire",
+		  "wins": "Victoires",
+		  "losses": "Défaites",
+		  "totalGamesPlayed": "Total des parties jouées",
+		  "totalGoalsScored": "Total but marqué",
+		  "totalGoalsConceded": "Total but encaissé",
+		  "score": "Score : {{left}} - {{right}}",
+		  "previous": "Précédent",
+		  "next": "Suivant",
+		  "matchResult": "{{result}} 🆚 contre {{opponent}}",
+		  "lostAgainst": "Perdu ❌ contre {{opponent}}"
+	  }
+  }
+
