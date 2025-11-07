@@ -1,13 +1,95 @@
 // import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom";
 import { SquarePen } from 'lucide-react';
+import { useEffect, useState } from "react";
+import axios from 'axios';
+
+interface Settings {
+	notifications_enabled?: boolean,
+	language?: string,
+	user?: string,
+	email?: string,
+	phone?: string,
+	totp?: string
+}
 
 function Settings() {
+	const [errorMessage, setErrorMessage] = useState('');
+	const [settings, setSettings] = useState<Settings | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
 
-	const email = 'email@example.com';
-	const username = 'username';
-	const phone = 'none';
-	const toptoStatus = 'unlinked';
+	function isValidE164(phone: string): boolean {
+		const e164Regex = /^\+[1-9]\d{1,14}$/;
+		return e164Regex.test(phone);
+	}
+
+	const handleEditPhone = () => {
+		const newPhone = window.prompt('Enter your new phone number:', settings?.phone || '');
+
+		if (!newPhone) {
+			setErrorMessage('Case is empty');
+			return;
+		}
+
+		if (!isValidE164(newPhone))
+			setErrorMessage('Invalid phone format');
+
+		const api = axios.create({
+			headers: {
+				"Content-Type": 'application/json',
+				"Authorization": `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
+		api.post('http://localhost:3000/my/change-phone', JSON.stringify({'phoneNumber': newPhone}))
+		.then(res => {
+			// setSettings(prev => {
+			// 	const updated = [...prev];
+			// 	updated[2] = { ...updated[2], phone: newPhone };
+			// 	return updated;
+			//   });
+			setSettings(prev => {
+				if (!prev) return prev;
+				return {
+					...prev,
+					phone: newPhone,
+				};
+			});
+			setErrorMessage("success");
+		})
+		.catch(err => {
+			console.error(err);
+			setErrorMessage(err.message);
+		});
+	}
+
+	useEffect(() => {
+		if (errorMessage && errorMessage.length > 0)
+			window.alert(errorMessage);
+		setErrorMessage('');
+	}, [errorMessage]);
+
+	useEffect(() => {
+		const api = axios.create({
+			headers: {
+			  Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
+		api.get('http://localhost:3000/my/settings')
+		.then(res => {
+			setSettings(res.data.data);
+			setLoading(false);
+		})
+		.catch(err => {
+			console.error(err);
+			setError(err);
+			setLoading(false);
+		});
+	}, []);
+
+	if (loading) return <p>Loading settings...</p>;
+	if (error) return <p>Failed to load settings</p>;
+	if (!settings) return <p>Failed to load settings</p>;
 
 	return (
 		<div className="min-h-screen w-full bg-gradient-to-r from-cyan-500/50 to-blue-500/50">
@@ -22,28 +104,36 @@ function Settings() {
 						<div className="flex">
 							<div className="flex-1">
 								<span className="font-bold">Username:</span>
-								<span className="pl-2">{username}</span>
+								<span className="pl-2">
+									{settings?.user || 'undefined'}
+								</span>
 							</div>
 						</div>
 						<div className="flex">
 							<div className="flex-1">
 								<span className="font-bold">Email:</span>
-								<span className="pl-2">{email}</span>
+								<span className="pl-2">
+									{settings?.email || 'undefined'}
+								</span>
 							</div>
 						</div>
 						<div className="flex">
 							<div className="flex-1">
 								<span className="font-bold">Phone Number:</span>
-								<span className="pl-2">{phone}</span>
+								<span className="pl-2">
+									{settings?.phone || 'undefined'}
+								</span>
 							</div>
-							<button>
+							<button onClick={handleEditPhone}>
 								<SquarePen />
 							</button>
 						</div>
 						<div className="flex">
 							<div className="flex-1">
 								<span className="font-bold">Totp 2FA Status:</span>
-								<span className="pl-2">{toptoStatus}</span>
+								<span className="pl-2">
+									{settings?.totp || 'undefined'}
+								</span>
 							</div>
 							<button>
 								<SquarePen />
