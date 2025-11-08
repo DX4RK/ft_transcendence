@@ -124,6 +124,12 @@ function LiveChat() {
 		setMessages(data);
 	});
 
+
+	useSocketEvent('invite', (data) => {
+		if (data.userId === isAuthenticated) return;
+		addNotification("invite", data.text);
+	});
+
 	// Methods
 
 	useEffect(() => {
@@ -196,7 +202,6 @@ function LiveChat() {
 			.then(data => {
 				if (data.success) {
 					setBlockedUsers(prev => [...prev, user.userId]);
-					addNotification("blocked", `You blocked ${user.userId}`);
 				}
 			});
 	};
@@ -220,17 +225,18 @@ function LiveChat() {
 					if (blockedIndex > -1)
 						blocked.splice(blockedIndex, 1);
 					setBlockedUsers(blocked);
-					addNotification("unblocked", `You unblocked ${user.userId}`);
 				}
 			});
 	};
 
 	const inviteUser = (user: ConnectedUser | null) => {
-		if (!user) return;
-		socket?.emit('invite', user);
+		if (!user || !canInteract()) return;
+		socket?.emit('send-invite', {
+			roomId: roomId,
+		});
 	};
 
-	const oppenProfile = (user: ConnectedUser | null) => {
+	const oppenProfile = (user: ConnectedUser | null) => { //! a faire
 		if (!user) return;
 		addNotification("profil", `Profil of ${user.userId}`);
 
@@ -257,16 +263,6 @@ function LiveChat() {
 			console.error("Erreur fetch :", err);
 		});
 	};
-
-	// const addNotification = (type: string, text: string) => {
-	// 	const id = Date.now();
-
-	// 	setNotifications((prev) => [...prev, { id, type, text }]);
-
-	// 	setTimeout(() => {
-	// 		setNotifications((prev) => prev.filter((n) => n.id !== id));
-	// 	}, 3000);
-	// };
 
 	return (
 		<div className="relative min-h-screen bg-gradient-to-r from-cyan-500/50 to-blue-500/50 text-white flex flex-col items-center justify-center space-y-12 p-10">
@@ -306,21 +302,6 @@ function LiveChat() {
 					</nav>
 				</div>
 			</div>
-
-			{/* Notifications
-			<div className="absolute top-10 right-10 flex flex-col items-end space-y-2">
-			{notifications.map((notif) => (
-				<button
-				key={notif.id}
-				onClick={() => setNotifications((prev) => prev.filter((n) => n.id !== notif.id))}
-				className="px-4 py-2 rounded-lg bg-white/20 text-black font-bold shadow-md hover:bg-white/40 transition">
-					{notif.text}
-				</button>
-			))}
-			</div> */}
-
-			{/* <canvas id="pongCanvas" width="1800" height="900" className="absolute top-0 left-0 w-full h-full z-1"></canvas>
-			<script type="module" src="../Game/main.ts"></script> */}
 
 			{/* Titre */}
 			<h1 className="text-4xl font-arcade md:text-6xl font-bold text-orange-300/90 drop-shadow-lg tracking-wide mt-4">
