@@ -1,11 +1,61 @@
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '../.env') });
+const vaultClient = require('./vault');
+
+class ConfigManager {
+    constructor() {
+        this.config = null;
+    }
+
+    async initialize() {
+        if (this.config) return this.config;
+
+        try {
+            const secrets = await vaultClient.getSecrets([
+                'app/server', 'app/jwt', 'app/gmail', 'app/vonage', 'app/cookie', 'app/database'
+            ]);
+
+            this.config = {
+                port: parseInt(secrets['app/server'].port) || 3000,
+                jwtSecret: secrets['app/jwt'].secret,
+                gmailUser: secrets['app/gmail'].user,
+                gmailPass: secrets['app/gmail'].pass,
+                vonageKey: secrets['app/vonage'].key,
+                vonageSecret: secrets['app/vonage'].secret,
+                cookieSecret: secrets['app/cookie'].secret,
+                database: {
+                    host: secrets['app/database'].host,
+                    user: secrets['app/database'].user,
+                    password: secrets['app/database'].password,
+                    database: secrets['app/database'].database
+                }
+            };
+
+            return this.config;
+        } catch (error) {
+            console.error('Vault unavailable - application cannot start');
+            throw new Error('Configuration failed: Vault required');
+        }
+    }
+
+    async getConfig() {
+        return await this.initialize();
+    }
+
+    async get(key) {
+        const config = await this.getConfig();
+        return key.split('.').reduce((obj, k) => obj && obj[k], config);
+    }
+
+    async reload() {
+        this.config = null;
+        vaultClient.clearCache();
+        return await this.initialize();
+    }
+}
+
+const configManager = new ConfigManager();
 
 module.exports = {
-  port: process.env.PORT || 3000,
-  jwtSecret: process.env.JWT_SECRET,
-  gmailUser: process.env.GMAIL_USER,
-  gmailPass: process.env.GMAIL_PASS,
-  vonageKey: process.env.VONAGE_KEY,
-  vonageSecret: process.env.VONAGE_SECRET,
+    getConfig: () => configManager.getConfig(),
+    get: (key) => configManager.get(key),
+    reload: () => configManager.reload()
 };

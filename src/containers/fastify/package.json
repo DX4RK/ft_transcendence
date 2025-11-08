@@ -16,13 +16,13 @@
     "fastify-better-socket.io": "1.0.0",
     "socket.io": "^4.7.2",
     "bcrypt": "^6.0.0",
-    "dotenv": "^17.2.2",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^7.0.6",
     "pino-pretty": "^13.1.1",
     "qrcode": "^1.5.4",
     "speakeasy": "^2.0.0",
-    "better-sqlite3": "^12.4.1"
+    "better-sqlite3": "^12.4.1",
+    "node-vault": "^0.10.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
