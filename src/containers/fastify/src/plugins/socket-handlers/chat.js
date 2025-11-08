@@ -155,6 +155,28 @@ async function socketChatHandlers(fastify, opts) {
 				}
 			});
 
+			socket.on('send-invite', async (data) => {
+				if (!socket.userId) return;
+
+				const { roomId } = data;
+
+				try {
+					const roomMembers = extractPrivateRoomMembers(roomId);
+					const targetId = roomMembers[0] === socket.userId ? roomMembers[1] : roomMembers[0];
+
+					if (isUserBlocked(fastify.usersDb, socket.userId, targetId))
+						return;
+
+					fastify.socketIO.to(`private:${roomId}`).emit('invite', {
+						userId: socket.userId,
+						text: `Invite recev from: ${socket.userId}`,
+						timestamp: Date.now()
+					});
+				} catch (err) {
+					fastify.log.error(`Error sending private message: ${err.message}`);
+				}
+			});
+
 			socket.on('leave-room', (roomId) => {
 				socket.leave(`room:${roomId}`);
 				socket.to(`room:${roomId}`).emit('user-left', {

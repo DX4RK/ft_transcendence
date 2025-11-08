@@ -24,7 +24,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
 
 		setTimeout(() => {
 			setNotifications((prev) => prev.filter((n) => n.id !== id));
-		}, 3000);
+		}, 10000);
 	};
 
 	const handleClick = (id: number) => {
