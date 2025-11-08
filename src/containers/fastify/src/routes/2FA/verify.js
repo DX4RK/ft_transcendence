@@ -55,7 +55,7 @@ async function signRoutes(fastify, opts) {
 
 			const token = generateToken({ userId: user.id });
 			return reply
-				.setCookie('jwt', token, tokenStoreConfig)
+				.setCookie('token', token, tokenStoreConfig)
 				.send({ success: true, message: 'Verification successfull', code: token });
 		} catch (err) {
 			fastify.log.error(err);
