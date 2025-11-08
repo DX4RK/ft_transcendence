@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
 	modsecurity-crs \
 	curl \
 	wget \
+	unzip \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Install HashiCorp Vault CLI
