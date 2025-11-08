@@ -1,18 +1,20 @@
 import { Link, useNavigate } from "react-router-dom"
 import { useNotification } from "../context/NotificationContext";
+import { useTournament } from "../context/TournamentContext";
 // import { Background } from "../../Game/background";
 import { useEffect, useState } from "react";
 // import Game from "./Game";
 
-function Game(user1: string, user2: string) {
-	const winner = Math.random() < 0.5 ? user1 : user2;
-	return winner;
-}
+// function Game(user1: string, user2: string) {
+// 	const winner = Math.random() < 0.5 ? user1 : user2;
+// 	return winner;
+// }
 
 
 function Tournoi() {
 	const navigate = useNavigate();
 	const { addNotification } = useNotification();
+	const { startMatch } = useTournament();
 	// const [notifications, setNotifications] = useState<
 	// { id: number; type: string; text: string }[]
 	// >([]);
@@ -30,7 +32,11 @@ function Tournoi() {
 		// game.start();
 	}, []);
 
-	const startTournoi = () => {
+	function wait(ms: number) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+	const startTournoi = async () => {
 
 
 		let players = [player1, player2, player3, player4, player5, player6, player7, player8];
@@ -49,24 +55,29 @@ function Tournoi() {
 
 		while (currentRound.length > 1) {
 			addNotification("info", `Round ${roundNumber} is starting!`);
+			await wait(2000);
 			console.log(`Round ${roundNumber}:`);
 			let nextRound = [];
 
 			for (let i = 0; i < currentRound.length; i += 2) {
 				if (currentRound[i + 1] === undefined) {
 					addNotification("info", `${currentRound[i]} gets a bye to the next round.`);
+					await wait(2000);
 					console.log(`${currentRound[i]} gets a bye to the next round.`);
 					nextRound.push(currentRound[i]);
 					continue;
 				}
 				addNotification("info", `Match: ${currentRound[i]} vs ${currentRound[i + 1]}`);
+				await wait(2000);
 				const user1 = currentRound[i];
 				const user2 = currentRound[i + 1];
 
-				const winner = Game(user1, user2); //! ennlever ca
-				navigate("/game", { state: { mode, user1, user2 } }); //! renvoyer la reponse du gagnant
-				// navigate('/game', { state: { mode: 1 } })}
+				const winnerPromise = startMatch(user1, user2);
+				navigate("/game", { state: { mode: mode }});
+				const winner = await winnerPromise;
+				
 				addNotification("info", `Winner: ${winner}`);
+				await wait(2000);
 				console.log(`Match: ${user1} vs ${user2} => Winner: ${winner}`);
 				nextRound.push(winner);
 			}
@@ -75,7 +86,6 @@ function Tournoi() {
 		}
 		addNotification("info", `Tournament Winner: ${currentRound[0]}!`);
 		console.log(`Tournament Winner: ${currentRound[0]}`);
-
 	};
 
 
@@ -135,6 +145,12 @@ function Tournoi() {
 			<h1 className="text-4xl font-arcade md:text-6xl font-bold text-orange-300/90 drop-shadow-lg tracking-wide mt-4">
 				Tournament
 			</h1>
+
+			<div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-2xl text-purple-400 font-arcade">
+				<div>
+					
+				</div>
+			</div>
 
 			{/* Notifications
 			<div className="absolute top-10 right-10 flex flex-col items-end space-y-2">
