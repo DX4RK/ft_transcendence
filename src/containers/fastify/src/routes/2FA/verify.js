@@ -1,5 +1,4 @@
 const speakeasy = require('speakeasy');
-const tokenStoreConfig = require('../../config/tokenStoreConfig');
 
 async function signRoutes(fastify, opts) {
 	const { generateToken } = opts;
@@ -55,7 +54,12 @@ async function signRoutes(fastify, opts) {
 
 			const token = generateToken({ userId: user.id });
 			return reply
-				.setCookie('token', token, tokenStoreConfig)
+				.setCookie('token', token, {
+					httpOnly: true,
+					sameSite: 'lax',  // change from 'strict' when prod
+					path: '/',
+					maxAge: 60 * 60
+				})
 				.send({ success: true, message: 'Verification successfull', code: token });
 		} catch (err) {
 			fastify.log.error(err);
