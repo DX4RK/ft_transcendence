@@ -33,6 +33,8 @@ vault kv put secret/app/database \
   password="secure_db_password_123" \
   database="transcendence"
 
+
+
 # SSL Certificates
 vault kv put secret/ssl/certificates \
   cert="-----BEGIN CERTIFICATE-----

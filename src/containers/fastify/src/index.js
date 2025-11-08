@@ -1,8 +1,9 @@
 const loggerConfig = require('./config/loggerConfig')
 const fastify = require('fastify')({ logger: loggerConfig });
 
+const { get } = require('./config/env');
+
 // Config
-const { port } = require('./config/env');
 
 // Services
 const { createEmailTransporter } = require('./service/email');
@@ -18,6 +19,8 @@ const transporter = createEmailTransporter();
 const vonage = createVonageClient();
 
 const start = async () => {
+	const port = await get('srerver');
+
 	try {
 		// Register plugins
 		await registerPlugins(fastify);
