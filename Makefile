@@ -6,6 +6,8 @@ DOCKER_COMPOSE = docker-compose -f src/docker-compose.yml
 up:
 	@echo "Starting $(NAME)..."
 	@$(DOCKER_COMPOSE) up -d --build
+	@sleep 10
+	@docker exec ft_transcendence_vault sh /vault/config/init-vault.sh
 
 down:
 	@echo "Stopping $(NAME)..."
@@ -16,7 +18,7 @@ build:
 	@$(DOCKER_COMPOSE) build
 
 logs:
-	@echo "Showing logs for $(NAME)... (Ctrl+C to exit)"
+	@echo "Showing logs..."
 	@$(DOCKER_COMPOSE) logs -f
 
 clean_containers:
@@ -31,3 +33,5 @@ containers: clean_containers clean_images
 
 clean: down containers
 	@echo "Cleanup complete."
+
+cup: up
