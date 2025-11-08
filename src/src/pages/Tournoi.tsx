@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom"
 import { useNotification } from "../context/NotificationContext";
+import { useTranslation } from "react-i18next";
 // import { Background } from "../../Game/background";
 import { useEffect, useState } from "react";
 // import Game from "./Game";
@@ -13,6 +14,7 @@ function Game(user1: string, user2: string) {
 function Tournoi() {
 	const navigate = useNavigate();
 	const { addNotification } = useNotification();
+	const { t } = useTranslation();
 	// const [notifications, setNotifications] = useState<
 	// { id: number; type: string; text: string }[]
 	// >([]);
@@ -48,32 +50,32 @@ function Tournoi() {
 		const mode = 2;
 
 		while (currentRound.length > 1) {
-			addNotification("info", `Round ${roundNumber} is starting!`);
+			addNotification("info", t("tournoi.roundStarting", { round: roundNumber }));
 			console.log(`Round ${roundNumber}:`);
 			let nextRound = [];
 
 			for (let i = 0; i < currentRound.length; i += 2) {
 				if (currentRound[i + 1] === undefined) {
-					addNotification("info", `${currentRound[i]} gets a bye to the next round.`);
+					addNotification("info", t("tournoi.bye", { player: currentRound[i] }));
 					console.log(`${currentRound[i]} gets a bye to the next round.`);
 					nextRound.push(currentRound[i]);
 					continue;
 				}
-				addNotification("info", `Match: ${currentRound[i]} vs ${currentRound[i + 1]}`);
+				addNotification("info", t("tournoi.match", { player1: currentRound[i], player2: currentRound[i + 1] }));
 				const user1 = currentRound[i];
 				const user2 = currentRound[i + 1];
 
 				const winner = Game(user1, user2); //! ennlever ca
 				navigate("/game", { state: { mode, user1, user2 } }); //! renvoyer la reponse du gagnant
 				// navigate('/game', { state: { mode: 1 } })}
-				addNotification("info", `Winner: ${winner}`);
+				addNotification("info", t("tournoi.winner", { winner }));
 				console.log(`Match: ${user1} vs ${user2} => Winner: ${winner}`);
 				nextRound.push(winner);
 			}
 			currentRound = nextRound;
 			roundNumber++;
 		}
-		addNotification("info", `Tournament Winner: ${currentRound[0]}!`);
+		addNotification("info", t("tournoi.tournamentWinner", { winner: currentRound[0] }));
 		console.log(`Tournament Winner: ${currentRound[0]}`);
 
 	};
@@ -133,7 +135,7 @@ function Tournoi() {
 
 			{/* Titre */}
 			<h1 className="text-4xl font-arcade md:text-6xl font-bold text-orange-300/90 drop-shadow-lg tracking-wide mt-4">
-				Tournament
+				{t("tournoi.tournament")}
 			</h1>
 
 			{/* Notifications
@@ -153,7 +155,7 @@ function Tournoi() {
 					<input
 					type="text"
 					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder="Player 1"
+					placeholder={t("tournoi.player1")}
 					value={player1}
 					onChange={(e) => setPlayer1(e.target.value)}
 					/>
@@ -162,7 +164,7 @@ function Tournoi() {
 					<input
 					type="text"
 					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder="Player 2"
+					placeholder={t("tournoi.player2")}
 					value={player2}
 					onChange={(e) => setPlayer2(e.target.value)}
 					/>
@@ -171,7 +173,7 @@ function Tournoi() {
 					<input
 					type="text"
 					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder="Player 3"
+					placeholder={t("tournoi.player3")}
 					value={player3}
 					onChange={(e) => setPlayer3(e.target.value)}
 					/>
@@ -180,7 +182,7 @@ function Tournoi() {
 					<input
 					type="text"
 					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder="Player 4"
+					placeholder={t("tournoi.player4")}
 					value={player4}
 					onChange={(e) => setPlayer4(e.target.value)}
 					/>
@@ -189,7 +191,7 @@ function Tournoi() {
 					<input
 					type="text"
 					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder="Player 5"
+					placeholder={t("tournoi.player5")}
 					value={player5}
 					onChange={(e) => setPlayer5(e.target.value)}
 					/>
@@ -198,7 +200,7 @@ function Tournoi() {
 					<input
 					type="text"
 					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder="Player 6"
+					placeholder={t("tournoi.player6")}
 					value={player6}
 					onChange={(e) => setPlayer6(e.target.value)}
 					/>
@@ -207,7 +209,7 @@ function Tournoi() {
 					<input
 					type="text"
 					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder="Player 7"
+					placeholder={t("tournoi.player7")}
 					value={player7}
 					onChange={(e) => setPlayer7(e.target.value)}
 					/>
@@ -216,7 +218,7 @@ function Tournoi() {
 					<input
 					type="text"
 					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder="Player 8"
+					placeholder={t("tournoi.player8")}
 					value={player8}
 					onChange={(e) => setPlayer8(e.target.value)}
 					/>
@@ -227,7 +229,7 @@ function Tournoi() {
 			className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
 			// onClick={() => navigate('/game', { state: { mode: 2 } })}>
 			onClick={() => startTournoi()}>
-				Start
+				{t("tournoi.start")}
 			</button>
 
 		</div>

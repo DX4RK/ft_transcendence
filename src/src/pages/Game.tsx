@@ -1,9 +1,10 @@
-import { Link ,useNavigate} from "react-router-dom"
-import { Button } from "@/components/ui/button"
+import { Link ,useNavigate} from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import BabylonScene from "../../Game/Pong";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 // import type { int } from "@babylonjs/core";
 
 
@@ -22,11 +23,12 @@ function Game() {
 	}
 
 	const location = useLocation();
+	const { t } = useTranslation();
 	const mode = location.state?.mode || 1; // valeur par défaut si undefined
 	const { user1, user2 } = location.state || {}; //! afficher les pseudo des joueurs
 	const navigate = useNavigate();
-	const name1 = user1 || "User";
-	const name2 = user2 || "Guest";
+	const name1 = user1 || t("game.user");
+	const name2 = user2 || t("game.guest");
 
 	let [data, setData] = useState<data | null>({
 		userData: { name: name1, score: 0 },
@@ -94,14 +96,14 @@ function Game() {
 			{name1} - {scoreLeft} | {scoreRight} - {name2}
 		</div>
 		<div>
-			{winner === 1 && <h2>🏆 User a gagne !</h2>}
-			{winner === 2 && <h2>🏆 Guest a gagne !</h2>}
+			{winner === 1 && <h2>🏆 {t("game.userWon")}</h2>}
+			{winner === 2 && <h2>🏆 {t("game.guestWon")}</h2>}
 		</div>
 	</div>
 
 
 	<div className="absolute top-10 right-20 z-10">
-		<Button onClick={() => alert("- Game paused -")} />
+		<Button onClick={() => alert(t("game.paused"))} />
 	</div>
 
 	<BabylonScene
@@ -172,7 +174,7 @@ function Game() {
 		}
 	/>
 
-		  <Link to="/" className="flex p-1 mx-1 text-orange-300/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">Home</Link>
+		  <Link to="/" className="flex p-1 mx-1 text-orange-300/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">{t("game.home")}HOME</Link>
 	</div>
   );
 }

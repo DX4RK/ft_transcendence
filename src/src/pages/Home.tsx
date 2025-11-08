@@ -4,23 +4,12 @@ import { Background } from "../../Game/background";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { Globe } from 'lucide-react';
-
 
 function Home() {
 
 
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-
-	const [isOpen, setIsOpen] = useState(false);
-	const [selectedLang, setSelectedLang] = useState('FR');
-
-	const languages = [
-		{ code: 'FR', label: 'Français', flag: '🇫🇷' },
-		{ code: 'EN', label: 'English', flag: '🇬🇧' },
-		{ code: 'ES', label: 'Español', flag: '🇪🇸' }
-	];
 
 	useEffect(() => {
 		const game = new Background();
@@ -33,11 +22,6 @@ function Home() {
 			navigate('/dashboard');
 		else
 			navigate('/login');
-	};
-
-	const handleSelectLanguage = (lang) => {
-		setSelectedLang(lang.code);
-		setIsOpen(false);
 	};
 
   return (
@@ -103,44 +87,8 @@ function Home() {
 			<div className="fixed inset-0 bg-black/60 peer-checked:hidden transition z-40"></div>
 
 			<a className="text-base text-2xl text-[#6fc8dc] font-arcade transition-transform duration-1700 peer-checked:-translate-y-400 z-45">{t("home.welcome")}</a>
-			<button onClick={() => navigate('/game', { state: { mode: 1,  } })} className="flex rounded-full items-center translate-y-300 justify-center w-128 z-10 transition ease-in-out duration-1700 bg-gradient-to-br from-pink-500/80 to-orange-400/80 font-bold p-5 shadow-xl text-white text-2xl font-arcade dark:bg-black-950  hover:bg-yellow-500/80 hoer:italic hover:text-white-500 hover:shadow-inner hover:outline hover:ouline-8 hover:scale-110 hover:duration-300 peer-checked:translate-y-0"> PLAY </button>
+			<button onClick={() => navigate('/game', { state: { mode: 1,  } })} className="flex rounded-full items-center translate-y-300 justify-center w-128 z-10 transition ease-in-out duration-1700 bg-gradient-to-br from-pink-500/80 to-orange-400/80 font-bold p-5 shadow-xl text-white text-2xl font-arcade dark:bg-black-950  hover:bg-yellow-500/80 hoer:italic hover:text-white-500 hover:shadow-inner hover:outline hover:ouline-8 hover:scale-110 hover:duration-300 peer-checked:translate-y-0"> {t("home.play")} </button>
 
-		<button
-			onClick={() => setIsOpen(!isOpen)}
-			className="fixed absolute right-10 bottom-10 w-16 h-16 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 z-10"
-			>
-			<Globe className="fixed absolute right-14.5 bottom-14.5 w-7 h-7" />
-		</button>
-
-		<div className={`transition-all duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-		{languages.map((lang, index) => {
-
-
-			const angle = 260 - (index * 45); // 180°, 135°, 90°
-			const distance = 80;
-			const x = Math.cos(angle * Math.PI / 180) * distance;
-			const y = Math.sin(angle * Math.PI / 180) * distance;
-		return (
-			<button
-				key={lang.code}
-				onClick={() => handleSelectLanguage(lang)}
-				className={`fixed absolute right-10 bottom-10 w-14 h-14 rounded-full bg-cyan-600 hover:bg-indigo-50 shadow-md hover:shadow-lg transition-all duration-300 text-xs font-medium ${
-				selectedLang === lang.code ? '' : ''
-				}`}
-				style={{
-				transform: isOpen
-					? `translate(${x}px, ${y}px) scale(1)`
-					: 'translate(0, 0) scale(0)',
-				transitionDelay: isOpen ? `${index * 50}ms` : '0ms'
-				}}
-			>
-				{/* flags or code */}
-				<span className="text-2xl mb-0.5">{lang.flag}</span>
-				{/* <span className="text text font-arcade gray-700">{lang.code}</span> */}
-			</button>
-		);
-		})}
-		</div>
 	</div>
 
 	</div>

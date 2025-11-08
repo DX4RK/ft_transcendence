@@ -4,6 +4,7 @@ import { useNotification } from "../context/NotificationContext";
 // import { Background } from "../../Game/background";
 import { Link, useNavigate } from "react-router-dom";
 import { Coins, DoorClosed } from "lucide-react";
+import { useTranslation } from "react-i18next";
 // import { io } from "socket.io-client";
 
 // const socket = io("http://localhost:3000", { withCredentials: true, autoConnect: false });
@@ -21,6 +22,7 @@ interface ConnectedUser {
 }
 
 function LiveChat() {
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { addNotification } = useNotification();
 
@@ -324,7 +326,7 @@ function LiveChat() {
 
 			{/* Titre */}
 			<h1 className="text-4xl font-arcade md:text-6xl font-bold text-orange-300/90 drop-shadow-lg tracking-wide mt-4">
-				LiveChat
+				{t("liveChat.title")}
 			</h1>
 
 			{/* Boutons Chat Public / Privé */}
@@ -332,12 +334,12 @@ function LiveChat() {
 				<button
 				onClick={() => switchMode(false)}
 				className={`px-5 py-2 rounded-full text-lg font-bold transition ${!isPrivate ? "bg-pink-500 shadow-lg scale-110" : "bg-white/20 hover:bg-white/40"}`}>
-					Public Chat
+					{t("liveChat.publicChat")}
 				</button>
 				<button
 				onClick={() => switchMode(true)}
 				className={`px-5 py-2 rounded-full text-lg font-bold transition ${isPrivate ? "bg-pink-500 shadow-lg scale-110" : "bg-white/20 hover:bg-white/40"}`}>
-					Private Chat
+					{t("liveChat.privateChat")}
 				</button>
 			</div>
 
@@ -345,10 +347,10 @@ function LiveChat() {
 			{isPrivate && (
 			<div className="flex flex-col bg-white/10 backdrop-blur-md w-3/5 rounded-2xl border-2 border-white/30 shadow-lg p-4 mt-4">
 				<h2 className="text-xl font-bold mb-2 text-orange-200/90">
-					Connected users:
+					{t("liveChat.connectedUsers")}
 				</h2>
 				{connectedUsers.length === 0 ? (
-				<p className="opacity-60 italic">No users connected</p>
+				<p className="opacity-60 italic">{t("liveChat.noUsersCo")}</p>
 				) : (
 				<div className="flex flex-wrap gap-3">
 					{connectedUsers.map((user) => (
@@ -392,7 +394,7 @@ function LiveChat() {
 			<div className="flex w-3/5 space-x-3">
 				<input
 				type="text"
-				placeholder={isPrivate && !selectedUser ? "Select a user..." : "Write your message..."}
+				placeholder={isPrivate && !selectedUser ? t("liveChat.selectUser") : t("liveChat.writeMessage")}
 				className="flex-1 px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
 				value={inputText}
 				onChange={(e) => setInputText(e.target.value)}
@@ -401,7 +403,7 @@ function LiveChat() {
 				<button
 				onClick={sendMessage}
 				className="px-6 py-3 rounded-full bg-pink-500 text-white font-bold shadow-md hover:bg-pink-600 hover:scale-105 transition">
-					Send
+					{t("liveChat.send")}
 				</button>
 			</div>
 
@@ -411,24 +413,24 @@ function LiveChat() {
 				<button
 					onClick={() => oppenProfile(selectedUser)}
 					className="px-6 py-3 rounded-full bg-blue-500 text-white font-bold shadow-md hover:bg-blue-600 hover:scale-105 transition">
-					Profile
+					{t("liveChat.profile")}
 				</button>
 				<button
 					onClick={() => isUserBlocked(selectedUser) ? unblockUser(selectedUser) : blockUser(selectedUser)}
 					className="px-6 py-3 rounded-full bg-red-500 text-white font-bold shadow-md hover:bg-red-600 hover:scale-105 transition">
-					{isUserBlocked(selectedUser) ? "Unblock" : "Block"}
+					{isUserBlocked(selectedUser) ? t("liveChat.unblock") : t("liveChat.block")}
 				</button>
 				<button
 					onClick={() => inviteUser(selectedUser)}
 					className="px-6 py-3 rounded-full bg-green-500 text-white font-bold shadow-md hover:bg-green-600 hover:scale-105 transition">
-					Invite
+					{t("liveChat.invite")}
 				</button>
 			</div>
 			)}
 
 			{/* Bouton retour */}
 			<Link to="/" className="mt-10 px-6 py-3 rounded-full bg-pink-200 dark:bg-black-950 text-2xl text-white font-bold shadow-xl hover:bg-yellow-500 hover:scale-110 hover:italic hover:shadow-inner hover:outline hover:outline-4 hover:outline-cyan-500 transition">
-				⬅ Back
+				⬅ {t("liveChat.back")}
 			</Link>
 		</div>
 	);
