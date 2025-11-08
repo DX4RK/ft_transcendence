@@ -1,19 +1,21 @@
 import { Link, useNavigate } from "react-router-dom"
 import { useNotification } from "../context/NotificationContext";
+import { useTournament } from "../context/TournamentContext";
 import { useTranslation } from "react-i18next";
 // import { Background } from "../../Game/background";
 import { useEffect, useState } from "react";
 // import Game from "./Game";
 
-function Game(user1: string, user2: string) {
-	const winner = Math.random() < 0.5 ? user1 : user2;
-	return winner;
-}
+// function Game(user1: string, user2: string) {
+// 	const winner = Math.random() < 0.5 ? user1 : user2;
+// 	return winner;
+// }
 
 
 function Tournoi() {
 	const navigate = useNavigate();
 	const { addNotification } = useNotification();
+	const { startMatch } = useTournament();
 	const { t } = useTranslation();
 	// const [notifications, setNotifications] = useState<
 	// { id: number; type: string; text: string }[]
@@ -32,7 +34,11 @@ function Tournoi() {
 		// game.start();
 	}, []);
 
-	const startTournoi = () => {
+	function wait(ms: number) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+	const startTournoi = async () => {
 
 
 		let players = [player1, player2, player3, player4, player5, player6, player7, player8];
@@ -51,24 +57,29 @@ function Tournoi() {
 
 		while (currentRound.length > 1) {
 			addNotification("info", t("tournoi.roundStarting", { round: roundNumber }));
+			await wait(2000);
 			console.log(`Round ${roundNumber}:`);
 			let nextRound = [];
 
 			for (let i = 0; i < currentRound.length; i += 2) {
 				if (currentRound[i + 1] === undefined) {
 					addNotification("info", t("tournoi.bye", { player: currentRound[i] }));
+					await wait(2000);
 					console.log(`${currentRound[i]} gets a bye to the next round.`);
 					nextRound.push(currentRound[i]);
 					continue;
 				}
 				addNotification("info", t("tournoi.match", { player1: currentRound[i], player2: currentRound[i + 1] }));
+				await wait(2000);
 				const user1 = currentRound[i];
 				const user2 = currentRound[i + 1];
 
-				const winner = Game(user1, user2); //! ennlever ca
-				navigate("/game", { state: { mode, user1, user2 } }); //! renvoyer la reponse du gagnant
-				// navigate('/game', { state: { mode: 1 } })}
+				const winnerPromise = startMatch(user1, user2);
+				navigate("/game", { state: { mode: mode }});
+				const winner = await winnerPromise;
+				
 				addNotification("info", t("tournoi.winner", { winner }));
+				await wait(2000);
 				console.log(`Match: ${user1} vs ${user2} => Winner: ${winner}`);
 				nextRound.push(winner);
 			}
