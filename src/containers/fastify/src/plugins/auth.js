@@ -1,10 +1,10 @@
 const fp = require('fastify-plugin');
 const fastifyJwt = require('@fastify/jwt');
-const { get } = require("../config/env");
+const { jwtSecret } = require('../config/env');
 
 module.exports = fp(async function (fastify, opts) {
-	const jwtSecret = await get('jwtSecret');
-	
+	// const jwtSecret = await get('jwtSecret');
+
 	fastify.register(fastifyJwt, { secret: jwtSecret });
 	fastify.decorate(
 		'authenticate',

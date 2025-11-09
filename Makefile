@@ -6,8 +6,6 @@ DOCKER_COMPOSE = docker-compose -f src/docker-compose.yml
 up:
 	@echo "Starting $(NAME)..."
 	@$(DOCKER_COMPOSE) up -d --build
-	@sleep 10
-	@docker exec ft_transcendence_vault sh /vault/config/init-vault.sh
 
 down:
 	@echo "Stopping $(NAME)..."

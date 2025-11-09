@@ -3,8 +3,7 @@ const cookie = require('@fastify/cookie');
 const fastifyIO = require('fastify-better-socket.io');
 const fastifyBetterSqlite3 = require('./db.js');
 const auth = require('./auth.js');
-const { get } = require('../config/env');
-//const { get } = require('../');
+const { cookieSecret } = require('../config/env');
 
 const registerPlugins = async (fastify) => {
 	// CORS
@@ -16,7 +15,7 @@ const registerPlugins = async (fastify) => {
 
 	// Cookie
 	await fastify.register(cookie, {
-		secret: await get('cookieSecret'),
+		secret: cookieSecret,
 		hook: 'onRequest',
 	});
 
