@@ -52,7 +52,7 @@ async function signRoutes(fastify, opts) {
 				fastify.usersDb.prepare('DELETE FROM tmp_2fa_codes WHERE user_id = ?').run(user.id);
 			}
 
-			const token = generateToken({ userId: user.id });
+			const token = await generateToken({ userId: user.id });
 			return reply
 				.setCookie('token', token, {
 					httpOnly: true,
