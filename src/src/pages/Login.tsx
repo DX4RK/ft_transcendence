@@ -106,7 +106,7 @@ return (
 					{/* log in */}
 					{loading ? t("login.connecting") : t("login.logIn")}
 			</button>
-			<Link to="/signIn" className="flex justify-center underline m-4">No bitches ? register</Link>
+			<Link to="/register" className="flex justify-center underline m-4">No bitches ? register</Link>
 			</form>
 		</div>
 	</div>
