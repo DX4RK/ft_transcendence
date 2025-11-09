@@ -5,7 +5,7 @@ const createEmailTransporter = async () => {
 	const gmailUser = await env.get('gmailUser');
 	const gmailPass = await env.get('gmailPass');
 	
-	return nodemailer.createTransporter({
+	return nodemailer.createTransport({
 		service: 'gmail',
 		auth: {
 			user: gmailUser,

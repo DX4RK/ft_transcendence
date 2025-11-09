@@ -16,7 +16,7 @@ async function socketAuthHandlers(fastify, opts) {
 
 			socket.on('authenticate', async (token) => {
 				try {
-					const { valid, decoded } = verifyToken(token);
+					const { valid, decoded } = await verifyToken(token);
 
 					if (!valid) {
 						socket.emit('auth-error', { message: 'Invalid or expired token' });
