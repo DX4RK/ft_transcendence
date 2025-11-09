@@ -4,7 +4,10 @@ const { get } = require('../config/env');
 const vonageKey = get('vonageKey');
 const vonageSecret = get('vonageSecret');
 
-const createVonageClient = () => {
+const createVonageClient = async () => {
+	const vonageKey = await env.get('vonageKey');
+	const vonageSecret = await env.get('vonageSecret');
+	
 	return new Vonage({
 		apiKey: vonageKey,
 		apiSecret: vonageSecret
