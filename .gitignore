@@ -15,7 +15,21 @@ src/volumes/
 src/containers/fastify/node_modules/
 src/containers/fastify/package-lock.json
 
+# Vault data (contains encrypted secrets)
 **/vault/data/
+
+# SSL certificates (generated dynamically by Vault)
+**/certs/*.crt
+**/certs/*.key
+**/certs/*.pem
+*.crt
+*.key
+*.pem
+
+# Environment files with secrets
+.env
+.env.local
+.env.*.local
 
 .vscode/*
 !.vscode/extensions.json
