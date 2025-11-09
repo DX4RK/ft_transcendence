@@ -31,7 +31,7 @@ services:
     restart: unless-stopped
 
   vault:
-    image: hashicorp/vault:latest
+    build: containers/vault
     container_name: ft_transcendence_vault
     restart: unless-stopped
     ports:
@@ -43,8 +43,6 @@ services:
       - IPC_LOCK
     volumes:
       - vault-data:/vault/data
-      - ./containers/vault/config:/vault/config
-    command: vault server -dev -dev-listen-address="0.0.0.0:8200"
 
 volumes:
   vault-data:
