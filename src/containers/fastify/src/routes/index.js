@@ -2,6 +2,7 @@ const signInRoute = require('./sign/in');
 const signUpRoute = require('./sign/up');
 
 const verifyRoute = require('./2FA/verify');
+const totpRoute = require('./2FA/totp');
 
 const getMatchStatsRoute = require('./stats/getMatchStats');
 const updateStatsOnMatchFinishRoute = require('./stats/updateStatsOnMatchFinish');
@@ -51,10 +52,9 @@ const registerRoutes = async (fastify, { transporter, vonage, generateToken }) =
 	});
 	await fastify.register(signUpRoute, { prefix: '/sign' });
 
-	await fastify.register(verifyRoute, {
-		prefix: '/twofa',
-		generateToken
-	});
+	// 2FA
+	await fastify.register(totpRoute, { prefix: '/twofa'});
+	await fastify.register(verifyRoute, { prefix: '/twofa', generateToken});
 
 	// Notifications
 	fastify.post('/send-notification', async (request, reply) => {
