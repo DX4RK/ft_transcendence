@@ -2,7 +2,7 @@ const loggerConfig = require('./config/loggerConfig')
 const fastify = require('fastify')({ logger: loggerConfig });
 
 // Config
-const { port } = require('./config/env');
+const env = require('./config/env');
 
 // Services
 const { createEmailTransporter } = require('./service/email');
@@ -13,12 +13,15 @@ const { generateToken } = require('./service/jwt');
 const registerPlugins = require('./plugins');
 const registerRoutes = require('./routes');
 
-// Initialize services
-const transporter = createEmailTransporter();
-const vonage = createVonageClient();
-
 const start = async () => {
 	try {
+		// Wait for configuration to be available
+		const config = await env.getConfig();
+		
+		// Initialize services
+		const transporter = await createEmailTransporter();
+		const vonage = await createVonageClient();
+
 		// Register plugins
 		await registerPlugins(fastify);
 
@@ -30,9 +33,9 @@ const start = async () => {
 		});
 
 		// Start server
-		await fastify.listen({ port: port || 3000, host: '0.0.0.0' });
+		await fastify.listen({ port: config.port || 3000, host: '0.0.0.0' });
 
-		fastify.log.info(`Server listening on port ${port || 3000}`);
+		fastify.log.info(`Server listening on port ${config.port || 3000}`);
 	} catch (err) {
 		fastify.log.error(err);
 		process.exit(1);

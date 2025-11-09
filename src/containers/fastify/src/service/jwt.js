@@ -1,12 +1,14 @@
 const jwt = require('jsonwebtoken');
-const { jwtSecret } = require("../config/env");
+const env = require("../config/env");
 
-function generateToken(payload, expiresIn = "7d") {
+async function generateToken(payload, expiresIn = "7d") {
+	const jwtSecret = await env.get('jwtSecret');
 	return jwt.sign(payload, jwtSecret, { expiresIn });
 }
 
-function verifyToken(token) {
+async function verifyToken(token) {
 	try {
+		const jwtSecret = await env.get('jwtSecret');
 		const decoded = jwt.verify(token, jwtSecret);
 		return { valid: true, decoded };
 	} catch (err) {

@@ -1,8 +1,11 @@
 const nodemailer = require('nodemailer');
-const { gmailUser, gmailPass } = require("../config/env");
+const env = require("../config/env");
 
-const createEmailTransporter = () => {
-	return nodemailer.createTransport({
+const createEmailTransporter = async () => {
+	const gmailUser = await env.get('gmailUser');
+	const gmailPass = await env.get('gmailPass');
+	
+	return nodemailer.createTransporter({
 		service: 'gmail',
 		auth: {
 			user: gmailUser,
