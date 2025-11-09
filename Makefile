@@ -5,6 +5,12 @@ DOCKER_COMPOSE = docker-compose -f src/docker-compose.yml
 
 up:
 	@echo "Starting $(NAME)..."
+	@echo "Starting Vault first..."
+	@$(DOCKER_COMPOSE) up -d vault
+	@sleep 15
+	@echo "Initializing Vault with secrets..."
+	@docker exec ft_transcendence_vault sh /vault/config/init-vault.sh
+	@echo "Starting remaining services..."
 	@$(DOCKER_COMPOSE) up -d --build
 
 down:
