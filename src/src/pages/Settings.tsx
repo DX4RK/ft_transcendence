@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import { SquarePen } from 'lucide-react';
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import axios from 'axios';
 
 interface Settings {
@@ -19,6 +20,7 @@ function Settings() {
 	const [settings, setSettings] = useState<Settings | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
+	const { t } = useTranslation();
 
 	function isValidE164(phone: string): boolean {
 		const e164Regex = /^\+[1-9]\d{1,14}$/;
@@ -96,9 +98,9 @@ function Settings() {
 		});
 	}, []);
 
-	if (loading) return <p>Loading settings...</p>;
-	if (error) return <p>Failed to load settings</p>;
-	if (!settings) return <p>Failed to load settings</p>;
+	if (loading) return <p>{t("settings.loadSettings")}</p>;
+	if (error) return <p>{t("settings.failLoadSettings")}</p>;
+	if (!settings) return <p>{t("settings.failLoadSettings")}</p>;
 
 	return (
 		<div className="min-h-screen w-full bg-gradient-to-r from-cyan-500/50 to-blue-500/50">
@@ -106,13 +108,13 @@ function Settings() {
 			<div className="min-h-screen flex items-center justify-center p-8">
 				<div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl">
 					<div className="flex items-center gap-3">
-						<span className="text-2xl font-arcade text-gray-300">Settings</span>
+						<span className="text-2xl font-arcade text-gray-300">{t("settings.settings")}</span>
 					</div>
-					<h1 className="font-bold pt-3 pb-2">Account Info</h1>
+					<h1 className="font-bold pt-3 pb-2">{t("settings.accountInfo")}</h1>
 					<div className="max-w-4xl w-full">
 						<div className="flex">
 							<div className="flex-1">
-								<span className="font-bold">Username:</span>
+								<span className="font-bold">{t("settings.username")}</span>
 								<span className="pl-2">
 									{settings?.user || 'undefined'}
 								</span>
@@ -120,7 +122,7 @@ function Settings() {
 						</div>
 						<div className="flex">
 							<div className="flex-1">
-								<span className="font-bold">Email:</span>
+								<span className="font-bold">{t("settings.email")}</span>
 								<span className="pl-2">
 									{settings?.email || 'undefined'}
 								</span>
@@ -128,7 +130,7 @@ function Settings() {
 						</div>
 						<div className="flex">
 							<div className="flex-1">
-								<span className="font-bold">Phone Number:</span>
+								<span className="font-bold">{t("settings.phoneNumber")}</span>
 								<span className="pl-2">
 									{settings?.phone || 'undefined'}
 								</span>
@@ -153,8 +155,8 @@ function Settings() {
 					<div className="grid gap-2">
 						<div className="flex border-2 p-3 rounded-lg max-w-175">
 							<div className="grid mr-4 flex-1">
-								<span className="font-bold">Email</span>
-								<span>Receive unique security codes at your specified email.</span>
+								<span className="font-bold">{t("settings.email")}</span>
+								<span>{t("settings.uniqueSecurityCodeEmail")}</span>
 							</div>
 							<div>
 								<input
@@ -166,8 +168,8 @@ function Settings() {
 						</div>
 						<div className="flex border-2 p-3 rounded-lg max-w-175">
 							<div className="grid mr-4 flex-1">
-								<span className="font-bold">Phone Number</span>
-								<span>Receive unique security codes at your specified phone number.</span>
+								<span className="font-bold">{t("settings.phoneNumber")}</span>
+								<span>{t("settings.uniqueSecurityCodeNumber")}</span>
 							</div>
 							<div>
 								<input
@@ -181,7 +183,7 @@ function Settings() {
 						<div className="flex border-2 p-3 rounded-lg max-w-175">
 							<div className="grid mr-4">
 								<span className="font-bold">Authenticator App (Very Secure)</span>
-								<span>Download an app on your phone to generate unique security codes. Suggested apps include Google Authenticator, Microsoft Authenticator, and Twilio's Authy.</span>
+								<span>{t("settings.downloadApp")}</span>
 							</div>
 							<div>
 								<input

@@ -1,9 +1,11 @@
-import { Link, useLocation, useNavigate } from "react-router-dom"
-import { useState, useEffect } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 function Profile() {
 
 	const location = useLocation();
+	const { t } = useTranslation();
 	// const { result } = location.state || {};
 	const { email } = location.state || {}; //! gestion du token dynamique
 	// const [error, setError] = useState('');
@@ -85,7 +87,7 @@ if (!data ) //! gestion si les data sont nulles / fetch error
 	// 	matchLost: 0,
 	// 	victoiresPct: 0,
 	// 	defaitesPct: 0,
-	// 	total: 0,
+	// 	total: 0,Total but encaisse
 	// }
 	// setError('Bad user');
 
@@ -160,12 +162,12 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
 			<div className="flex items-center justify-between mb-4">
 			<div className="flex items-center gap-3">
 				<div className="bg-gradient-to-br from-gray-400/80 to-slate-500/80 rounded-lg p-3 shadow-lg">
-				<span className="text-2xl font-bold text-slate-900">LVL</span>
+				<span className="text-2xl font-bold text-slate-900">{t("profile.level")}</span>
 				</div>
 				<span className="text-5xl font-arcade text-gray-300">{level}</span>
 			</div>
 			<div className="text-right">
-				<div className="text-sm text-slate-400">Prochain niveau</div>
+				<div className="text-sm text-slate-400">{t("profile.nextLevel")}</div>
 				<div className="text-2xl font-bold text-purple-400">{level + 1}</div>
 			</div>
 			</div>
@@ -174,9 +176,9 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
 
 			<div className="mt-4 text-center text-slate-300 text-sm">
 			{xpProgress < 100 ? (
-				<span>Il vous reste <span className="font-bold text-purple-400">{(100 - xpProgress).toFixed(0)}%</span> pour atteindre le niveau {level + 1}</span>
+				<span>{t("profile.youNeed")}<span className="font-bold text-purple-400">{(100 - xpProgress).toFixed(0)}%</span>{t("profile.remainingXP")}{level + 1}</span>
 			) : (
-				<span className="text-green-400 font-bold">Niveau max atteint !</span>
+				<span className="text-green-400 font-bold">{t("profile.maxLevel")}</span>
 			)}
 			</div>
 
@@ -190,7 +192,7 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
 				style={{ width: `${xpProgress}%` }}
 				>
 				{/* Effet de brillance */}
-				<div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
+				<div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>Total but encaisse
 				</div>
 			</div>
 
@@ -206,7 +208,7 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
 	  <div className="max-w-4xl w-full">
         <div className="text-center mb-12">
           {/* <h1 className="text-5xl font-bold text-white mb-2">{stats.login}</h1> */}
-          <p className="text-purple-300">Analyse des performances</p>
+          <p className="text-purple-300">{t("profile.perfomanceAnalysis")}</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -222,7 +224,7 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
                 <circle
                   cx="100"
                   cy="100"
-                  r={radius}
+                  r={radius}Total but encaisse
                   fill="none"
                   stroke="rgba(255,255,255,0.1)"
                   strokeWidth="40"
@@ -260,7 +262,7 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
               {/* Contenu central */}
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <div className="text-5xl font-bold text-white">{victoiresPct.toFixed(0)}%</div>
-                <div className="text-sm text-purple-300 mt-1">Taux de victoire</div>
+                <div className="text-sm text-purple-300 mt-1">{t("profile.winRate")}</div>
               </div>
             </div>
           </div>
@@ -273,7 +275,7 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
                   <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
                   </div>
                   <div>
-                    <div className="text-gray-400 text-sm">Victoires</div>
+                    <div className="text-gray-400 text-sm">{t("profile.wins")}</div>
                     <div className="text-3xl font-arcade text-white">{data ? data.data.matchWon : 0}</div>
                   </div>
                 </div>
@@ -290,7 +292,7 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
                     {/* <Target className="w-6 h-6 text-red-400" /> */}
                   </div>
                   <div>
-                    <div className="text-gray-400 text-sm">Défaites</div>
+                    <div className="text-gray-400 text-sm">{t("profile.losses")}</div>
                     <div className="text-3xl font-arcade text-white">{data ? data.data.matchLost : 0}</div>
                   </div>
                 </div>
@@ -307,7 +309,7 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
                     {/* <TrendingUp className="w-6 h-6 text-purple-300" /> */}
                   </div>
                   <div>
-                    <div className="text-purple-200 text-sm">Total des parties jouées</div>
+                    <div className="text-purple-200 text-sm">{t("profile.totalGamesPlayed")}</div>
                     <div className="text-3xl font-arcade text-white">{total}</div>
                   </div>
                 </div>
@@ -317,11 +319,11 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
         </div>
 				{/* TOTAL SCORED */}
 		<div className="mt-12 text-center bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
-			<div className="text-gray-400 mb-2">Total but marque</div>
+			<div className="text-gray-400 mb-2">{t("profile.totalGoalsScored")}</div>
 			<div className="text-4xl font-arcade text-white">{95}</div>
 		</div>
 		<div className="mt-6 text-center bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
-			<div className="text-gray-400 mb-2">Total but encaisse</div>
+			<div className="text-gray-400 mb-2">{t("profile.totalGoalsTaken")}</div>
 			<div className="text-4xl font-arcade text-white">{40}</div>
 		</div>
       </div>

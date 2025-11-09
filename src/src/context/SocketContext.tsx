@@ -39,13 +39,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 			setIsConnected(false);
 		});
 
-		newSocket.on("user-blocked", (blocker: string, blocked: string) => {
-			if (blocked === newSocket.id) {
-				addNotification("blocked", `${blocker} has blocked you`);
-			}
-		});
-
-		newSocket.on("invit-game", (fromUser: string) => {
+		newSocket.on("invite", (fromUser: string) => {
 			addNotification("invite", `Invitation to play from ${fromUser}`);
 		});
 

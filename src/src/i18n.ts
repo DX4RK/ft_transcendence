@@ -5,7 +5,10 @@ import en from "../public/locales/en.json";
 import fr from "../public/locales/fr.json";
 import es from "../public/locales/es.json";
 
-const savedLang = localStorage.getItem("lang") || "fr";
+// ✅ Vérifie si localStorage existe (utile dans Docker / SSR)
+const savedLang = typeof window !== "undefined"
+  ? localStorage.getItem("lang") || "fr"
+  : "fr";
 
 i18n
   .use(initReactI18next)
@@ -18,9 +21,7 @@ i18n
       fr: { translation: fr },
       es: { translation: es },
     },
-    interpolation: {
-      escapeValue: false,
-    },
+    interpolation: { escapeValue: false },
   });
 
 export default i18n;

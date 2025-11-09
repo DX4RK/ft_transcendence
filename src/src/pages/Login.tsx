@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
 // import { useAuth } from "../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 
 export default function LoginPage({ }) {
 
-
+const { t } = useTranslation();
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
 const [error, setError] = useState('');
@@ -79,7 +82,7 @@ return (
 		<div className="flex min-h-screen items-center justify-center ">
 			<form onSubmit={handleSubmit} className="bg-gradient-to-r from-[#45586c] to-[#424048] p-8 rounded-lg shadow-xl shadow-cyan-500/30 w-80 ">
 			<h2 className="text-2xl font-arcade text-center mb-6 text-slate-300 m-6">
-				connexion
+				{t("login.connexion")}
 			</h2>
 			{error && (
 				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -102,7 +105,7 @@ return (
 
 			<button  type="submit" className="flex justify-center w-full p-4 bg-[#E95D2C] font-arcade text-[#B0CEE2] rounded-lg hover:ring hover:ring-[#B0CEE2] hover:bg-orange-600 hover:text-[#1A2730] transition">
 					{/* log in */}
-					{loading ? 'Connexion...' : 'Log In'}
+					{loading ? t("login.connecting") : t("login.logIn")}
 			</button>
 			<Link to="/signIn" className="flex justify-center underline m-4">No bitches ? register</Link>
 			</form>
