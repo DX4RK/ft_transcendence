@@ -1,9 +1,10 @@
-import { Link ,useNavigate} from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import BabylonScene from "../../Game/Pong";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useTournament } from "../context/TournamentContext";
 // import type { int } from "@babylonjs/core";
 
 
@@ -12,10 +13,10 @@ function Game() {
 
 	const location = useLocation();
 	const mode = location.state?.mode || 1; // valeur par défaut si undefined
-	const { user1, user2 } = location.state || {}; //! afficher les pseudo des joueurs
 	const navigate = useNavigate();
-	const name1 = user1 || "User";
-	const name2 = user2 || "Guest";
+	const { currentMatch, endMatch } = useTournament(); 	
+	const name1 = location.state?.user1 || currentMatch?.user1 || "User";
+	const name2 = location.state?.user2 || currentMatch?.user2 || "Guest";
 	const handleEscape = () => {
 	alert("- Game paused -");
 	};
@@ -39,7 +40,12 @@ function Game() {
 	// export default function Game() {
 	const [scoreLeft, setScoreLeft] = useState(0);
 	const [scoreRight, setScoreRight] = useState(0);
-	const [winner, setWinner] = useState(0);
+
+	const handleGameOver = (winner: string) => {
+		console.log(`handle game over: ${winner}`)
+		endMatch(winner);
+		navigate("/tournoi");
+	};
 
 	return (
 	<div className="bg-gradient-to-r from-cyan-500/50 to-blue-500/50">
@@ -49,10 +55,6 @@ function Game() {
 	<div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-2xl text-purple-400 font-arcade">
 		<div>
 			{name1} - {scoreLeft} | {scoreRight} - {name2}
-		</div>
-		<div>
-			{winner === 1 && <h2>🏆 User a gagne !</h2>}
-			{winner === 2 && <h2>🏆 Guest a gagne !</h2>}
 		</div>
 	</div>
 
@@ -65,33 +67,27 @@ function Game() {
 		onScoreUpdate={(left, right) => {
 		setScoreLeft(left);
 		setScoreRight(right);
-		if (left >= 2 ) //$ END FUNCTION - HANDLE DATA REQUEST HERE
+		if (left >= 1 ) //$ END FUNCTION - HANDLE DATA REQUEST HERE
 		{
-			console.log("Left player wins!");
-			setWinner(1);
+			console.log(`${name1} player wins!`);
 
 			// sendGameData();//! API SENDER !!!
 
-			setTimeout(() => {
-				if (mode == 1)
-					navigate("/", { state: { winner: left }});
-				else if (mode == 2)
-					navigate("/tournoi", { state: { winner: left ,scoreL: left}});
-			}, 5000);
+			if (mode == 1)
+				navigate("/", { state: { winner: left }});
+			else if (mode == 2)
+				handleGameOver(name1);
 		}
-		else if (right >= 2)
+		else if (right >= 1)
 		{
-			console.log("Right player wins!");
-			setWinner(2);
+			console.log(`${name2} player wins!`);
 
 			// sendGameData(winner, left, right, );//! API SENDER !!!
 
-			setTimeout(() => {
-				if (mode == 1)
-					navigate("/", { state: { winner: right }});
-				else if (mode == 2)
-					navigate("/tournoi", { state: { winner: right }});
-			}, 3000);
+			if (mode == 1)
+				navigate("/", { state: { winner: right }});
+			else if (mode == 2)
+				handleGameOver(name2);
 		}
 		return ;
 		}
