@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
-import { useAuth } from "../context/AuthContext";
+// import { useAuth } from "../context/AuthContext";
 
 
 export default function LoginPage({ }) {
@@ -10,7 +10,7 @@ const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
 const [error, setError] = useState('');
 const [loading, setLoading] = useState(false);
-const { login } = useAuth();
+// const { login } = useAuth();
 const navigate = useNavigate();
 
 
@@ -37,6 +37,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		const response = await fetch("http://localhost:3000/sign/in", { method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
 		const result = await response.json();
 
+		console.log(result);
+
 		if (!result.success) {
 			throw new Error(`Error Status: ${result.message}`);
 		}
@@ -45,11 +47,11 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 			console.log("success !");
 			console.log(result.message);
 			console.log(result);
-			navigate('/tfa', { state: { login: email }});
+			navigate('/tfa', { state: { email }});
 		}
 	}
 	catch (err) {
-		setError(err.message);
+ 		setError(err instanceof Error ? err.message : String(err));
 	}
 	finally {
 		setLoading(false);

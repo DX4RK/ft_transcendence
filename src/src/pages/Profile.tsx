@@ -1,12 +1,16 @@
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 
 function Profile() {
 
 	const location = useLocation();
-	const { login } = location.state || {};
-	const { token } = location.state || {}; //! gestion du token dynamique
-	const [error, setError] = useState('');
+	// const { result } = location.state || {};
+	const { email } = location.state || {}; //! gestion du token dynamique
+	// const [error, setError] = useState('');
+	// const [Token, setToken] = useState('null');
+
+	const navigate = useNavigate();
+
 
 	interface UserStats {
 	"success": true,
@@ -20,22 +24,53 @@ function Profile() {
 	}
 }
 
-	let [data, setData] = useState<UserStats | null>(null);
+// "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc2MjI3MjAyMywiZXhwIjoxNzYyODc2ODIzfQ.pozKlm_064QVFoPtmTzG889jZvcERnv4wYuBD9HEYJQ"; // Put your JWT or API token here
+
+let [data, setData] = useState<UserStats | null>(null);
 
 	useEffect(() => {
 	const fetchData = async () => {
-		const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc2MjI3MjAyMywiZXhwIjoxNzYyODc2ODIzfQ.pozKlm_064QVFoPtmTzG889jZvcERnv4wYuBD9HEYJQ"; // Put your JWT or API token here
+
+		const docToken = document.cookie
+		.split('; ')
+		.find(row => row.startsWith('token'))
+		?.split('=')[1];
+
+		console.log(docToken);
+		// console.log(result);
+
+
+		if (docToken && docToken != undefined) {
+			console.log("docToken exists");
+		}
+			// setToken(docToken); }
+		// } else if (result.code != null){
+		// 	console.log("result exists");
+		// 	console.log("result:code is :" + result.code);
+		// 	console.log("Token is : " + Token);
+		// 	setToken(result.code);
+		// 	console.log("result:code is :" + result.code);
+		// 	console.log("Token is : " + Token);
+		// }
+		else {
+			console.error('Auth error: no token provided');
+			navigate('/login');
+		}
 
 	try {
-		const response = await fetch("http://localhost:3000/stats/matches/me", {method: "GET", headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json",},});
+		console.log(docToken);
+		const response = await fetch("http://localhost:3000/stats/matches/me", {method: "GET", credentials: 'include', headers: { "Authorization": `Bearer ${docToken}`, "Content-Type": "application/json",},});
 		const result = await response.json();
 
-		if (!response.ok) {
+		console.log(result);
+
+		if (!result.success) {
 			throw new Error(`Error Status: ${result.message}`);
 		}
 		setData(result);
 	} catch (err) {
-		setError(err.message);
+ 		//  setError(err instanceof Error ? err.message : String(err));
+		console.log(err instanceof Error ? err.message : String(err));
 	}
 };
 
@@ -119,7 +154,7 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
   <div className="min-h-screen flex items-center justify-center p-8">
 
 		<div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl">
-			<h1 className="text-3xl font-bold text-cyan-300/70 mb-8 text-center font-arcade">{login}</h1>
+			<h1 className="text-3xl font-bold text-cyan-300/70 mb-8 text-center font-arcade">{email}</h1>
 
 			{/* Niveau actuel */}
 			<div className="flex items-center justify-between mb-4">

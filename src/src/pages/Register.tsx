@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
-import { useAuth } from "../context/AuthContext";
+// import { useAuth } from "../context/AuthContext";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -10,7 +10,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
 
 
-  const { register } = useAuth();
+//   const { register } = useAuth();
   const navigate = useNavigate();
 
 
@@ -58,7 +58,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		}
 	}
 	catch (err) {
-			setError(err.message);
+ 		setError(err instanceof Error ? err.message : String(err));
 	}
 	finally {
 		setLoading(false);

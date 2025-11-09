@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom"
-import { useAuth } from "../context/AuthContext";
+// import { useAuth } from "../context/AuthContext";
 
 export default function tfa() {
   const [code, setCode] = useState("");
@@ -8,11 +8,13 @@ export default function tfa() {
   const [loading, setLoading] = useState(false);
 
 
-  const { register } = useAuth();
+//   const { register } = useAuth();
   const navigate = useNavigate();
 
 	const location = useLocation();
 	const { email } = location.state || {};
+			console.log('cfyu');
+			console.log(email);
 
 const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
@@ -25,17 +27,20 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 	setError('');
 	setLoading(true);
 
-
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIwLCJpYXQiOjE3NjI2MTk4NzIsImV4cCI6MTc2MzIyNDY3Mn0.uyKZnlhE0wxcf-vJuB0fqXnjMGZFa3PZ2KvHNudwLRo.nTouvQnaC788Dei%2BgFhcXqxkN3h07k4zXfTxiiTxAqw
 	try {
 			const myHeaders = new Headers();
 			myHeaders.append("Content-Type", "application/json");
 
+			console.log(email);
+			console.log(code);
+
 			const raw = JSON.stringify({
-			"username": email,
-			"code": code
+				"username": email,
+				"code": code
 			});
 
-			const response = await fetch("http://localhost:3000/twofa/verify" ,{method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
+			const response = await fetch("http://localhost:3000/twofa/verify" ,{method: "POST", headers: myHeaders, credentials: "include", body: raw, redirect: "follow" })
 			const result = await response.json();
 
 			console.log(result);
@@ -47,11 +52,14 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 			if (result.success) {
 				console.log("success !");
 				console.log(result.code);
-				navigate('/profile', { state: { result }});
+
+				// document.cookie = `authToken=${result.code}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict; Secure`;
+
+				navigate('/profile', { state: { email }});
 			}
 	}
 	catch (err) {
-			setError(err.message);
+ 		setError(err instanceof Error ? err.message : String(err));
 		}
 	finally {
 		setLoading(false);

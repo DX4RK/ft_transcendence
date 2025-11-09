@@ -116,12 +116,12 @@ export default function BabylonScene({ onScoreUpdate }: GameSceneProps) {
 		//create pads
 		var pad1 = MeshBuilder.CreateBox("pad1", {width: 0.4, height: 3, depth: 4 }, scene);
 		pad1.position = new Vector3(16, 2, 0);
-		const pad1Aggregate = new PhysicsAggregate( pad1, PhysicsShapeType.BOX, { mass: 20, restitution: 1, friction: 0.3 }, scene);
+		const pad1Aggregate = new PhysicsAggregate( pad1, PhysicsShapeType.BOX, { mass: 20, restitution: 1, friction: 0 }, scene);
 		shadowGenerator.addShadowCaster(pad1);
 
 		var pad2 = MeshBuilder.CreateBox("pad2", {width: 0.4, height: 3, depth: 4 }, scene);
 		pad2.position = new Vector3(-16, 2, 0);
-		const pad2Aggregate = new PhysicsAggregate( pad2, PhysicsShapeType.BOX, { mass: 20, restitution: 1, friction: 2 }, scene);
+		const pad2Aggregate = new PhysicsAggregate( pad2, PhysicsShapeType.BOX, { mass: 20, restitution: 1, friction: 0 }, scene);
 		shadowGenerator.addShadowCaster(pad2);
 
 		// // Points du triangle (dans le plan XZ)

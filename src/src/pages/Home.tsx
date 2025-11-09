@@ -22,6 +22,12 @@ function Home() {
 		{ code: 'ES', label: 'Español', flag: '🇪🇸' }
 	];
 
+	type Language = {
+		code: string;
+		label: string;
+		flag: string;
+	};
+
 	useEffect(() => {
 		const game = new Background();
 		game.start();
@@ -35,7 +41,7 @@ function Home() {
 			navigate('/login');
 	};
 
-	const handleSelectLanguage = (lang) => {
+	const handleSelectLanguage = (lang: Language) => {
 		setSelectedLang(lang.code);
 		setIsOpen(false);
 	};
