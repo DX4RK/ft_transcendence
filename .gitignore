@@ -17,6 +17,17 @@ src/containers/fastify/package-lock.json
 
 **/vault/data/
 
+**/certs/*.crt
+**/certs/*.key
+**/certs/*.pem
+*.crt
+*.key
+*.pem
+
+.env
+.env.local
+.env.*.local
+
 .vscode/*
 !.vscode/extensions.json
 .idea
