@@ -7,6 +7,7 @@ module.exports = fp(async function (fastify, opts) {
 	
 	fastify.register(fastifyJwt, { secret: jwtSecret });
 
+	fastify.register(fastifyJwt, { secret: jwtSecret });
 	fastify.decorate(
 		'authenticate',
 		async (request, reply) => {

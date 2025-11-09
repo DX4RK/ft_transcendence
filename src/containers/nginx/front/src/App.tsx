@@ -3,6 +3,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 
 import { SocketProvider } from "./context/SocketContext";
 import { NotificationProvider } from "./context/NotificationContext";
+import { TournamentProvider } from "./context/TournamentContext";
 
 import Home from "@/pages/Home"
 import Test from "@/pages/Test"
@@ -23,21 +24,23 @@ function App() {
       <BrowserRouter>
         <NotificationProvider>
           <SocketProvider>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/test" element={<Test />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/ladder" element={<Ladder />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signIn" element={<SignIn />} />
-              <Route path="/game" element={<Game />} />
-              <Route path="/tournoi" element={<Tournoi />} />
-              <Route path="/liveChat" element={<LiveChat />} />
+            <TournamentProvider>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/test" element={<Test />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/ladder" element={<Ladder />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signIn" element={<SignIn />} />
+                <Route path="/game" element={<Game />} />
+                <Route path="/tournoi" element={<Tournoi />} />
+                <Route path="/liveChat" element={<LiveChat />} />
 
-              {/* <Route path="/testlog" element={<Testlog />} /> */}
+                {/* <Route path="/testlog" element={<Testlog />} /> */}
 
 
-            </Routes>
+              </Routes>
+            </TournamentProvider>
           </SocketProvider>
         </NotificationProvider>
       </BrowserRouter>

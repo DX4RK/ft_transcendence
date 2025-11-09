@@ -12,6 +12,6 @@ const createEmailTransporter = async () => {
 			pass: gmailPass
 		}
 	});
-};
+}
 
 module.exports = { createEmailTransporter };
