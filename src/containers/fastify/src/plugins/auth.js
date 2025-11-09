@@ -1,19 +1,21 @@
 const fp = require('fastify-plugin');
-const fastifyJwt = require('@fastify/jwt');
+const jwt = require('jsonwebtoken');
 const { get } = require("../config/env");
 
 module.exports = fp(async function (fastify, opts) {
-	const jwtSecret = await get('jwtSecret');
-	
-	fastify.register(fastifyJwt, { secret: jwtSecret });
-	fastify.decorate(
-		'authenticate',
-		async (request, reply) => {
-			try {
-				await request.jwtVerify();
-			} catch (error) {
-				throw fastify.httpErrors.unauthorized();
-			}
+	fastify.decorate('authenticate', async (request, reply) => {
+		try {
+			const token = request.cookies.token;
+
+			if (!token)
+				return reply.code(401).send({ success: false, message: 'No token provided' });
+
+			const jwtSecret = await get('jwtSecret');
+			const decoded = jwt.verify(token, jwtSecret);
+			request.user = decoded;
+
+		} catch (error) {
+			return reply.code(401).send({ success: false, message: 'Invalid authorization' });
 		}
-	);
+	});
 });
