@@ -31,7 +31,7 @@
 	"logIn": "Se connecter",
 	"connecting": "Connexion..."
   },
-  
+
   "liveChat": {
 	"title": "Chat en direct",
 	"publicChat": "Chat public",
@@ -76,6 +76,7 @@
   "profile": {
     "level": "Niveau",
     "nextLevel": "Prochain niveau",
+    "youNeed": "Vous avez besoin",
     "remainingXP": "Il vous reste",
     "maxLevel": "Niveau maximal atteint !",
     "performanceAnalysis": "Analyse des performances",

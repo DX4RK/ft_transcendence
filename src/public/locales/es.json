@@ -76,6 +76,7 @@
   "profile": {
     "level": "Nivel",
     "nextLevel": "Próximo nivel",
+    "youNeed": "Necesitas",
     "remainingXP": "Te quedan",
     "maxLevel": "¡Nivel máximo alcanzado!",
     "performanceAnalysis": "Análisis de rendimiento",
