@@ -2,7 +2,7 @@ const loggerConfig = require('./config/loggerConfig')
 const fastify = require('fastify')({ logger: loggerConfig });
 
 // Config
-const env = require('./config/env');
+const { get } = require('./config/env');
 
 // Services
 const { createEmailTransporter } = require('./service/email');
@@ -14,6 +14,8 @@ const registerPlugins = require('./plugins');
 const registerRoutes = require('./routes');
 
 const start = async () => {
+	const port = await get('srerver');
+
 	try {
 		// Wait for configuration to be available
 		const config = await env.getConfig();

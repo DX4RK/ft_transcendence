@@ -41,13 +41,13 @@ async function signRoutes(fastify, opts) {
 
 			if (user.twofa_method == "email") {
 				await sendEmailCode(transporter, username, user.email, code);
-			} else if (user.twofa_method == "sms") {
+			} else if (user.twofa_method == "phone") {
 				await sendSMSCode(vonage, username, user.phone, code);
 			}
 
 			return reply.send({
 				success: true,
-				message: '2FA code sent successfully',
+				message: 'Waiting for 2fa code.',
 				userId: user.id,
 			});
 		} catch (err) {

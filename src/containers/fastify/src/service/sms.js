@@ -1,5 +1,8 @@
 const { Vonage } = require('@vonage/server-sdk');
-const env = require('../config/env');
+
+const { get } = require('../config/env');
+const vonageKey = get('vonageKey');
+const vonageSecret = get('vonageSecret');
 
 const createVonageClient = async () => {
 	const vonageKey = await env.get('vonageKey');

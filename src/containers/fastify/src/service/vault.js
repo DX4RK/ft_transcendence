@@ -12,7 +12,7 @@ class VaultClient {
 
     async getSecret(path) {
         const cacheKey = `secret/data/${path}`;
-        
+
         if (this.cache.has(cacheKey)) {
             const cached = this.cache.get(cacheKey);
             if (Date.now() - cached.timestamp < this.cacheTimeout) {
@@ -31,6 +31,7 @@ class VaultClient {
 
             return secretData;
         } catch (error) {
+			console.log(path);
             throw new Error(`Failed to fetch secret: ${path}`);
         }
     }

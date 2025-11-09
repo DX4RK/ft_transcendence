@@ -1,5 +1,5 @@
 NAME=ft_transcendence
-DOCKER_COMPOSE = docker-compose -f src/docker-compose.yml
+DOCKER_COMPOSE = docker compose -f src/docker-compose.yml
 
 .PHONY: clean containers
 

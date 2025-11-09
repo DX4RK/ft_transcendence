@@ -4,6 +4,7 @@ const fastifyIO = require('fastify-better-socket.io');
 const fastifyBetterSqlite3 = require('./db.js');
 const auth = require('./auth.js');
 const { get } = require('../config/env');
+//const { get } = require('../');
 
 const registerPlugins = async (fastify) => {
 	// CORS
