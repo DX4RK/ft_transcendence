@@ -10,12 +10,11 @@ import LanguageSelector from "@/components/language-selector";
 import { useTranslation } from "react-i18next";
 
 import Home from "@/pages/Home";
-import Test from "@/pages/Test";
 import Profile from "@/pages/Profile";
 import Ladder from "@/pages/Ladder";
 import Game from "@/pages/Game";
 import Login from "@/pages/Login";
-import SignIn from "@/pages/Register";
+import Register from "@/pages/Register";
 import Tournoi from "@/pages/Tournoi";
 import LiveChat from "@/pages/LiveChat";
 import TFA from "@/pages/TFA";
@@ -38,14 +37,15 @@ function App() {
             <TournamentProvider>
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/test" element={<Test />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/ladder" element={<Ladder />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/signIn" element={<SignIn />} />
+                <Route path="/register" element={<Register />} />
                 <Route path="/game" element={<Game />} />
                 <Route path="/tournoi" element={<Tournoi />} />
                 <Route path="/liveChat" element={<LiveChat />} />
+                <Route path="/tfa" element={<TFA />} />
+                <Route path="/settings" element={<Settings />} />
 
                 {/* <Route path="/testlog" element={<Testlog />} /> */}
 

@@ -6,10 +6,7 @@ function Profile() {
 
 	const location = useLocation();
 	const { t } = useTranslation();
-	// const { result } = location.state || {};
-	const { email } = location.state || {}; //! gestion du token dynamique
-	// const [error, setError] = useState('');
-	// const [Token, setToken] = useState('null');
+	const { email } = location.state || {};
 
 	const navigate = useNavigate();
 
@@ -26,42 +23,17 @@ function Profile() {
 	}
 }
 
-// "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc2MjI3MjAyMywiZXhwIjoxNzYyODc2ODIzfQ.pozKlm_064QVFoPtmTzG889jZvcERnv4wYuBD9HEYJQ"; // Put your JWT or API token here
-
 let [data, setData] = useState<UserStats | null>(null);
 
 	useEffect(() => {
 	const fetchData = async () => {
 
-		const docToken = document.cookie
-		.split('; ')
-		.find(row => row.startsWith('token'))
-		?.split('=')[1];
-
-		console.log(docToken);
-		// console.log(result);
-
-
-		if (docToken && docToken != undefined) {
-			console.log("docToken exists");
-		}
-			// setToken(docToken); }
-		// } else if (result.code != null){
-		// 	console.log("result exists");
-		// 	console.log("result:code is :" + result.code);
-		// 	console.log("Token is : " + Token);
-		// 	setToken(result.code);
-		// 	console.log("result:code is :" + result.code);
-		// 	console.log("Token is : " + Token);
-		// }
-		else {
-			console.error('Auth error: no token provided');
-			navigate('/login');
-		}
-
 	try {
-		console.log(docToken);
-		const response = await fetch("http://localhost:3000/stats/matches/me", {method: "GET", credentials: 'include', headers: { "Authorization": `Bearer ${docToken}`, "Content-Type": "application/json",},});
+		const response = await fetch("http://localhost:3000/stats/matches/me", {
+			method: "GET",
+			credentials: 'include',
+			headers: { "Content-Type": "application/json" },
+		});
 		const result = await response.json();
 
 		console.log(result);

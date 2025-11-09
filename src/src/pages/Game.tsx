@@ -25,6 +25,7 @@ function Game() {
 	const location = useLocation();
 	const { t } = useTranslation();
 	const mode = location.state?.mode || 1; // valeur par défaut si undefined
+	const { user1, user2 } = location.state || {}; //! afficher les pseudo des joueurs
 	const navigate = useNavigate();
 	const name1 = user1 || t("game.user");
 	const name2 = user2 || t("game.guest");
@@ -68,9 +69,6 @@ function Game() {
 
 	//$------------------------------------------------
 	const myHeaders = new Headers();
-
-	const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc2MjI3MjAyMywiZXhwIjoxNzYyODc2ODIzfQ.pozKlm_064QVFoPtmTzG889jZvcERnv4wYuBD9HEYJQ";
-	myHeaders.append("Authorization", `Bearer ${token}`);
 	myHeaders.append("Content-Type", "application/json");
 
 	// const raw = JSON.stringify(data);
@@ -79,12 +77,7 @@ function Game() {
 	//$  export default function Game()  ??
 	const [scoreLeft, setScoreLeft] = useState(0);
 	const [scoreRight, setScoreRight] = useState(0);
-
-	const handleGameOver = (winner: string) => {
-		console.log(`handle game over: ${winner}`)
-		endMatch(winner);
-		navigate("/tournoi");
-	};
+	const [winner, setWinner] = useState(0);
 
 	return (
 	<div className="bg-gradient-to-r from-cyan-500/50 to-blue-500/50 overflow-hidden">
@@ -113,32 +106,43 @@ function Game() {
 		if (left >= 3) //$ END FUNCTION - HANDLE DATA REQUEST HERE
 		{
 			console.log("Left player wins!");
+			setWinner(1);
 
 			console.log(data);
 			console.log(left);
 			console.log(right);
 
 			setData({
-			userData: { name: name1, score: left },
-			guestData: { name: name2, score: right }
+			userData: { name: user1, score: left },
+			guestData: { name: user2, score: right }
 			});
 
 
 
-			console.log(data);
-			const raw = JSON.stringify(data);
-			fetch("http://localhost:3000/stats/match-finished", {method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
-			.then((response) => response.text())
-			.then((result) => console.log(result))
-			.catch((error) => console.error(error));
-			if (mode == 1)
-				navigate("/", { state: { winner: left }});
-			else if (mode == 2)
-				handleGameOver(name1);
+			setTimeout(() => {
+				console.log(data);
+				const raw = JSON.stringify(data);
+				fetch("http://localhost:3000/stats/match-finished", {
+					method: "POST",
+					credentials: 'include',
+					headers: myHeaders,
+					body: raw,
+					redirect: "follow"
+				})
+					.then((response) => response.text())
+					.then((result) => console.log(result))
+					.catch((error) => console.error(error));
+
+				if (mode == 1)
+					navigate("/", { state: { winner: left }});
+				else if (mode == 2)
+					navigate("/tournoi", { state: { winner: left ,scoreL: left}});
+			}, 3000);
 		}
 		else if (right >= 3)
 		{
 			console.log("Right player wins!");
+			setWinner(2);
 			// data ? data.userData.score = left : 0;
 			// data ? data.guestData.score = right : 0;
 
@@ -146,22 +150,24 @@ function Game() {
 			console.log(left);
 			console.log(right);
 			setData({
-			userData: { name: name1, score: left },
-			guestData: { name: name2, score: right }
+			userData: { name: user1, score: left },
+			guestData: { name: user2, score: right }
 			});
 
 
-			console.log(data);
-			const raw = JSON.stringify(data);
-			fetch("http://localhost:3000/stats/match-finished", {method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
-			.then((response) => response.text())
-			.then((result) => console.log(result))
-			.catch((error) => console.error(error));
+			setTimeout(() => {
+				console.log(data);
+				const raw = JSON.stringify(data);
+				fetch("http://localhost:3000/stats/match-finished", {method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
+				.then((response) => response.text())
+				.then((result) => console.log(result))
+				.catch((error) => console.error(error));
 
-			if (mode == 1)
-				navigate("/", { state: { winner: right }});
-			else if (mode == 2)
-				handleGameOver(name1);
+				if (mode == 1)
+					navigate("/", { state: { winner: right }});
+				else if (mode == 2)
+					navigate("/tournoi", { state: { winner: right }});
+			}, 3000);
 		}
 		return ;
 		}

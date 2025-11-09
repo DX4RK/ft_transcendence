@@ -43,10 +43,7 @@ function Settings() {
 			setErrorMessage('Invalid phone format');
 
 		const api = axios.create({
-			headers: {
-				"Content-Type": 'application/json',
-				"Authorization": `Bearer ${localStorage.getItem('token')}`,
-			},
+			withCredentials: true
 		});
 		api.post('http://localhost:3000/my/change-phone', JSON.stringify({'phoneNumber': newPhone}))
 		.then(res => {
@@ -82,9 +79,7 @@ function Settings() {
 
 	useEffect(() => {
 		const api = axios.create({
-			headers: {
-			  Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
+			withCredentials: true
 		});
 		api.get('http://localhost:3000/my/settings')
 		.then(res => {

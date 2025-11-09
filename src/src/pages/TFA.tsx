@@ -52,9 +52,6 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 			if (result.success) {
 				console.log("success !");
 				console.log(result.code);
-
-				// document.cookie = `authToken=${result.code}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict; Secure`;
-
 				navigate('/profile', { state: { email }});
 			}
 	}

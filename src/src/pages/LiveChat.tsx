@@ -138,8 +138,8 @@ function LiveChat() {
 		if (!isAuthenticated) return;
 		fetch('http://localhost:3000/users/blocked', {
 			method: 'GET',
+			credentials: 'include',
 			headers: {
-				'Authorization': `Bearer ${token}`,
 				'Content-Type': 'application/json'
 			}
 		})
@@ -194,8 +194,8 @@ function LiveChat() {
 
 		fetch('http://localhost:3000/users/block', {
 			method: 'POST',
+			credentials: 'include',
 			headers: {
-				'Authorization': `Bearer ${token}`,
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({'userId': user.userId})
@@ -213,8 +213,8 @@ function LiveChat() {
 		console.log("yes");
 		fetch('http://localhost:3000/users/unblock', {
 			method: 'POST',
+			credentials: 'include',
 			headers: {
-				'Authorization': `Bearer ${token}`,
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({'userId': user.userId})
