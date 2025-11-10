@@ -29,7 +29,6 @@ function LiveChat() {
 	const { socket, isConnected } = useSocket();
 
 	const [roomId, setRoomId] = useState('general');
-	const [token, setToken] = useState('null');
 	const [isPrivate, setIsPrivate] = useState(false);
 	const [isAuthenticated, setIsAuthenticated] = useState(0);
 	const [blockedUsers, setBlockedUsers] = useState<number[]>([]);
@@ -56,36 +55,29 @@ function LiveChat() {
 		return blockedUsers.includes(user.userId)
 	}
 
+	const getLevelByXp = (xp: number) => {
+		const level = (xp / 100 + 14) ^ 0.425 * 4 - 11.279
+		return Math.floor(level)
+	}
+
 	// Auth
 
 	useEffect(() => {
 		if (!socket || !isConnected) return;
-
-		const docToken = document.cookie
-			.split('; ')
-			.find(row => row.startsWith('token='))
-			?.split('=')[1];
-
-		if (docToken && docToken != undefined) {
-			setToken(docToken);
-			socket.emit('authenticate', docToken);
-		} else {
-			console.error('Auth error: no token provided');
-			setIsAuthenticated(0);
-			window.location.href = '/login';
-		}
+		socket.emit('initLiveChat');
 	}, [socket, isConnected]);
+
 
 	useSocketEvent('authenticated', (data) => {
 		console.log('Authenticated as user:', data.userId);
 		setIsAuthenticated(data.userId);
 	});
 
-	useSocketEvent('auth-error', (data) => {
-		console.error('Auth error:', data.message);
-		setIsAuthenticated(0);
-		window.location.href = '/login';
-	});
+	// useSocketEvent('auth-error', (data) => {
+	// 	console.error('Auth error:', data.message);
+	// 	setIsAuthenticated(0);
+	// 	window.location.href = '/login';
+	// });
 
 	// Events
 
