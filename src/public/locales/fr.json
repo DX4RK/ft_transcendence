@@ -48,7 +48,7 @@
 	"noUsersCo": "Aucun utilisateur connecté"
 	},
 
-	"tournoi": {
+	"tournament": {
 		"tournament": "Tournoi",
 		"start": "Démarrer le tournoi",
 		"player1": "Joueur 1",
@@ -64,6 +64,25 @@
 		"match": "Match : {{player1}} contre {{player2}}",
 		"winner": "Vainqueur : {{winner}}",
 		"tournamentWinner": "🏆 Le grand gagnant du tournoi est {{winner}} !"
+	},
+
+	"tournament_recap": {
+		"tournament": "Tournoi",
+		"start": "Démarrer le tournoi",
+		"player1": "Joueur 1",
+		"player2": "Joueur 2",
+		"player3": "Joueur 3",
+		"player4": "Joueur 4",
+		"player5": "Joueur 5",
+		"player6": "Joueur 6",
+		"player7": "Joueur 7",
+		"player8": "Joueur 8",
+		"roundStarting": "Le round {{round}} commence !",
+		"bye": "{{player}} passe automatiquement au prochain tour.",
+		"match": "Match : {{player1}} contre {{player2}}",
+		"winner": "Vainqueur : {{winner}}",
+		"tournamentWinner": "🏆 Le grand gagnant du tournoi est {{winner}} !",
+  "userWon": "{{winner}} a gagné!"
 	},
 
   "ladder": {

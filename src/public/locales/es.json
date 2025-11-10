@@ -32,7 +32,7 @@
 	"connecting": "Conectando..."
   },
 
-  "tournoi": {
+  "tournament": {
 	"tournament": "Torneo",
 	"start": "Comenzar torneo",
 	"player1": "Jugador 1",
@@ -48,6 +48,25 @@
 	"match": "Partido: {{player1}} contra {{player2}}",
 	"winner": "Ganador: {{winner}}",
 	"tournamentWinner": "🏆 ¡El ganador del torneo es {{winner}}!"
+},
+
+  "tournament_recap": {
+	"tournament": "Torneo",
+	"start": "Comenzar torneo",
+	"player1": "Jugador 1",
+	"player2": "Jugador 2",
+	"player3": "Jugador 3",
+	"player4": "Jugador 4",
+	"player5": "Jugador 5",
+	"player6": "Jugador 6",
+	"player7": "Jugador 7",
+	"player8": "Jugador 8",
+	"roundStarting": "¡Comienza la ronda {{round}}!",
+	"bye": "{{player}} pasa automáticamente a la siguiente ronda.",
+	"match": "Partido: {{player1}} contra {{player2}}",
+	"winner": "Ganador: {{winner}}",
+	"tournamentWinner": "🏆 ¡El ganador del torneo es {{winner}}!",
+  "userWon": "{{winner}} ganó!"
 },
 
   "liveChat": {

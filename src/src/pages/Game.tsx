@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useTournament } from "../context/TournamentContext";
 // import type { int } from "@babylonjs/core";
 
 
@@ -25,10 +26,10 @@ function Game() {
 	const location = useLocation();
 	const { t } = useTranslation();
 	const mode = location.state?.mode || 1; // valeur par défaut si undefined
-	const { user1, user2 } = location.state || {}; //! afficher les pseudo des joueurs
 	const navigate = useNavigate();
-	const name1 = user1 || t("game.user");
-	const name2 = user2 || t("game.guest");
+	const { currentMatch, endMatch } = useTournament();
+	const name1 = location.state?.user1 || currentMatch?.user1 || t("game.user");
+	const name2 = location.state?.user2 || currentMatch?.user2 || t("game.guest");
 
 	let [data, setData] = useState<data | null>({
 		userData: { name: name1, score: 0 },
@@ -50,7 +51,7 @@ function Game() {
 	// setData(data ? data.userData.name = user1 : null);
 
 	const handleEscape = () => {
-	alert("- Game paused -");
+		alert("- Game paused -");
 	};
 
 	useEffect(() => {
@@ -79,6 +80,12 @@ function Game() {
 	const [scoreRight, setScoreRight] = useState(0);
 	const [winner, setWinner] = useState(0);
 
+	const handleGameOver = (winner: string) => {
+		console.log(`handle game over: ${winner}`)
+		endMatch(winner);
+		navigate("/tournament_recap");
+	};
+
 	return (
 	<div className="bg-gradient-to-r from-cyan-500/50 to-blue-500/50 overflow-hidden">
 
@@ -103,7 +110,7 @@ function Game() {
 		onScoreUpdate={(left, right) => {
 		setScoreLeft(left);
 		setScoreRight(right);
-		if (left >= 3) //$ END FUNCTION - HANDLE DATA REQUEST HERE
+		if (left >= 1) //$ END FUNCTION - HANDLE DATA REQUEST HERE
 		{
 			console.log("Left player wins!");
 			setWinner(1);
@@ -113,33 +120,31 @@ function Game() {
 			console.log(right);
 
 			setData({
-			userData: { name: user1, score: left },
-			guestData: { name: user2, score: right }
+				userData: { name: name1, score: left },
+				guestData: { name: name2, score: right }
 			});
 
 
 
-			setTimeout(() => {
-				console.log(data);
-				const raw = JSON.stringify(data);
-				fetch("http://localhost:3000/stats/match-finished", {
-					method: "POST",
-					credentials: 'include',
-					headers: myHeaders,
-					body: raw,
-					redirect: "follow"
-				})
-					.then((response) => response.text())
-					.then((result) => console.log(result))
-					.catch((error) => console.error(error));
+			console.log(data);
+			const raw = JSON.stringify(data);
+			fetch("http://localhost:3000/stats/match-finished", {
+				method: "POST",
+				credentials: 'include',
+				headers: myHeaders,
+				body: raw,
+				redirect: "follow"
+			})
+			.then((response) => response.text())
+			.then((result) => console.log(result))
+			.catch((error) => console.error(error));
 
-				if (mode == 1)
-					navigate("/", { state: { winner: left }});
-				else if (mode == 2)
-					navigate("/tournoi", { state: { winner: left ,scoreL: left}});
-			}, 3000);
+			if (mode == 1)
+				navigate("/", { state: { winner: left }});
+			else if (mode == 2)
+				handleGameOver(name1);
 		}
-		else if (right >= 3)
+		else if (right >= 1)
 		{
 			console.log("Right player wins!");
 			setWinner(2);
@@ -148,24 +153,22 @@ function Game() {
 			console.log(left);
 			console.log(right);
 			setData({
-			userData: { name: user1, score: left },
-			guestData: { name: user2, score: right }
+				userData: { name: name1, score: left },
+				guestData: { name: name2, score: right }
 			});
 
 
-			setTimeout(() => {
-				console.log(data);
-				const raw = JSON.stringify(data);
-				fetch("http://localhost:3000/stats/match-finished", {method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
-				.then((response) => response.text())
-				.then((result) => console.log(result))
-				.catch((error) => console.error(error));
+			console.log(data);
+			const raw = JSON.stringify(data);
+			fetch("http://localhost:3000/stats/match-finished", {method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
+			.then((response) => response.text())
+			.then((result) => console.log(result))
+			.catch((error) => console.error(error));
 
-				if (mode == 1)
-					navigate("/", { state: { winner: right }});
-				else if (mode == 2)
-					navigate("/tournoi", { state: { winner: right }});
-			}, 3000);
+			if (mode == 1)
+				navigate("/", { state: { winner: right }});
+			else if (mode == 2)
+				handleGameOver(name2);
 		}
 		return ;
 		}

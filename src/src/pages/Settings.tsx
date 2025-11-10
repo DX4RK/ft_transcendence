@@ -1,5 +1,5 @@
 // import { Button } from "@/components/ui/button"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SquarePen } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -17,6 +17,7 @@ interface Settings {
 }
 
 function Settings() {
+	const navigate = useNavigate();
 	const [errorMessage, setErrorMessage] = useState('');
 	const [settings, setSettings] = useState<Settings | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -78,11 +79,6 @@ function Settings() {
 		});
 		api.post('http://localhost:3000/my/change-phone', JSON.stringify({'phoneNumber': newPhone}))
 		.then(res => {
-			// setSettings(prev => {
-			// 	const updated = [...prev];
-			// 	updated[2] = { ...updated[2], phone: newPhone };
-			// 	return updated;
-			//   });
 			setSettings(prev => {
 				if (!prev) return prev;
 				return {
@@ -99,7 +95,47 @@ function Settings() {
 	}
 
 	const setSelectedOption = (option: string) => {
+		if (!isValidTwofa(option)) return;
 
+		const api = axios.create({
+			headers: {
+				"Content-Type": 'application/json',
+			},
+			withCredentials: true
+		});
+		api.post('http://localhost:3000/my/change-twofa', JSON.stringify({'option': option}))
+		.then(res => {
+			setSettings(prev => {
+				if (!prev) return prev;
+				return {
+					...prev,
+					twofa_method: option,
+				};
+			});
+			setErrorMessage("success");
+		})
+		.catch(err => {
+			console.error(err);
+			setErrorMessage(err.message);
+		});
+	}
+
+	const disconnect = () => {
+		const api = axios.create({
+			headers: {
+				"Content-Type": 'application/json',
+			},
+			withCredentials: true
+		});
+		api.post('http://localhost:3000/my/disconnect')
+		.then(res => {
+			console.log(res);
+			navigate('/login');
+		})
+		.catch(err => {
+			console.error(err);
+			setErrorMessage(err.message);
+		});
 	}
 
 	useEffect(() => {
@@ -212,6 +248,7 @@ function Settings() {
 									className="w-5 h-5"
 									type="radio"
 									checked={settings.twofa_method === 'email'}
+									onChange={() => setSelectedOption('email')}
 								/>
 							</div>
 						</div>
@@ -225,7 +262,7 @@ function Settings() {
 									className="w-5 h-5"
 									type="radio"
 									checked={settings.twofa_method === 'phone'}
-									onChange={() => setSelectedOption('email')}
+									onChange={() => setSelectedOption('phone')}
 								/>
 							</div>
 						</div>
@@ -239,10 +276,12 @@ function Settings() {
 									className="w-5 h-5"
 									type="radio"
 									checked={settings.twofa_method === 'totp'}
+									onChange={() => setSelectedOption('totp')}
 								/>
 							</div>
 						</div>
 					</div>
+					<button onClick={disconnect} className="bg-red-500/80 w-full mt-4 p-3 rounded-lg">Disconnect</button>
 				</div>
 			</div>
 		</div>

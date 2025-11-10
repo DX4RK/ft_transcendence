@@ -7,6 +7,9 @@ type TournamentContextType = {
   setWinner: (winner: string | null) => void;
   currentMatch: Match | null;
   setCurrentMatch: (match: Match | null) => void;
+  currentPlayers: Array<string> | null;
+  setCurrentPlayers: (players: Array<string> | null) => void;
+  getCurrentPlayers: () => Array<string> | null;
 
   startMatch: (user1: string, user2: string) => Promise<string>;
   endMatch: (winner: string) => void;
@@ -17,6 +20,11 @@ const TournamentContext = createContext<TournamentContextType | undefined>(undef
 export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [winner, setWinner] = useState<string | null>(null);
   const [currentMatch, setCurrentMatch] = useState<Match | null>(null);
+  const [currentPlayers, setCurrentPlayers] = useState<Array<string> | null>(null);
+
+  const getCurrentPlayers = () => {
+    return currentPlayers;
+  }
 
   const matchResolver = useRef<((winner: string) => void) | null>(null);
 
@@ -39,7 +47,7 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   return (
-    <TournamentContext.Provider value={{ winner, setWinner, currentMatch, setCurrentMatch, startMatch, endMatch }}>
+    <TournamentContext.Provider value={{ winner, setWinner, currentMatch, setCurrentMatch, currentPlayers, setCurrentPlayers, getCurrentPlayers, startMatch, endMatch }}>
       {children}
     </TournamentContext.Provider>
   );
