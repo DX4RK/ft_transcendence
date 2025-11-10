@@ -16,6 +16,7 @@ async function getMatchStats(fastify, opts) {
 					success: true,
 					message: 'No stats yet.',
 					data: {
+						username: userData.username,
 						xp: userData.experience_point,
 						matchWon: 0,
 						matchLost: 0,
@@ -36,6 +37,7 @@ async function getMatchStats(fastify, opts) {
 				success: true,
 				message: 'User stats retrieved successfully.',
 				data: {
+					username: userData.username,
 					xp: userData.experience_point,
 					matchWon: userStats.match_won,
 					matchLost: (userStats.match_played - userStats.match_won),
