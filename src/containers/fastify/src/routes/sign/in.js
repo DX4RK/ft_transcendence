@@ -42,7 +42,7 @@ async function signRoutes(fastify, opts) {
 			if (user.twofa_method == "email") {
 				await sendEmailCode(transporter, username, user.email, code);
 			} else if (user.twofa_method == "phone") {
-				await sendSMSCode(vonage, username, user.phone, code);
+				await sendSMSCode(vonage, username, user.phone_number, code);
 			}
 
 			return reply.send({
