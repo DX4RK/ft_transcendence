@@ -50,6 +50,25 @@
 	"tournamentWinner": "🏆 The tournament winner is {{winner}}!"
 	},
 
+  "tournament_recap": {
+	"tournament": "Tournament",
+	"start": "Start tournament",
+	"player1": "Player 1",
+	"player2": "Player 2",
+	"player3": "Player 3",
+	"player4": "Player 4",
+	"player5": "Player 5",
+	"player6": "Player 6",
+	"player7": "Player 7",
+	"player8": "Player 8",
+	"roundStarting": "Round {{round}} is starting!",
+	"bye": "{{player}} gets a bye to the next round.",
+	"match": "Match: {{player1}} vs {{player2}}",
+	"winner": "Winner: {{winner}}",
+	"tournamentWinner": "🏆 The tournament winner is {{winner}}!",
+  "userWon": "{{winner}} won!"
+	},
+
   "liveChat": {
 	"title": "Live Chat",
 	"publicChat": "Public Chat",

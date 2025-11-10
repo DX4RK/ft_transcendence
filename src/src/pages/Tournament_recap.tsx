@@ -2,60 +2,73 @@ import { Link, useNavigate } from "react-router-dom"
 import { useNotification } from "../context/NotificationContext";
 import { useTournament } from "../context/TournamentContext";
 import { useTranslation } from "react-i18next";
-// import { Background } from "../../Game/background";
-import { useEffect, useState } from "react";
-// import Game from "./Game";
-
-// function Game(user1: string, user2: string) {
-// 	const winner = Math.random() < 0.5 ? user1 : user2;
-// 	return winner;
-// }
+import { useEffect } from "react";
 
 
-function Tournament() {
+
+function Tournament_recap() {
 	const navigate = useNavigate();
-	const { setCurrentPlayers } = useTournament();
+	const { addNotification } = useNotification();
+	const { winner, startMatch, getCurrentPlayers } = useTournament();
 	const { t } = useTranslation();
-	// const [notifications, setNotifications] = useState<
-	// { id: number; type: string; text: string }[]
-	// >([]);
-	const [player1, setPlayer1] = useState("");
-	const [player2, setPlayer2] = useState("");
-	const [player3, setPlayer3] = useState("");
-	const [player4, setPlayer4] = useState("");
-	const [player5, setPlayer5] = useState("");
-	const [player6, setPlayer6] = useState("");
-	const [player7, setPlayer7] = useState("");
-	const [player8, setPlayer8] = useState("");
+
+    function wait(ms: number) {
+	    return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    const TournamentLoop = async () => {
+
+
+        console.log(getCurrentPlayers());
+
+
+        let currentRound = getCurrentPlayers();
+		let roundNumber = 1;
+		const mode = 2;
+
+        if (!currentRound) return;
+
+        while (currentRound.length > 1) {
+			addNotification("info", t("tournament_recap.roundStarting", { round: roundNumber }));
+			await wait(3000);
+			console.log(`Round ${roundNumber}:`);
+			let nextRound = [];
+
+			for (let i = 0; i < currentRound.length; i += 2) {
+				if (currentRound[i + 1] === undefined) {
+					addNotification("info", t("tournament_recap.bye", { player: currentRound[i] }));
+					await wait(2000);
+					console.log(`${currentRound[i]} gets a bye to the next round.`);
+					nextRound.push(currentRound[i]);
+					continue;
+				}
+				addNotification("info", t("tournament_recap.match", { player1: currentRound[i], player2: currentRound[i + 1] }));
+				await wait(3000);
+				const user1 = currentRound[i];
+				const user2 = currentRound[i + 1];
+
+				const winnerPromise = startMatch(user1, user2);
+				navigate("/game", { state: { mode: mode }});
+				const winner = await winnerPromise;
+				
+				addNotification("info", t("tournament_recap.winner", { winner }));
+				console.log(`Match: ${user1} vs ${user2} => Winner: ${winner}`);
+				await wait(3000);
+				nextRound.push(winner);
+			}
+			currentRound = nextRound;
+			roundNumber++;
+		}
+		addNotification("info", t("tournament_recap.tournamentWinner", { winner: currentRound[0] }));
+		console.log(`Tournament Winner: ${currentRound[0]}`);
+        await wait(5000);
+        navigate("/tournament");
+    };
 
 	useEffect(() => {
-		// const game = new Background();
-		// game.start();
 	}, []);
 
-	const startTournament = async () => {
-
-
-		let players = [player1, player2, player3, player4, player5, player6, player7, player8];
-		players = players.filter(player => player && player.trim() !== "");
-
-		if (players.length < 2) return;
-
-		for (let i = players.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1));
-			[players[i], players[j]] = [players[j], players[i]];
-		}
-
-		
-		setCurrentPlayers(players);
-
-		console.log("Starting tournament with players:", players);
-
-
-		navigate("/tournament_recap", { state: { players }})
-
-	};
-
+    
 	return (
 		<div className="relative min-h-screen bg-gradient-to-r from-cyan-500/50 to-blue-500/50 text-white flex flex-col items-center justify-center space-y-12 p-10">
 			<Link to="/" className="text-base text-xl text-cyan-300/70 opacity-50 font-arcade z-0">ft_transcendence</Link>
@@ -95,99 +108,57 @@ function Tournament() {
 				</div>
 			</div>
 
-			{/* <canvas id="pongCanvas" width="1800" height="900" className="absolute top-0 left-0 w-full h-full z-1"></canvas>
-			<script type="module" src="../Game/main.ts"></script> */}
-
 			{/* Titre */}
 			<h1 className="text-4xl font-arcade md:text-6xl font-bold text-orange-300/90 drop-shadow-lg tracking-wide mt-4">
-				{t("tournament.tournament")}
+				{t("tournament_recap.tournament")}
 			</h1>
 
 
-			<div className="flex grid grid-cols-4 gap-4 m-4">
-				<div className="flex justify-center m-4 p-4 bg-orange-400/90 rounded-lg">
-					<input
-					type="text"
-					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder={t("tournament.player1")}
-					value={player1}
-					onChange={(e) => setPlayer1(e.target.value)}
-					/>
-				</div>
-				<div className="flex justify-center m-4 p-4 bg-orange-400/90 rounded-lg">
-					<input
-					type="text"
-					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder={t("tournament.player2")}
-					value={player2}
-					onChange={(e) => setPlayer2(e.target.value)}
-					/>
-				</div>
-				<div className="flex justify-center m-4 p-4 bg-orange-400/90 rounded-lg">
-					<input
-					type="text"
-					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder={t("tournament.player3")}
-					value={player3}
-					onChange={(e) => setPlayer3(e.target.value)}
-					/>
-				</div>
-				<div className="flex justify-center m-4 p-4 bg-orange-400/90 rounded-lg">
-					<input
-					type="text"
-					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder={t("tournament.player4")}
-					value={player4}
-					onChange={(e) => setPlayer4(e.target.value)}
-					/>
-				</div>
-				<div className="flex justify-center m-4 p-4 bg-orange-400/90 rounded-lg">
-					<input
-					type="text"
-					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder={t("tournament.player5")}
-					value={player5}
-					onChange={(e) => setPlayer5(e.target.value)}
-					/>
-				</div>
-				<div className="flex justify-center m-4 p-4 bg-orange-400/90 rounded-lg">
-					<input
-					type="text"
-					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder={t("tournament.player6")}
-					value={player6}
-					onChange={(e) => setPlayer6(e.target.value)}
-					/>
-				</div>
-				<div className="flex justify-center m-4 p-4 bg-orange-400/90 rounded-lg">
-					<input
-					type="text"
-					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder={t("tournament.player7")}
-					value={player7}
-					onChange={(e) => setPlayer7(e.target.value)}
-					/>
-				</div>
-				<div className="flex justify-center m-4 p-4 bg-orange-400/90 rounded-lg">
-					<input
-					type="text"
-					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder={t("tournament.player8")}
-					value={player8}
-					onChange={(e) => setPlayer8(e.target.value)}
-					/>
-				</div>
+			<div>
+				{winner && <h4>t("game.userWon", {winner})</h4>}
 			</div>
+
+			
+
+			{/* <div className="flex grid grid-cols-4 gap-4 m-4">
+				<div className="flex justify-center m-4 p-4 bg-orange-400/90 rounded-lg">
+					<input
+					type="text"
+					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
+					value={match1}
+					/>
+				</div>
+				<div className="flex justify-center m-4 p-4 bg-orange-400/90 rounded-lg">
+					<input
+					type="text"
+					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
+					value={match2}
+					/>
+				</div>
+				<div className="flex justify-center m-4 p-4 bg-orange-400/90 rounded-lg">
+					<input
+					type="text"
+					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
+					value={match3}
+					/>
+				</div>
+				<div className="flex justify-center m-4 p-4 bg-orange-400/90 rounded-lg">
+					<input
+					type="text"
+					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
+					value={match4}
+					/>
+				</div>
+            </div> */}
 
 			<button
 			className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-			// onClick={() => navigate('/game', { state: { mode: 2 } })}>
-			onClick={() => startTournament()}>
-				{t("tournament.start")}
+			onClick={() => TournamentLoop()}>
+				{t("tournament_recap.start")}
 			</button>
 
 		</div>
 	)
 }
 
-export default Tournament;
+export default Tournament_recap;
