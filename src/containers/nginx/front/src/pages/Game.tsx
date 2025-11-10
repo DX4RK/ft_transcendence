@@ -1,9 +1,10 @@
-import { Link, useNavigate } from "react-router-dom"
-import { Button } from "@/components/ui/button"
+import { Link ,useNavigate} from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import BabylonScene from "../../Game/Pong";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useTournament } from "../context/TournamentContext";
 // import type { int } from "@babylonjs/core";
 
@@ -11,14 +12,46 @@ import { useTournament } from "../context/TournamentContext";
 
 function Game() {
 
+	interface data {
+	"userData": {
+		"name": string,
+		"score": number
+	},
+	"guestData": {
+		"name": string,
+		"score": number
+	}
+	}
+
 	const location = useLocation();
+	const { t } = useTranslation();
 	const mode = location.state?.mode || 1; // valeur par défaut si undefined
 	const navigate = useNavigate();
-	const { currentMatch, endMatch } = useTournament(); 	
-	const name1 = location.state?.user1 || currentMatch?.user1 || "User";
-	const name2 = location.state?.user2 || currentMatch?.user2 || "Guest";
+	const { currentMatch, endMatch } = useTournament();
+	const name1 = location.state?.user1 || currentMatch?.user1 || t("game.user");
+	const name2 = location.state?.user2 || currentMatch?.user2 || t("game.guest");
+
+	let [data, setData] = useState<data | null>({
+		userData: { name: name1, score: 0 },
+		guestData: { name: name2, score: 0 }
+	});;
+
+	//  const handleEnd = () => {
+	// 		setData({
+	// 	userData: {
+	// 		name: "Alice",
+	// 		score: 100
+	// 	},
+	// 	guestData: {
+	// 		name: "Bob",
+	// 		score: 85
+	// 	}
+	// 	});
+	// }
+	// setData(data ? data.userData.name = user1 : null);
+
 	const handleEscape = () => {
-	alert("- Game paused -");
+		alert("- Game paused -");
 	};
 
 	useEffect(() => {
@@ -29,26 +62,32 @@ function Game() {
 	};
 
 	window.addEventListener("keydown", handleKeyDown);
-
 	// Nettoyage à la fin du cycle de vie du composant
 	return () => {
 		window.removeEventListener("keydown", handleKeyDown);
 	};
 	}, []);
 
+	//$------------------------------------------------
+	const myHeaders = new Headers();
+	myHeaders.append("Content-Type", "application/json");
 
-	// export default function Game() {
+	// const raw = JSON.stringify(data);
+
+
+	//$  export default function Game()  ??
 	const [scoreLeft, setScoreLeft] = useState(0);
 	const [scoreRight, setScoreRight] = useState(0);
+	const [winner, setWinner] = useState(0);
 
 	const handleGameOver = (winner: string) => {
 		console.log(`handle game over: ${winner}`)
 		endMatch(winner);
-		navigate("/tournoi");
+		navigate("/tournament_recap");
 	};
 
 	return (
-	<div className="bg-gradient-to-r from-cyan-500/50 to-blue-500/50">
+	<div className="bg-gradient-to-r from-cyan-500/50 to-blue-500/50 overflow-hidden">
 
 	<Link to="/" className="text-base text-cyan-300/70 text-xl font-arcade">ft_transcendence</Link>
 
@@ -56,36 +95,83 @@ function Game() {
 		<div>
 			{name1} - {scoreLeft} | {scoreRight} - {name2}
 		</div>
+		<div>
+			{winner === 1 && <h2>🏆 {t("game.userWon")}</h2>}
+			{winner === 2 && <h2>🏆 {t("game.guestWon")}</h2>}
+		</div>
 	</div>
 
 
-	<div className="absolute top-10 right-20 z-10">
-		<Button onClick={() => alert("- Game paused -")} />
+	<div className="absolute top-10 right-20 z-10" >
+		<Button onClick={() => alert(t("game.paused"))}>Pause</Button>
 	</div>
 
 	<BabylonScene
 		onScoreUpdate={(left, right) => {
 		setScoreLeft(left);
 		setScoreRight(right);
-		if (left >= 1 ) //$ END FUNCTION - HANDLE DATA REQUEST HERE
+		if (left >= 1) //$ END FUNCTION - HANDLE DATA REQUEST HERE
 		{
-			console.log(`${name1} player wins!`);
+			console.log("Left player wins!");
+			setWinner(1);
 
-			// sendGameData();//! API SENDER !!!
+			const newData = {
+				userData: { name: name1, score: left },
+				guestData: { name: name2, score: right }
+			};
+			setData(newData);
+
+			const raw = JSON.stringify(newData);
+
+			fetch("http://localhost:3000/stats/match-finished", {
+				method: "POST",
+				credentials: 'include',
+				headers: myHeaders,
+				body: raw,
+				redirect: "follow"
+			})
+			.then((response) => response.text())
+			.then((result) => console.log(result))
+			.catch((error) => console.error(error));
 
 			if (mode == 1)
-				navigate("/", { state: { winner: left }});
+			{
+				setTimeout(() => {
+					navigate("/", { state: { winner: left }});
+				}, 3000);
+			}
 			else if (mode == 2)
 				handleGameOver(name1);
 		}
 		else if (right >= 1)
 		{
-			console.log(`${name2} player wins!`);
+			console.log("Right player wins!");
+			setWinner(2);
 
-			// sendGameData(winner, left, right, );//! API SENDER !!!
+			const newData = {
+				userData: { name: name1, score: left },
+				guestData: { name: name2, score: right }
+			};
+			setData(newData);
+
+			const raw = JSON.stringify(newData);
+			fetch("http://localhost:3000/stats/match-finished", {
+				method: "POST",
+				credentials: 'include',
+				headers: myHeaders,
+				body: raw,
+				redirect: "follow"
+			})
+			.then((response) => response.text())
+			.then((result) => console.log(result))
+			.catch((error) => console.error(error));
 
 			if (mode == 1)
-				navigate("/", { state: { winner: right }});
+			{
+				setTimeout(() => {
+					navigate("/", { state: { winner: right }});
+				}, 3000);
+			}
 			else if (mode == 2)
 				handleGameOver(name2);
 		}
@@ -94,7 +180,7 @@ function Game() {
 		}
 	/>
 
-		  <Link to="/" className="flex p-1 mx-1 text-orange-300/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">Home</Link>
+		  <Link to="/" className="flex p-1 mx-1 text-orange-300/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">{t("game.home")}HOME</Link>
 	</div>
   );
 }

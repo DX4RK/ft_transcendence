@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 // import { useAuth } from "../context/AuthContext";
 
-export default function RegisterPage() {
-  const [email, setEmail] = useState("");
-  const [password1, setPassword1] = useState("");
-  const [password2, setPassword2] = useState("");
+export default function tfa() {
+  const [code, setCode] = useState("");
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -13,36 +11,36 @@ export default function RegisterPage() {
 //   const { register } = useAuth();
   const navigate = useNavigate();
 
+	const location = useLocation();
+	const { email } = location.state || {};
+			console.log('cfyu');
+			console.log(email);
 
-
-  //	fonction du boutton connexion / recuperer les donnees de connexion ici <--
 const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
 	e.preventDefault();
-	if (!email || !password1 || !password2) {
+	if (!code) {
 		setError('Tous les champs sont requis');
-		return;
-	} else 	if (password1 !== password2) {
-		setError('Les mots de passe ne correspondent pas');
 		return;
 	}
 
 	setError('');
 	setLoading(true);
 
-
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIwLCJpYXQiOjE3NjI2MTk4NzIsImV4cCI6MTc2MzIyNDY3Mn0.uyKZnlhE0wxcf-vJuB0fqXnjMGZFa3PZ2KvHNudwLRo.nTouvQnaC788Dei%2BgFhcXqxkN3h07k4zXfTxiiTxAqw
 	try {
-		if ((password1 == password2) && password1) {
 			const myHeaders = new Headers();
 			myHeaders.append("Content-Type", "application/json");
 
+			console.log(email);
+			console.log(code);
+
 			const raw = JSON.stringify({
 				"username": email,
-				"password": password1,
-				"email": email
+				"code": code
 			});
 
-			const response = await fetch("http://localhost:3000/sign/up", { method: "POST", headers: myHeaders, body: raw });
+			const response = await fetch("http://localhost:3000/twofa/verify" ,{method: "POST", headers: myHeaders, credentials: "include", body: raw, redirect: "follow" })
 			const result = await response.json();
 
 			console.log(result);
@@ -52,16 +50,14 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 			}
 
 			if (result.success) {
-				// console.log("success !");
-				navigate('/login');
+				console.log("success !");
+				console.log(result.code);
+				navigate('/profile', { state: { email }});
 			}
-		}
 	}
 	catch (err) {
-		if (err instanceof Response && err.status >= 400)
-			navigate('/login');
-		setError(err instanceof Error ? err.message : String(err));
-	}
+ 		setError(err instanceof Error ? err.message : String(err));
+		}
 	finally {
 		setLoading(false);
 	}
@@ -87,7 +83,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		<div className="min-h-screen flex items-center justify-center">
 			<form onSubmit={handleSubmit} className="bg-gradient-to-t from-[#1A2730] to-[#45586c] justify-center p-8 rounded-lg shadow-xl shadow-cyan-500/30 w-80">
 			<h2 className="text-2xl font-arcade text-center mb-6 text-slate-300">
-				Register
+				2FA CODE
 			</h2>
 			{error && (
 				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -95,26 +91,14 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 				</div>
 			)}
 			<div className="mb-4">
-				<input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-				className="w-full border text-gray-500 order-[#E95D2C] rounded-lg p-2 focus:outline-none focus:text-[#B0CEE2] focus:ring-2 focus:ring-[#B0CEE2]"
-				placeholder="exemple@email.com"/>
-			</div>
-
-			<div className="mb-6">
-				<input type="password" value={password1} onChange={(e) => setPassword1(e.target.value)}
-				className="w-full border bordr-[#E95D2C] rounded-lg p-2 text-slate-300 	focus:outline-none focus:ring-3 focus:ring-[#B0CEE2]"
-				placeholder="Password"/>
-			</div>
-
-			<div className="mb-6">
-				<input type="password" value={password2} onChange={(e) => setPassword2(e.target.value)}
-				className="w-full border bordr-[#E95D2C] rounded-lg p-2 text-slate-300 	focus:outline-none focus:ring-3 focus:ring-[#B0CEE2]"
-				placeholder="Confirm Password"/>
+				<input type="text" value={code} onChange={(e) => setCode(e.target.value)}
+				className="w-full text-center text-2xl text-gray-500 p-2  border-none focus:outline-none focus:ring-0 focus:text-[#B0CEE2]"
+				placeholder="__  __  __  __  __  __"/>
 			</div>
 
 			<button type="submit" className="w-full bg-[#E95D2C] font-arcade text-[#B0CEE2] py-2 rounded-lg
 				hover:ring hover:ring-[#B0CEE2] hover:bg-orange-600 hover:text-[#1A2730] transition">
-					{loading ? 'Connexion...' : 'Log In'}
+					{loading ? 'Checkin\'...' : 'Access'}
 			</button>
 			</form>
 		</div>

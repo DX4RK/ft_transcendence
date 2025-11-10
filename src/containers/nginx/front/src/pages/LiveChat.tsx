@@ -1,135 +1,237 @@
 import { useEffect, useState } from "react";
-import { useSocket } from "../context/SocketContext";
+import { useSocket, useSocketEvent } from "../context/SocketContext";
 import { useNotification } from "../context/NotificationContext";
 // import { Background } from "../../Game/background";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 // import { io } from "socket.io-client";
 
 // const socket = io("http://localhost:3000", { withCredentials: true, autoConnect: false });
 
+interface Message {
+	id: string;
+	text: string;
+	userId: string;
+	timestamp: number;
+}
+
+interface ConnectedUser {
+	id: string;
+	userId: number;
+}
+
 function LiveChat() {
+	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const { socket } = useSocket();
 	const { addNotification } = useNotification();
-	// const [notifications, setNotifications] = useState<
-	// { id: number; type: string; text: string }[]
-	// >([]);
-	// const [connected, setConnected] = useState(false);
-	const [messages, setMessages] = useState<string[]>([]);
-	const [privMessages, setPrivMessages] = useState<string[]>([]);
-	const [input, setInput] = useState("");
-	const [privInput, setPrivInput] = useState("");
+
+	const { socket, isConnected } = useSocket();
+
+	const [roomId, setRoomId] = useState('general');
 	const [isPrivate, setIsPrivate] = useState(false);
-	const [connectedUsers, setConnectedUsers] = useState<string[]>([]);
-	const [selectedUser, setSelectedUser] = useState<string | null>(null);
+	const [isAuthenticated, setIsAuthenticated] = useState(0);
+	const [blockedUsers, setBlockedUsers] = useState<number[]>([]);
+	const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([]);
+	const [selectedUser, setSelectedUser] = useState<ConnectedUser>();
 
-	// Connect socket
+	const [messages, setMessages] = useState<Message[]>([]);
+	const [inputText, setInputText] = useState('');
+
+	// Utils
+
+	const canInteract = () => {
+		if (!socket || !isConnected || !isAuthenticated)
+			return false;
+		return true;
+	}
+
+	const getPrivateRoomId = (userId: number, targetId: number) => {
+		return [userId, targetId].sort().join('-');
+	}
+
+	const isUserBlocked = (user: ConnectedUser) => {
+		console.log(blockedUsers);
+		return blockedUsers.includes(user.userId)
+	}
+
+	// const getLevelByXp = (xp: number) => {
+	// 	const level = (xp / 100 + 14) ^ 0.425 * 4 - 11.279
+	// 	return Math.floor(level)
+	// }
+
+	// Auth
+
 	useEffect(() => {
-		if (!socket) return;
-		// const game = new Background();
-		// game.start();
-
-		// socket.on("connect", () => console.log("✅ Connecté au serveur :", socket.id));
-		// socket.on("connect_error", (err) => console.error("❌ Erreur Socket.IO:", err.message));
-		// socket.on("disconnect", (reason) => console.log("⚠️ Déconnecté:", reason));
-
-		// if (!connected) {
-		// 	socket.connect();
-		// 	setConnected(true);
-		// }
+		if (!socket || !isConnected) return;
+		socket.emit('initLiveChat');
+	}, [socket, isConnected]);
 
 
-		socket.on("message", (msg: string) => {
-			setMessages((prev) => [...prev, msg]);
-		});
+	useSocketEvent('authenticated', (data) => {
+		console.log('Authenticated as user:', data.userId);
+		setIsAuthenticated(data.userId);
+	});
 
-		socket.on("priv-message", (user: string, msg: string) => {
-			if (user === selectedUser || user === socket.id) {
-				setPrivMessages((prev) => [...prev, msg]);
+	// useSocketEvent('auth-error', (data) => {
+	// 	console.error('Auth error:', data.message);
+	// 	setIsAuthenticated(0);
+	// 	window.location.href = '/login';
+	// });
+
+	// Events
+
+	useSocketEvent<Message>('new-message', (message) => {
+		setMessages(prev => [...prev, message]);
+	});
+
+	useSocketEvent('connected-users', (data) => {
+		setConnectedUsers(data);
+	});
+
+	useSocketEvent('user-added', (data) => {
+		if (!canInteract()) return;
+		if (data.userId == isAuthenticated) return;
+
+		setConnectedUsers((prevUsers) => {
+			const userExists = prevUsers.some(user => user.userId === data.userId);
+
+			if (userExists) {
+				return prevUsers.map(user =>
+					user.userId === data.userId
+						? { ...user, id: data.socketId }
+						: user
+				);
 			} else {
-				addNotification("priv-message", `Message privé de ${user}`);
+				return [...prevUsers, { userId: data.userId, id: data.socketId }];
 			}
 		});
+	})
 
-		socket.on("users-connected", (users: string[]) => {
-			setConnectedUsers(users.filter((u) => u !== socket.id));
-			console.log(users);
+	useSocketEvent('user-removed', (data) => {
+		setConnectedUsers((prevUsers) => {
+			return prevUsers.filter(user => user.userId !== data.userId);
 		});
+	})
 
-		socket.on("new-user-connected", (user: string) => {
-			setConnectedUsers((prev) => [...prev, user]);
-			console.log(user);
-		});
+	useSocketEvent('room-messages', (data) => {
+		setMessages(data);
+	});
 
-		socket.on("user-disconnected", (user: string) => {
-			setConnectedUsers((prev) => prev.filter((u) => u !== user));
-		});
 
-		// socket.on("user-blocked", (blocker: string, blocked: string) => {
-		// 	if (blocked === socket.id) {
-		// 		addNotification("blocked", `${blocker} has blocked you`);
-		// 	}
-		// });
+	useSocketEvent('invite', (data) => {
+		if (data.userId === isAuthenticated) return;
+		addNotification("invite", data.text);
+	});
 
-		// socket.on("invit-game", (fromUser: string) => {
-		// 	addNotification("invite", `Invitation to play from ${fromUser}`);
-		// });
+	// Methods
+
+	useEffect(() => {
+		if (!isAuthenticated) return;
+		fetch('http://localhost:3000/users/blocked', {
+			method: 'GET',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					console.log(data.data);
+					setBlockedUsers(data.data);
+				}
+			});
+	}, [isAuthenticated]);
+
+	useEffect(() => {
+		if (!canInteract()) return;
+
+		if (isPrivate && selectedUser) {
+			socket?.emit('join-private-room', selectedUser.id);
+			setRoomId(getPrivateRoomId(isAuthenticated, selectedUser.userId))
+		} else if (!isPrivate)
+			socket?.emit('join-room', roomId);
 
 		return () => {
-			// socket.off("connect");
-			// socket.off("connect_error");
-			// socket.off("disconnect");
-			socket.off("message");
-			socket.off("priv-message");
-			socket.off("users-connected");
-			socket.off("new-user-connected");
-			socket.off("user-disconnected");
-			// socket.off("user-blocked");
-			// socket.off("invit-game");
+			socket?.emit('leave-room', roomId);
 		};
-	}, [selectedUser, socket]);
-
-	const handleSend = () => {
-		if (input.trim() === "") return;
-		// socket.emit("message", input, (callback) => {
-		// 	console.log(callback);
-		// });
-		setInput("");
-	};
-
-	const handlePrivSend = () => {
-		if (!selectedUser || privInput.trim() === "") return;
-		// socket.emit("priv-message", selectedUser, privInput , (callback) => {
-		// 	console.log(callback);
-		// });
-		setPrivInput("");
-	};
+	}, [socket, isConnected, isAuthenticated, selectedUser]);
 
 	const switchMode = (privateMode: boolean) => {
 		setIsPrivate(privateMode);
 		setMessages([]);
-		setPrivMessages([]);
-		setSelectedUser(null);
+		setSelectedUser(undefined);
 	};
 
-	const blockUser = (user: string | null) => {
-		if (!user) return;
-		// socket.emit("block-user", user, (callback) => {
-		// 	console.log(callback);
-		// });
-		addNotification("blocked", `Vous avez bloqué ${user}`);
+	const sendMessage = () => {
+		if (!canInteract()) return;
+
+		if (selectedUser && isPrivate) {
+			socket?.emit('send-private-message', {
+				roomId: roomId,
+				message: inputText
+			});
+		} else if (!isPrivate) {
+			socket?.emit('send-message', {
+				roomId: roomId,
+				message: inputText
+			});
+		}
+		setInputText('');
+	}
+
+	const blockUser = (user: ConnectedUser | null) => {
+		if (!user || !canInteract()) return;
+
+		fetch('http://localhost:3000/users/block', {
+			method: 'POST',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({'userId': user.userId})
+		})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					setBlockedUsers(prev => [...prev, user.userId]);
+				}
+			});
 	};
 
-	const inviteUser = (user: string | null) => {
-		if (!user) return;
-		// socket.emit("invit-game", user, (callback) => {
-		// 	console.log(callback);
-		// });
+	const unblockUser = (user: ConnectedUser | null) => {
+		if (!user || !canInteract()) return;
+		console.log("yes");
+		fetch('http://localhost:3000/users/unblock', {
+			method: 'POST',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({'userId': user.userId})
+		})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					let blocked = blockedUsers;
+					const blockedIndex = blocked.indexOf(user.userId);
+					if (blockedIndex > -1)
+						blocked.splice(blockedIndex, 1);
+					setBlockedUsers(blocked);
+				}
+			});
 	};
 
-	const oppenProfile = (user: string | null) => {
+	const inviteUser = (user: ConnectedUser | null) => {
+		if (!user || !canInteract()) return;
+		socket?.emit('send-invite', {
+			roomId: roomId,
+		});
+	};
+
+	const oppenProfile = (user: ConnectedUser | null) => { //! a faire
 		if (!user) return;
-		addNotification("profil", `Profil de ${user}`);
+		addNotification("profil", `Profil of ${user.userId}`);
 
 		const dataUserProfile = {
 			login: user,
@@ -154,16 +256,6 @@ function LiveChat() {
 			console.error("Erreur fetch :", err);
 		});
 	};
-
-	// const addNotification = (type: string, text: string) => {
-	// 	const id = Date.now();
-
-	// 	setNotifications((prev) => [...prev, { id, type, text }]);
-
-	// 	setTimeout(() => {
-	// 		setNotifications((prev) => prev.filter((n) => n.id !== id));
-	// 	}, 3000);
-	// };
 
 	return (
 		<div className="relative min-h-screen bg-gradient-to-r from-cyan-500/50 to-blue-500/50 text-white flex flex-col items-center justify-center space-y-12 p-10">
@@ -191,7 +283,7 @@ function LiveChat() {
 						<Link to="/" className="flex p-2 mx-1 text-yllow-500/80 bg-gradient-to-br from-pink-500/90 to-orange-400/90 bg-clip-text text-transparent font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">
 							<svg viewBox="0 0 24 24" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10.5 18.5H6.5V8.66667L3 11L12 5L21 11L17.5 8.66667V18.5H13.5M10.5 18.5V13.5H13.5V18.5M10.5 18.5H13.5" stroke="#f08e4dff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
 						</Link>
-						<Link to="/tournoi" className="flex p-2 text-yellow-500/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">
+						<Link to="/tournament" className="flex p-2 text-yellow-500/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">
 							<svg viewBox="0 0 1024 1024" width="64" height="64" className="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#f08e4dff"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M352 128a32 32 0 0 0 12.16-2.56 37.12 37.12 0 0 0 10.56-6.72 37.12 37.12 0 0 0 6.72-10.56A32 32 0 0 0 384 96a33.6 33.6 0 0 0-9.28-22.72 32 32 0 0 0-45.44 0A32 32 0 0 0 320 96a32 32 0 0 0 32 32zM480 128h128a32 32 0 0 0 0-64h-128a32 32 0 0 0 0 64z" fill="#f08e4dff"></path><path d="M960 32h-32a32 32 0 0 0-22.72 9.28L832 115.2V96a32 32 0 0 0-32-32h-64a32 32 0 0 0 0 64h32c-8 271.68-117.44 480-256 480-143.68 0-256-224-256-512a32 32 0 0 0-64 0v19.2L118.72 41.28A32 32 0 0 0 96 32H64a32 32 0 0 0-32 32v256a32 32 0 0 0 9.28 22.72l96 96A32 32 0 0 0 160 448h96c46.4 111.04 114.88 188.48 196.16 214.4l-115.2 137.6H224a32 32 0 0 0-32 32v128a32 32 0 0 0 32 32h576a32 32 0 0 0 32-32v-128a32 32 0 0 0-32-32h-112.96l-114.88-137.6c81.28-25.6 149.76-103.04 196.16-214.4h96a32 32 0 0 0 22.72-9.28l96-96A32 32 0 0 0 992 320V64a32 32 0 0 0-32-32zM173.12 384L96 306.88V109.12L198.08 211.2A909.76 909.76 0 0 0 232.32 384zM672 864h96v64H256v-64h96a32 32 0 0 0 24.64-11.52L512 689.92l135.36 162.56A32 32 0 0 0 672 864z m256-557.12L850.88 384h-59.2a909.76 909.76 0 0 0 34.56-172.8L928 109.12z" fill="#f08e4dff"></path><path d="M384 224a32 32 0 0 0 0 64h256a32 32 0 0 0 0-64zM448 384a32 32 0 0 0 0 64h128a32 32 0 0 0 0-64z" fill="#f08e4dff"></path></g></svg>
 						</Link>
 						<Link to="/Profile" className="flex p-2 text-yelow-500/80 bg-gradient-to-br from-pink-500/90 to-orange-400/90 bg-clip-text text-transparent font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">
@@ -204,24 +296,9 @@ function LiveChat() {
 				</div>
 			</div>
 
-			{/* Notifications
-			<div className="absolute top-10 right-10 flex flex-col items-end space-y-2">
-			{notifications.map((notif) => (
-				<button
-				key={notif.id}
-				onClick={() => setNotifications((prev) => prev.filter((n) => n.id !== notif.id))}
-				className="px-4 py-2 rounded-lg bg-white/20 text-black font-bold shadow-md hover:bg-white/40 transition">
-					{notif.text}
-				</button>
-			))}
-			</div> */}
-
-			{/* <canvas id="pongCanvas" width="1800" height="900" className="absolute top-0 left-0 w-full h-full z-1"></canvas>
-			<script type="module" src="../Game/main.ts"></script> */}
-
 			{/* Titre */}
 			<h1 className="text-4xl font-arcade md:text-6xl font-bold text-orange-300/90 drop-shadow-lg tracking-wide mt-4">
-				LiveChat
+				{t("liveChat.title")}
 			</h1>
 
 			{/* Boutons Chat Public / Privé */}
@@ -229,12 +306,12 @@ function LiveChat() {
 				<button
 				onClick={() => switchMode(false)}
 				className={`px-5 py-2 rounded-full text-lg font-bold transition ${!isPrivate ? "bg-pink-500 shadow-lg scale-110" : "bg-white/20 hover:bg-white/40"}`}>
-					Public Chat
+					{t("liveChat.publicChat")}
 				</button>
 				<button
 				onClick={() => switchMode(true)}
 				className={`px-5 py-2 rounded-full text-lg font-bold transition ${isPrivate ? "bg-pink-500 shadow-lg scale-110" : "bg-white/20 hover:bg-white/40"}`}>
-					Private Chat
+					{t("liveChat.privateChat")}
 				</button>
 			</div>
 
@@ -242,18 +319,18 @@ function LiveChat() {
 			{isPrivate && (
 			<div className="flex flex-col bg-white/10 backdrop-blur-md w-3/5 rounded-2xl border-2 border-white/30 shadow-lg p-4 mt-4">
 				<h2 className="text-xl font-bold mb-2 text-orange-200/90">
-					Connected users:
+					{t("liveChat.connectedUsers")}
 				</h2>
 				{connectedUsers.length === 0 ? (
-				<p className="opacity-60 italic">No users connected</p>
+				<p className="opacity-60 italic">{t("liveChat.noUsersCo")}</p>
 				) : (
 				<div className="flex flex-wrap gap-3">
 					{connectedUsers.map((user) => (
 					<button
-						key={user}
+						key={user.id}
 						onClick={() => setSelectedUser(user)}
 						className={`px-4 py-2 rounded-full text-sm font-bold transition ${selectedUser === user ? "bg-pink-500" : "bg-white/20 hover:bg-white/40"}`}>
-						{user}
+						{user.userId}
 					</button>
 					))}
 				</div>
@@ -263,7 +340,12 @@ function LiveChat() {
 
 			{/* Zone Chat */}
 			<div className="flex flex-col bg-white/10 backdrop-blur-md w-3/5 h-96 rounded-2xl border-2 border-white/30 shadow-lg p-5 overflow-y-auto space-y-2">
-				{(isPrivate ? privMessages : messages).length === 0 ? (
+				{messages.map((message) => (
+					<div key={message.id} className="text-white text-lg">
+						{message.text}
+					</div>
+				))}
+				{/* {(isPrivate ? privMessages : messages).length === 0 ? (
 					<p className="opacity-60 text-center italic mt-20">
 						{isPrivate
 							? selectedUser
@@ -277,50 +359,50 @@ function LiveChat() {
 						{msg}
 					</div>
 					))
-				)}
+				)} */}
 			</div>
 
 			{/* Input et boutons */}
 			<div className="flex w-3/5 space-x-3">
 				<input
 				type="text"
-				placeholder={isPrivate && !selectedUser ? "Select a user..." : "Write your message..."}
+				placeholder={isPrivate && !selectedUser ? t("liveChat.selectUser") : t("liveChat.writeMessage")}
 				className="flex-1 px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-				value={isPrivate ? privInput : input}
-				onChange={(e) => (isPrivate ? setPrivInput(e.target.value) : setInput(e.target.value))}
-				onKeyDown={(e) => e.key === "Enter" && (isPrivate ? handlePrivSend() : handleSend())}
+				value={inputText}
+				onChange={(e) => setInputText(e.target.value)}
+				onKeyDown={(e) => e.key === "Enter" && (sendMessage())}
 				disabled={isPrivate && !selectedUser}/>
 				<button
-				onClick={isPrivate ? handlePrivSend : handleSend}
+				onClick={sendMessage}
 				className="px-6 py-3 rounded-full bg-pink-500 text-white font-bold shadow-md hover:bg-pink-600 hover:scale-105 transition">
-					Send
+					{t("liveChat.send")}
 				</button>
 			</div>
 
 			{/* Profil / Block / Invite */}
-			{isPrivate && selectedUser && (
+			{isPrivate && selectedUser && blockedUsers && (
 			<div className="flex w-3/5 space-x-4 mt-4">
 				<button
-				onClick={() => oppenProfile(selectedUser)}
-				className="px-6 py-3 rounded-full bg-blue-500 text-white font-bold shadow-md hover:bg-blue-600 hover:scale-105 transition">
-					Profile
+					onClick={() => oppenProfile(selectedUser)}
+					className="px-6 py-3 rounded-full bg-blue-500 text-white font-bold shadow-md hover:bg-blue-600 hover:scale-105 transition">
+					{t("liveChat.profile")}
 				</button>
 				<button
-				onClick={() => blockUser(selectedUser)}
-				className="px-6 py-3 rounded-full bg-red-500 text-white font-bold shadow-md hover:bg-red-600 hover:scale-105 transition">
-					Block
+					onClick={() => isUserBlocked(selectedUser) ? unblockUser(selectedUser) : blockUser(selectedUser)}
+					className="px-6 py-3 rounded-full bg-red-500 text-white font-bold shadow-md hover:bg-red-600 hover:scale-105 transition">
+					{isUserBlocked(selectedUser) ? t("liveChat.unblock") : t("liveChat.block")}
 				</button>
 				<button
-				onClick={() => inviteUser(selectedUser)}
-				className="px-6 py-3 rounded-full bg-green-500 text-white font-bold shadow-md hover:bg-green-600 hover:scale-105 transition">
-					Invite
+					onClick={() => inviteUser(selectedUser)}
+					className="px-6 py-3 rounded-full bg-green-500 text-white font-bold shadow-md hover:bg-green-600 hover:scale-105 transition">
+					{t("liveChat.invite")}
 				</button>
 			</div>
 			)}
 
 			{/* Bouton retour */}
 			<Link to="/" className="mt-10 px-6 py-3 rounded-full bg-pink-200 dark:bg-black-950 text-2xl text-white font-bold shadow-xl hover:bg-yellow-500 hover:scale-110 hover:italic hover:shadow-inner hover:outline hover:outline-4 hover:outline-cyan-500 transition">
-				⬅ Back
+				⬅ {t("liveChat.back")}
 			</Link>
 		</div>
 	);

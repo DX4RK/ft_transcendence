@@ -1,0 +1,117 @@
+{
+  "settings": {
+    "downloadApp": "Download an app on your phone to generate unique security codes. Required app is called Google Authenticator.",
+    "uniqueSecurityCodeNumber": "Receive unique security codes on your registered phone number.",
+    "phoneNumber": "Phone number:",
+    "uniqueSecurityCodeEmail": "Receive unique security codes on your registered email address.",
+    "email": "Email:",
+    "username": "Username:",
+    "accountInfo": "Account information",
+    "settings": "Settings",
+    "failLoadSettings": "Failed to load settings",
+    "loadSettings": "Loading settings...",
+	"disconnect": "Disconnect",
+	"verySecure": "(Very secure)"
+  },
+
+  "game": {
+    "userWon": "User won!",
+    "guestWon": "Guest won!",
+    "paused": "Game paused.",
+    "home": "Home",
+    "user": "User",
+    "guest": "Guest"
+  },
+
+  "home": {
+    "play": "PLAY",
+    "welcome": "WELCOME"
+  },
+
+  "login": {
+    "connexion": "Login",
+	"logIn": "Log In",
+	"connecting": "Connecting...",
+	"ifNoAccountRegister": "No account? Register now!"
+  },
+
+  "tournament": {
+	"tournament": "Tournament",
+	"start": "Start tournament",
+	"player1": "Player 1",
+	"player2": "Player 2",
+	"player3": "Player 3",
+	"player4": "Player 4",
+	"player5": "Player 5",
+	"player6": "Player 6",
+	"player7": "Player 7",
+	"player8": "Player 8",
+	"roundStarting": "Round {{round}} is starting!",
+	"bye": "{{player}} gets a bye to the next round.",
+	"match": "Match: {{player1}} vs {{player2}}",
+	"winner": "Winner: {{winner}}",
+	"tournamentWinner": "🏆 The tournament winner is {{winner}}!"
+	},
+
+  "tournament_recap": {
+	"tournament": "Tournament",
+	"start": "Start tournament",
+	"player1": "Player 1",
+	"player2": "Player 2",
+	"player3": "Player 3",
+	"player4": "Player 4",
+	"player5": "Player 5",
+	"player6": "Player 6",
+	"player7": "Player 7",
+	"player8": "Player 8",
+	"roundStarting": "Round {{round}} is starting!",
+	"bye": "{{player}} gets a bye to the next round.",
+	"match": "Match: {{player1}} vs {{player2}}",
+	"winner": "Winner: {{winner}}",
+	"tournamentWinner": "🏆 The tournament winner is {{winner}}!",
+  "userWon": "{{winner}} won!"
+	},
+
+  "liveChat": {
+	"title": "Live Chat",
+	"publicChat": "Public Chat",
+	"privateChat": "Private Chat",
+	"connectedUsers": "Connected users:",
+	"selectUser": "Select a user...",
+	"writeMessage": "Write your message...",
+	"send": "Send",
+	"profile": "Profile",
+	"block": "Block",
+	"unblock": "Unblock",
+	"invite": "Invite",
+	"back": "Back",
+	"noUsersCo": "No users connected"
+	},
+
+  "ladder": {
+    "home": "Home",
+    "test": "Test",
+    "profile": "Profile",
+    "ladder": "Leaderboard"
+  },
+
+  "profile": {
+    "level": "Level",
+    "nextLevel": "Next level",
+    "youNeed": "You need",
+    "remainingXP": "Remaining XP",
+    "maxLevel": "Max level reached!",
+    "performanceAnalysis": "Performance analysis",
+    "winRate": "Win rate",
+    "wins": "Wins",
+    "losses": "Losses",
+    "totalGamesPlayed": "Total games played",
+    "totalGoalsScored": "Total goals scored",
+    "totalGoalsTaken": "Total goals conceded",
+    "score": "Score: {{left}} - {{right}}",
+    "previous": "Previous",
+    "next": "Next",
+    "matchResult": "{{result}} 🆚 vs {{opponent}}",
+    "lostAgainst": "Lost ❌ vs {{opponent}}"
+  }
+}
