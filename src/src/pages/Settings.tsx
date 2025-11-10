@@ -97,6 +97,10 @@ function Settings() {
 
 	const setSelectedOption = (option: string) => {
 		if (!isValidTwofa(option)) return;
+		if (option === 'phone' && settings?.phone === 'none')
+			return;
+		else if (option === 'totp' && settings?.totp === 'unlinked')
+			return;
 
 		const api = axios.create({
 			headers: {
