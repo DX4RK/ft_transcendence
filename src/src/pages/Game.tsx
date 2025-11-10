@@ -102,8 +102,8 @@ function Game() {
 	</div>
 
 
-	<div className="absolute top-10 right-20 z-10">
-		<Button onClick={() => alert(t("game.paused"))} />
+	<div className="absolute top-10 right-20 z-10" >
+		<Button onClick={() => alert(t("game.paused"))}>Pause</Button>
 	</div>
 
 	<BabylonScene

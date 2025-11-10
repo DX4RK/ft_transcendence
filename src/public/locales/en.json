@@ -1,6 +1,6 @@
 {
   "settings": {
-    "downloadApp": "Download an app on your phone to generate unique security codes. Recommended apps include Google Authenticator, Microsoft Authenticator, and Authy by Twilio.",
+    "downloadApp": "Download an app on your phone to generate unique security codes. Required app is called Google Authenticator.",
     "uniqueSecurityCodeNumber": "Receive unique security codes on your registered phone number.",
     "phoneNumber": "Phone number:",
     "uniqueSecurityCodeEmail": "Receive unique security codes on your registered email address.",
@@ -9,7 +9,9 @@
     "accountInfo": "Account information",
     "settings": "Settings",
     "failLoadSettings": "Failed to load settings",
-    "loadSettings": "Loading settings..."
+    "loadSettings": "Loading settings...",
+	"disconnect": "Disconnect",
+	"verySecure": "(Very secure)"
   },
 
   "game": {
@@ -29,7 +31,8 @@
   "login": {
     "connexion": "Login",
 	"logIn": "Log In",
-	"connecting": "Connecting..."
+	"connecting": "Connecting...",
+	"ifNoAccountRegister": "No account? Register now!"
   },
 
   "tournament": {
@@ -104,7 +107,7 @@
     "losses": "Losses",
     "totalGamesPlayed": "Total games played",
     "totalGoalsScored": "Total goals scored",
-    "totalGoalsConceded": "Total goals conceded",
+    "totalGoalsTaken": "Total goals conceded",
     "score": "Score: {{left}} - {{right}}",
     "previous": "Previous",
     "next": "Next",

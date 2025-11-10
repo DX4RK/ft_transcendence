@@ -180,7 +180,7 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
 	  <div className="max-w-4xl w-full">
         <div className="text-center mb-12">
           {/* <h1 className="text-5xl font-bold text-white mb-2">{stats.login}</h1> */}
-          <p className="text-purple-300">{t("profile.perfomanceAnalysis")}</p>
+          <p className="text-purple-300">{t("profile.performanceAnalysis")}</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 items-center">

@@ -1,15 +1,17 @@
 {
   "settings": {
-    "downloadApp": "Téléchargez une application sur votre téléphone pour générer des codes de sécurité uniques. Les applications suggérées incluent Google Authenticator, Microsoft Authenticator et Authy de Twilio.",
+    "downloadApp": "Téléchargez une application sur votre téléphone pour générer des codes de sécurité uniques. L'application suggéré est Google Authenticator.",
     "uniqueSecurityCodeNumber": "Recevez des codes de sécurité uniques sur le numéro de téléphone spécifié.",
     "phoneNumber": "Numéro de téléphone :",
     "uniqueSecurityCodeEmail": "Recevez des codes de sécurité uniques à votre adresse e-mail.",
     "email": "E-mail :",
     "username": "Nom d’utilisateur :",
     "accountInfo": "Informations du compte",
-    "settings": "Paramètres",
+    "settings": "PARAMETRES",
     "failLoadSettings": "Échec du chargement des paramètres",
-    "loadSettings": "Chargement des paramètres..."
+    "loadSettings": "Chargement des paramètres...",
+	"disconnect": "Deconnexion",
+	"verySecure": "(Tres securise)"
   },
 
   "game": {
@@ -18,7 +20,7 @@
     "paused": "Jeu en pause.",
     "home": "Accueil",
     "user": "Utilisateur",
-    "guest": "invité"
+    "guest": "INVITE"
   },
 
   "home": {
@@ -29,7 +31,8 @@
   "login": {
     "connexion": "Connexion",
 	"logIn": "Se connecter",
-	"connecting": "Connexion..."
+	"connecting": "Connexion...",
+	"ifNoAccountRegister": "Pas de compte ? Creer en un !"
   },
 
   "liveChat": {
@@ -104,7 +107,7 @@
     "losses": "Défaites",
     "totalGamesPlayed": "Nombre total de parties jouées",
     "totalGoalsScored": "Total de buts marqués",
-    "totalGoalsConceded": "Total de buts encaissés",
+    "totalGoalsTaken": "Total de buts encaissés",
     "score": "Score : {{left}} - {{right}}",
     "previous": "Précédent",
     "next": "Suivant",
