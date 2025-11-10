@@ -12,6 +12,8 @@ const verifyTokenRoute = require('./auth/verifyToken');
 const getSettings = require('./my/getSettings');
 const updateSettings = require('./my/updateSettings');
 const updatePhone = require('./my/updatePhone');
+const updateTwofa = require('./my/updateTwofa');
+const disconnect = require('./my/disconnect');
 
 const blockUserRoute = require('./users/block');
 const unBlockUserRoute = require('./users/unblock');
@@ -38,6 +40,8 @@ const registerRoutes = async (fastify, { transporter, vonage, generateToken }) =
 	await fastify.register(getSettings, { prefix: '/my' });
 	await fastify.register(updateSettings, { prefix: '/my' });
 	await fastify.register(updatePhone, { prefix: '/my' });
+	await fastify.register(updateTwofa, { prefix: '/my' });
+	await fastify.register(disconnect, { prefix: '/my' });
 
 	// Check
 	fastify.get('/', async (request, reply) => {
