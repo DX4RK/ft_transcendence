@@ -3,7 +3,6 @@
 export VAULT_ADDR="http://localhost:8200"
 export VAULT_TOKEN="myroot"
 
-# Load environment variables from .env file
 if [ -f "/vault/config/.env" ]; then
     export $(grep -v '^#' /vault/config/.env | xargs)
     echo "Environment variables loaded from .env file"
