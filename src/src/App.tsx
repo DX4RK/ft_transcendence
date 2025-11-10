@@ -7,7 +7,6 @@ import { TournamentProvider } from "./context/TournamentContext";
 
 import "./i18n";
 import LanguageSelector from "@/components/language-selector";
-import { useTranslation } from "react-i18next";
 
 import Home from "@/pages/Home";
 import Profile from "@/pages/Profile";
@@ -21,11 +20,6 @@ import TFA from "@/pages/TFA";
 import Settings from "@/pages/Settings";
 
 function App() {
-	const changeLang = (lang: string) => {
-		i18n.changeLanguage(lang);
-		localStorage.setItem('lang', lang);
-	};
-
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       {/* ✅ ajoute ton sélecteur de langue ici, visible sur toutes les pages */}

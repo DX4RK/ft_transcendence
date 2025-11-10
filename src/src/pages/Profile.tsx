@@ -1,12 +1,12 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 function Profile() {
 
-	const location = useLocation();
+	// const location = useLocation();
 	const { t } = useTranslation();
-	const { email } = location.state || {};
+	// const { email } = location.state || {};
 
 	const navigate = useNavigate();
 

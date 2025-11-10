@@ -79,6 +79,7 @@ function Settings() {
 		});
 		api.post('http://localhost:3000/my/change-phone', JSON.stringify({'phoneNumber': newPhone}))
 		.then(res => {
+			console.log(res);
 			setSettings(prev => {
 				if (!prev) return prev;
 				return {
@@ -105,6 +106,7 @@ function Settings() {
 		});
 		api.post('http://localhost:3000/my/change-twofa', JSON.stringify({'option': option}))
 		.then(res => {
+			console.log(res);
 			setSettings(prev => {
 				if (!prev) return prev;
 				return {

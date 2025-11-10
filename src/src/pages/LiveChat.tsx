@@ -3,7 +3,6 @@ import { useSocket, useSocketEvent } from "../context/SocketContext";
 import { useNotification } from "../context/NotificationContext";
 // import { Background } from "../../Game/background";
 import { Link, useNavigate } from "react-router-dom";
-import { Coins, DoorClosed } from "lucide-react";
 import { useTranslation } from "react-i18next";
 // import { io } from "socket.io-client";
 
@@ -55,10 +54,10 @@ function LiveChat() {
 		return blockedUsers.includes(user.userId)
 	}
 
-	const getLevelByXp = (xp: number) => {
-		const level = (xp / 100 + 14) ^ 0.425 * 4 - 11.279
-		return Math.floor(level)
-	}
+	// const getLevelByXp = (xp: number) => {
+	// 	const level = (xp / 100 + 14) ^ 0.425 * 4 - 11.279
+	// 	return Math.floor(level)
+	// }
 
 	// Auth
 
@@ -99,11 +98,11 @@ function LiveChat() {
 			if (userExists) {
 				return prevUsers.map(user =>
 					user.userId === data.userId
-						? { ...user, socketId: data.socketId }
+						? { ...user, id: data.socketId }
 						: user
 				);
 			} else {
-				return [...prevUsers, { userId: data.userId, socketId: data.socketId }];
+				return [...prevUsers, { userId: data.userId, id: data.socketId }];
 			}
 		});
 	})
@@ -328,7 +327,7 @@ function LiveChat() {
 				<div className="flex flex-wrap gap-3">
 					{connectedUsers.map((user) => (
 					<button
-						key={user.socketId}
+						key={user.id}
 						onClick={() => setSelectedUser(user)}
 						className={`px-4 py-2 rounded-full text-sm font-bold transition ${selectedUser === user ? "bg-pink-500" : "bg-white/20 hover:bg-white/40"}`}>
 						{user.userId}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Globe } from 'lucide-react';
 
@@ -11,7 +11,7 @@ export default function LanguageSelector() {
     i18n.changeLanguage(lang);
     localStorage.setItem("lang", lang);
   };
-  
+
   const languages = [
 	{ code: 'fr', label: 'Français', flag: '🇫🇷' },
 	{ code: 'en', label: 'English', flag: '🇬🇧' },

@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom"
-import { useNotification } from "../context/NotificationContext";
 import { useTournament } from "../context/TournamentContext";
 import { useTranslation } from "react-i18next";
 // import { Background } from "../../Game/background";
