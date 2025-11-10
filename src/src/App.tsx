@@ -11,7 +11,6 @@ import { useTranslation } from "react-i18next";
 
 import Home from "@/pages/Home";
 import Profile from "@/pages/Profile";
-import Ladder from "@/pages/Ladder";
 import Game from "@/pages/Game";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -39,7 +38,6 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/ladder" element={<Ladder />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/game" element={<Game />} />

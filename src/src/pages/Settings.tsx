@@ -1,8 +1,9 @@
 // import { Button } from "@/components/ui/button"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SquarePen } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { motion, AnimatePresence } from "framer-motion";
 import axios from 'axios';
 
 interface Settings {
@@ -16,10 +17,12 @@ interface Settings {
 }
 
 function Settings() {
+	const navigate = useNavigate();
 	const [errorMessage, setErrorMessage] = useState('');
 	const [settings, setSettings] = useState<Settings | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
+	const [qrcodeImage, setQrcodeImage] = useState('');
 	const { t } = useTranslation();
 
 	function isValidE164(phone: string): boolean {
@@ -27,9 +30,35 @@ function Settings() {
 		return e164Regex.test(phone);
 	}
 
-	const isValidTwofa = (option) => {
+	const isValidTwofa = (option: string) => {
 		return typeof option === 'string' && (option === 'email' || option === 'phone' || option === 'totp');
 	};
+
+	const handleEditTotp = () => {
+		const api = axios.create({
+			headers: {
+				"Content-Type": 'application/json',
+			},
+			withCredentials: true
+		});
+		api.post('http://localhost:3000/twofa/generate-totp')
+		.then(res => {
+			console.log(res);
+			setErrorMessage("success");
+			setQrcodeImage(res.data.qrCode);
+			setSettings(prev => {
+				if (!prev) return prev;
+				return {
+					...prev,
+					totp: 'linked',
+				};
+			});
+		})
+		.catch(err => {
+			console.error(err);
+			setErrorMessage(err.message);
+		});
+	}
 
 	const handleEditPhone = () => {
 		const newPhone = window.prompt('Enter your new phone number:', settings?.phone || '');
@@ -43,15 +72,13 @@ function Settings() {
 			setErrorMessage('Invalid phone format');
 
 		const api = axios.create({
+			headers: {
+				"Content-Type": 'application/json',
+			},
 			withCredentials: true
 		});
 		api.post('http://localhost:3000/my/change-phone', JSON.stringify({'phoneNumber': newPhone}))
 		.then(res => {
-			// setSettings(prev => {
-			// 	const updated = [...prev];
-			// 	updated[2] = { ...updated[2], phone: newPhone };
-			// 	return updated;
-			//   });
 			setSettings(prev => {
 				if (!prev) return prev;
 				return {
@@ -68,7 +95,47 @@ function Settings() {
 	}
 
 	const setSelectedOption = (option: string) => {
+		if (!isValidTwofa(option)) return;
 
+		const api = axios.create({
+			headers: {
+				"Content-Type": 'application/json',
+			},
+			withCredentials: true
+		});
+		api.post('http://localhost:3000/my/change-twofa', JSON.stringify({'option': option}))
+		.then(res => {
+			setSettings(prev => {
+				if (!prev) return prev;
+				return {
+					...prev,
+					twofa_method: option,
+				};
+			});
+			setErrorMessage("success");
+		})
+		.catch(err => {
+			console.error(err);
+			setErrorMessage(err.message);
+		});
+	}
+
+	const disconnect = () => {
+		const api = axios.create({
+			headers: {
+				"Content-Type": 'application/json',
+			},
+			withCredentials: true
+		});
+		api.post('http://localhost:3000/my/disconnect')
+		.then(res => {
+			console.log(res);
+			navigate('/login');
+		})
+		.catch(err => {
+			console.error(err);
+			setErrorMessage(err.message);
+		});
 	}
 
 	useEffect(() => {
@@ -87,7 +154,6 @@ function Settings() {
 			setLoading(false);
 		})
 		.catch(err => {
-			console.error(err);
 			setError(err);
 			setLoading(false);
 		});
@@ -99,6 +165,30 @@ function Settings() {
 
 	return (
 		<div className="min-h-screen w-full bg-gradient-to-r from-cyan-500/50 to-blue-500/50">
+			<AnimatePresence>
+				{qrcodeImage && (
+					<motion.div
+						key="qr-popup"
+						initial={{ opacity: 0, scale: 1, y: -30 }}
+						animate={{ opacity: 1, scale: 1, y: 0 }}
+						exit={{ opacity: 0, scale: 0.8, y: 50 }}
+						transition={{ duration: 0.2, ease: "easeOut" }}
+						className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+							flex z-20 min-h-screen items-center justify-center p-8"
+						>
+						<div className="grid bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl">
+							<span className="text-2xl font-arcade text-gray-300 text-center">QRCODE</span>
+							<span className="opacity-75">Scan this qrcode with your authenticator app</span>
+							<div className="flex w-full justify-center">
+								<div className="w-42 mt-4 aspect-square p-2 border-2 rounded-lg border-dashed">
+									<img className="rounded-md" src={qrcodeImage} />
+								</div>
+							</div>
+							<button onClick={() => setQrcodeImage('')} className="bg-blue-500 mt-4 p-3 rounded-lg">I scanned</button>
+						</div>
+					</motion.div>
+				)}
+			</AnimatePresence>
 			<Link to="/" className="flex-grow text-base text-cyan-300/70 text-xl font-arcade z-30">ft_transcendence</Link>
 			<div className="min-h-screen flex items-center justify-center p-8">
 				<div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl">
@@ -141,7 +231,7 @@ function Settings() {
 									{settings?.totp || 'undefined'}
 								</span>
 							</div>
-							<button>
+							<button onClick={handleEditTotp}>
 								<SquarePen />
 							</button>
 						</div>
@@ -158,6 +248,7 @@ function Settings() {
 									className="w-5 h-5"
 									type="radio"
 									checked={settings.twofa_method === 'email'}
+									onChange={() => setSelectedOption('email')}
 								/>
 							</div>
 						</div>
@@ -171,7 +262,7 @@ function Settings() {
 									className="w-5 h-5"
 									type="radio"
 									checked={settings.twofa_method === 'phone'}
-									onChange={() => setSelectedOption('email')}
+									onChange={() => setSelectedOption('phone')}
 								/>
 							</div>
 						</div>
@@ -185,10 +276,12 @@ function Settings() {
 									className="w-5 h-5"
 									type="radio"
 									checked={settings.twofa_method === 'totp'}
+									onChange={() => setSelectedOption('totp')}
 								/>
 							</div>
 						</div>
 					</div>
+					<button onClick={disconnect} className="bg-red-500/80 w-full mt-4 p-3 rounded-lg">Disconnect</button>
 				</div>
 			</div>
 		</div>
