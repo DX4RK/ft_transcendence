@@ -19,7 +19,7 @@ async function signRoutes(fastify, opts) {
 
 			if (user.twofa_method == 'totp') {
 				const totpStmt = fastify.usersDb.prepare('SELECT * FROM totp_2fa WHERE user_id = ?');
-				const totpData = totpStmt.get(decoded.userId);
+				const totpData = totpStmt.get(user.id);
 
 				if (!totpData)
 					return reply.code(400).send({ success: false, message: 'Totp is not linked for this user' });
