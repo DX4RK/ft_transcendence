@@ -10,20 +10,39 @@ function Profile() {
 
 	const navigate = useNavigate();
 
-
-	interface UserStats {
-	"success": true,
-	"message": "User stats retrieved successfully.",
-	"data": {
-		"matchWon": 0,
-		"matchLost": 0,
-		"matchPlayed": 0,
-		"xp" : 0,
-		"history": []
+	interface MatchScore {
+		[playerName: string]: number;
 	}
-}
 
-let [data, setData] = useState<UserStats | null>(null);
+	interface Match {
+		players: string[];
+		score: MatchScore;
+		date: string;
+	}
+
+	interface UserData {
+		"success": true,
+		"message": "User stats retrieved successfully.",
+			"data": {
+			"matchWon": 0,
+			"matchLost": 0,
+			"matchPlayed": 0,
+			"xp" : 0,
+			"history": Match[],
+			"username": string
+		}
+	}
+
+	const [stats, setStats] = useState({
+		totalGoalsScored: 0,
+		totalGoalsConceded: 0,
+		matchPlayed: 0,
+		matchWon: 0,
+		matchLost: 0,
+		xp: 0
+	});
+
+	let [data, setData] = useState<UserData | null>(null);
 
 	useEffect(() => {
 	const fetchData = async () => {
@@ -40,53 +59,76 @@ let [data, setData] = useState<UserStats | null>(null);
 
 		if (!result.success) {
 			throw new Error(`Error Status: ${result.message}`);
-			// console.log(result.status);
-			// if (result.status >= 400)
-			// 	navigate('login');
 		}
 		setData(result);
+		console.log(result);
+		console.log(data);
 	} catch (err) {
-		// const error = err as any;
-		// console.log(error.status);
-		// if (error instanceof Response && error.status >= 400)
 		console.log(err instanceof Error ? err.message : String(err));
 		navigate('/login');
 	}
-};
+	};
+	fetchData();
+	}, []);
 
-fetchData();
-}, []);
+	useEffect(() => {
+		if (!data || !data.data.history) return;
 
+		let goalsScored = 0;
+		let goalsConceded = 0;
 
-if (!data ) //! gestion si les data sont nulles / fetch error
-{
-	// data = {
-	// 	matchWon: 0,
-	// 	matchLost: 0,
-	// 	victoiresPct: 0,
-	// 	defaitesPct: 0,
-	// 	total: 0,Total but encaisse
-	// }
-	// setError('Bad user');
+		// Boucle pour calculer les buts marqués et encaissés
+		for (let i = 0; i < data.data.history.length; i++) {
+		const match = data.data.history[i];
+		const [player1, player2] = match.players;
+		const score1 = match.score[player1];
+		const score2 = match.score[player2];
 
-	// setTimeout(() => {
-	// 			return;	}, 3000);
+		// On considère que player1 est le joueur principal
+		goalsScored += score1;
+		goalsConceded += score2;
+		}
 
-	return ;
-
-}
-
-
-const total = data.data.matchWon + data.data.matchLost;
-const victoiresPct = data ? (data.data.matchWon / total) * 100 : 0;
-const defaitesPct = data ? (data.data.matchLost / total) * 100 : 0;
-const level = data ? Math.floor(data.data.xp) : 0;
-const xpProgress = data ? (data.data.xp - level) * 100 : 0;
-const radius = 80;
-const circumference = 2 * Math.PI * radius;
-const defaitesOffset = (victoiresPct / 100) * circumference;
+		setStats({
+		totalGoalsScored: goalsScored,
+		totalGoalsConceded: goalsConceded,
+		matchPlayed: data.data.matchPlayed || 0,
+		matchWon: data.data.matchWon || 0,
+		matchLost: data.data.matchLost || 0,
+		xp: data.data.xp || 0
+		});
+	}, [data]);
 
 
+	const getMatchResult = (match: Match) => {
+		const [player1, player2] = match.players;
+		const score1 = match.score[player1];
+		const score2 = match.score[player2];
+		return score1 > score2 ? 'won' : 'lost';
+	};
+
+
+	if (!data ) //! gestion si les data sont nulles / fetch error
+	{
+		return ;
+	}
+	const history = data.data?.history || [];
+	const hasMatches = history.length > 0;
+
+
+	const total = data.data.matchWon + data.data.matchLost;
+	const victoiresPct = data ? (data.data.matchWon / total) * 100 : 0;
+	const defaitesPct = data ? (data.data.matchLost / total) * 100 : 0;
+	const level = data ? Math.floor(data.data.xp) : 0;
+	const xpProgress = data ? (data.data.xp - level) * 100 : 0;
+	const radius = 80;
+	const circumference = 2 * Math.PI * radius;
+	const defaitesOffset = (victoiresPct / 100) * circumference;
+
+
+	const handleClic = () => {
+		navigate('/settings');
+	}
 
   return (
     <div className="bg-gradient-to-r from-cyan-500/50 to-blue-500/50 min-h-screen">
@@ -129,12 +171,17 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
 			</div>
 		</div>
 
+
+		<button onClick={handleClic} className="absolute right-80 top-20 font-arcade z-30 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium shadow-md hover:shadow-lg">
+			Settings
+		</button>
+
 		<script type="module" src="./../../Game/main"></script>
 
   <div className="min-h-screen flex items-center justify-center p-8">
 
 		<div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl">
-			<h1 className="text-3xl font-bold text-cyan-300/70 mb-8 text-center font-arcade">{email}</h1>
+			<h1 className="text-3xl font-bold text-cyan-300/70 mb-8 text-center font-arcade">{data.data.username}</h1>
 
 			<div className="flex items-center justify-between mb-4">
 			<div className="flex items-center gap-3">
@@ -169,122 +216,122 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
 			</div>
 
 
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-sm font-bold text-white drop-shadow-lg">
-                {xpProgress.toFixed(0)}%
-              </span>
-            </div>
-          </div>
+			<div className="absolute inset-0 flex items-center justify-center">
+				<span className="text-sm font-bold text-white drop-shadow-lg">
+				{xpProgress.toFixed(0)}%
+				</span>
+			</div>
+			</div>
 
-	  <div className="max-w-4xl w-full">
-        <div className="text-center mb-12">
-          <p className="text-purple-300">{t("profile.perfomanceAnalysis")}</p>
-        </div>
+		<div className="max-w-4xl w-full">
+		<div className="text-center mb-12">
+			<p className="text-purple-300">{t("profile.perfomanceAnalysis")}</p>
+		</div>
 
-        <div className="grid md:grid-cols-2 gap-8 items-center">
-          <div className="relative">
-            <div className="relative w-80 h-80 mx-auto">
-              <div className="absolute inset-0 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 shadow-2xl"></div>
+		<div className="grid md:grid-cols-2 gap-8 items-center">
+			<div className="relative">
+			<div className="relative w-80 h-80 mx-auto">
+				<div className="absolute inset-0 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 shadow-2xl"></div>
 
-              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
-                <circle
-                  cx="100"
-                  cy="100"
-                  r={radius}Total but encaisse
-                  fill="none"
-                  stroke="rgba(255,255,255,0.1)"
-                  strokeWidth="40"
-                />
+				<svg className="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
+				<circle
+					cx="100"
+					cy="100"
+					r={radius}
+					fill="none"
+					stroke="rgba(255,255,255,0.1)"
+					strokeWidth="40"
+				/>
 
-                <circle
-                  cx="100"
-                  cy="100"
-                  r={radius}
-                  fill="none"
-                  stroke="#709e1aff"
-                  strokeWidth="40"
-                  strokeDasharray={`${(victoiresPct / 100) * circumference} ${circumference}`}
-                  strokeDashoffset={0}
-                  className="transition-all duration-1000"
-                />
+				<circle
+					cx="100"
+					cy="100"
+					r={radius}
+					fill="none"
+					stroke="#709e1aff"
+					strokeWidth="40"
+					strokeDasharray={`${(victoiresPct / 100) * circumference} ${circumference}`}
+					strokeDashoffset={0}
+					className="transition-all duration-1000"
+				/>
 
-                <circle
-                  cx="100"
-                  cy="100"
-                  r={radius}
-                  fill="none"
-                  stroke="#bd2727ff"
-                  strokeWidth="40"
-                  strokeDasharray={`${(defaitesPct / 100) * circumference} ${circumference}`}
-                  strokeDashoffset={-defaitesOffset}
-                  className="transition-all duration-1000"
-                />
-              </svg>
+				<circle
+					cx="100"
+					cy="100"
+					r={radius}
+					fill="none"
+					stroke="#bd2727ff"
+					strokeWidth="40"
+					strokeDasharray={`${(defaitesPct / 100) * circumference} ${circumference}`}
+					strokeDashoffset={-defaitesOffset}
+					className="transition-all duration-1000"
+				/>
+				</svg>
 
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-5xl font-bold text-white">{victoiresPct.toFixed(0)}%</div>
-                <div className="text-sm text-purple-300 mt-1">{t("profile.winRate")}</div>
-              </div>
-            </div>
-          </div>
+				<div className="absolute inset-0 flex flex-col items-center justify-center">
+				<div className="text-5xl font-bold text-white">{victoiresPct.toFixed(0)}%</div>
+				<div className="text-sm text-purple-300 mt-1">{t("profile.winRate")}</div>
+				</div>
+			</div>
+			</div>
 
-          <div className="space-y-4">
-            <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
-                  </div>
-                  <div>
-                    <div className="text-gray-400 text-sm">{t("profile.wins")}</div>
-                    <div className="text-3xl font-arcade text-white">{data ? data.data.matchWon : 0}</div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-green-400">{victoiresPct.toFixed(1)}%</div>
-                </div>
-              </div>
-            </div>
+			<div className="space-y-4">
+			<div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105">
+				<div className="flex items-center justify-between">
+				<div className="flex items-center space-x-4">
+					<div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
+					</div>
+					<div>
+					<div className="text-gray-400 text-sm">{t("profile.wins")}</div>
+					<div className="text-3xl font-arcade text-white">{data ? data.data.matchWon : 0}</div>
+					</div>
+				</div>
+				<div className="text-right">
+					<div className="text-2xl font-bold text-green-400">{victoiresPct.toFixed(1)}%</div>
+				</div>
+				</div>
+			</div>
 
-            <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
-                  </div>
-                  <div>
-                    <div className="text-gray-400 text-sm">{t("profile.losses")}</div>
-                    <div className="text-3xl font-arcade text-white">{data ? data.data.matchLost : 0}</div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-red-400">{defaitesPct.toFixed(1)}%</div>
-                </div>
-              </div>
-            </div>
+			<div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105">
+				<div className="flex items-center justify-between">
+				<div className="flex items-center space-x-4">
+					<div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
+					</div>
+					<div>
+					<div className="text-gray-400 text-sm">{t("profile.losses")}</div>
+					<div className="text-3xl font-arcade text-white">{data ? data.data.matchLost : 0}</div>
+					</div>
+				</div>
+				<div className="text-right">
+					<div className="text-2xl font-bold text-red-400">{defaitesPct.toFixed(1)}%</div>
+				</div>
+				</div>
+			</div>
 
-            <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/30 hover:scale-105 transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-purple-500/30 rounded-full flex items-center justify-center">
-                  </div>
-                  <div>
-                    <div className="text-purple-200 text-sm">{t("profile.totalGamesPlayed")}</div>
-                    <div className="text-3xl font-arcade text-white">{total}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+			<div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/30 hover:scale-105 transition-all duration-300">
+				<div className="flex items-center justify-between">
+				<div className="flex items-center space-x-4">
+					<div className="w-12 h-12 bg-purple-500/30 rounded-full flex items-center justify-center">
+					</div>
+					<div>
+					<div className="text-purple-200 text-sm">{t("profile.totalGamesPlayed")}</div>
+					<div className="text-3xl font-arcade text-white">{total}</div>
+					</div>
+				</div>
+				</div>
+			</div>
+			</div>
+		</div>
 		<div className="mt-12 text-center bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
 			<div className="text-gray-400 mb-2">{t("profile.totalGoalsScored")}</div>
-			<div className="text-4xl font-arcade text-white">{95}</div>
+			<div className="text-4xl font-arcade text-white">{stats.totalGoalsScored}</div>
 		</div>
 		<div className="mt-6 text-center bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
 			<div className="text-gray-400 mb-2">{t("profile.totalGoalsTaken")}</div>
-			<div className="text-4xl font-arcade text-white">{40}</div>
+			<div className="text-4xl font-arcade text-white">{stats.totalGoalsConceded}</div>
 		</div>
-      </div>
-    </div>
+	</div>
+	</div>
 
 
 	</div>
@@ -292,34 +339,72 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
 		{/* --------------------------------------------------------------------- */}
 
 
-	<div className="flex flex-col items-center justify-center">
-		<div className="bg-slate-800/50  backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl m-2">
-			<div>win 🏆 vs Jeremy
-			Score: 5 - 2</div>
-		</div>
-		<div className="bg-slate-800/50  backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl m-2">
-			<div>Lost ❌ vs Timothe
-			Score: 4 - 5</div>
-		</div>
-	</div>
+	{hasMatches ? (
+		<div className=" flex flex-col justify-center items-center space-y-4">
+			{history.map((match, index) => {
+			const result = getMatchResult(match);
+			const [player1, player2] = match.players;
+			const score1 = match.score[player1];
+			const score2 = match.score[player2];
 
+			return (
+				<div
+				key={index}
+				className={`bg-white/10 backdrop-blur-lg rounded-xl p-6 border-2 transition-all hover:scale-102 hover:shadow-xl ${
+					result === 'won'
+					? 'border-green-500/50 hover:border-green-500'
+					: 'border-red-500/50 hover:border-red-500'
+				}`}
+				>
+				<div className="flex items-center justify-between mb-4">
+					{/* <div className="flex items-center gap-2 text-gray-300 text-sm">
+					<Calendar size={16} />
+					{formatDate(match.date)}
+					</div> */}
+					<div className="flex items-center gap-2">
+					<span className="text-gray-400 text-sm">Match #{history.length - index}</span>
+					<div
+						className={`px-4 py-1 rounded-full text-sm font-semibold ${
+						result === 'won'
+							? 'bg-green-500/20 text-green-400 border border-green-500/30'
+							: 'bg-red-500/20 text-red-400 border border-red-500/30'
+						}`}
+					>
+						{result === 'won' ? 'Victoire' : 'Défaite'}
+					</div>
+					</div>
+				</div>
 
-		{/* Pagination */}
-	{/* <div className="flex items-center justify-center gap-2 mt-4">
-		<button
-			disabled={page === 1}
-			onClick={() => setPage(p => p - 1)}
-		>
-			Précédent
-		</button>
-		<span>Page {page} / {totalPages}</span>
-		<button
-			disabled={page === totalPages}
-			onClick={() => setPage(p => p + 1)}
-		>
-			Suivant
-		</button>
-	</div> */}
+				<div className="flex items-center justify-between">
+					<div className="flex items-center gap-3">
+					{/* <Users className="text-gray-400" size={20} /> */}
+					<div className="flex items-center gap-4">
+						<div className="text-right">
+						<div className="text-white font-medium">{player1}</div>
+						<div className={`text-2xl font-bold ${score1 > score2 ? 'text-green-400' : 'text-red-400'}`}>
+							{score1}
+						</div>
+						</div>
+						<div className="text-gray-500 text-xl font-bold">VS</div>
+						<div className="text-left">
+						<div className="text-white font-medium">{player2}</div>
+						<div className={`text-2xl font-bold ${score2 > score1 ? 'text-green-400' : 'text-red-400'}`}>
+							{score2}
+						</div>
+						</div>
+					</div>
+					</div>
+				</div>
+				</div>
+			);
+			})}
+		</div>
+		) : (
+		<div className="bg-white/5 backdrop-blur-lg rounded-xl p-12 text-center border border-white/10">
+			<p className="text-gray-400 text-lg">Aucun match enregistré pour le moment</p>
+			<p className="text-gray-500 text-sm mt-2">Commencez à jouer pour remplir votre historique !</p>
+		</div>
+		)}
 	</div>
 
 	)

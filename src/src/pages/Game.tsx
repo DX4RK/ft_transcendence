@@ -115,19 +115,14 @@ function Game() {
 			console.log("Left player wins!");
 			setWinner(1);
 
-			console.log(data);
-			console.log(left);
-			console.log(right);
-
-			setData({
+			const newData = {
 				userData: { name: name1, score: left },
 				guestData: { name: name2, score: right }
-			});
+			};
+			setData(newData);
 
+			const raw = JSON.stringify(newData);
 
-
-			console.log(data);
-			const raw = JSON.stringify(data);
 			fetch("http://localhost:3000/stats/match-finished", {
 				method: "POST",
 				credentials: 'include',
@@ -140,7 +135,11 @@ function Game() {
 			.catch((error) => console.error(error));
 
 			if (mode == 1)
-				navigate("/", { state: { winner: left }});
+			{
+				setTimeout(() => {
+					navigate("/", { state: { winner: left }});
+				}, 3000);
+			}
 			else if (mode == 2)
 				handleGameOver(name1);
 		}
@@ -149,24 +148,30 @@ function Game() {
 			console.log("Right player wins!");
 			setWinner(2);
 
-			console.log(data);
-			console.log(left);
-			console.log(right);
-			setData({
+			const newData = {
 				userData: { name: name1, score: left },
 				guestData: { name: name2, score: right }
-			});
+			};
+			setData(newData);
 
-
-			console.log(data);
-			const raw = JSON.stringify(data);
-			fetch("http://localhost:3000/stats/match-finished", {method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
+			const raw = JSON.stringify(newData);
+			fetch("http://localhost:3000/stats/match-finished", {
+				method: "POST",
+				credentials: 'include',
+				headers: myHeaders,
+				body: raw,
+				redirect: "follow"
+			})
 			.then((response) => response.text())
 			.then((result) => console.log(result))
 			.catch((error) => console.error(error));
 
 			if (mode == 1)
-				navigate("/", { state: { winner: right }});
+			{
+				setTimeout(() => {
+					navigate("/", { state: { winner: right }});
+				}, 3000);
+			}
 			else if (mode == 2)
 				handleGameOver(name2);
 		}
