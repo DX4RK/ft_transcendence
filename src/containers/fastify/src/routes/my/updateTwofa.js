@@ -1,5 +1,3 @@
-const defaultSettings = require('../../config/defaultSettings');
-
 const isValidTwofa = (option) => {
 	return typeof option === 'string' && (option === 'email' || option === 'phone' || option === 'totp');
 };
