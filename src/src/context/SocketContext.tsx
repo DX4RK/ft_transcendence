@@ -23,15 +23,19 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
 		newSocket.connect(); //! connecter seulement si user login
 
-
 		newSocket.on("connect", () => {
-				console.log("✅ Socket connected");
-				setIsConnected(true);
+			console.log("✅ Socket connected");
+			setIsConnected(true);
+		});
+
+		newSocket.on("auth-error", (err) => {
+			console.error("❌ Erreur Socket.IO:", err.message);
+			setIsConnected(false);
 		});
 
 		newSocket.on("connect_error", (err) => {
-				console.error("❌ Erreur Socket.IO:", err.message);
-				setIsConnected(false);
+			console.error("❌ Erreur Socket.IO:", err.message);
+			setIsConnected(false);
 		});
 
 		newSocket.on("disconnect", () => {

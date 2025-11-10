@@ -268,7 +268,7 @@ function Settings() {
 						</div>
 						<div className="flex border-2 p-3 rounded-lg max-w-175">
 							<div className="grid mr-4">
-								<span className="font-bold">Authenticator App (Very Secure)</span>
+								<span className="font-bold">Authenticator App {t("settings.verySecure")}</span>
 								<span>{t("settings.downloadApp")}</span>
 							</div>
 							<div>
@@ -281,7 +281,7 @@ function Settings() {
 							</div>
 						</div>
 					</div>
-					<button onClick={disconnect} className="bg-red-500/80 w-full mt-4 p-3 rounded-lg">Disconnect</button>
+					<button onClick={disconnect} className="bg-red-500/80 w-full mt-4 p-3 rounded-lg">{t("settings.disconnect")}</button>
 				</div>
 			</div>
 		</div>

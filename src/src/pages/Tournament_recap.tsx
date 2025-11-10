@@ -9,7 +9,7 @@ import { useEffect } from "react";
 function Tournament_recap() {
 	const navigate = useNavigate();
 	const { addNotification } = useNotification();
-	const { winner, startMatch, getCurrentPlayers } = useTournament();
+	const { winner, setWinner, startMatch, getCurrentPlayers } = useTournament();
 	const { t } = useTranslation();
 
     function wait(ms: number) {
@@ -61,7 +61,8 @@ function Tournament_recap() {
 		}
 		addNotification("info", t("tournament_recap.tournamentWinner", { winner: currentRound[0] }));
 		console.log(`Tournament Winner: ${currentRound[0]}`);
-        await wait(5000);
+		setWinner(null);
+        await wait(2000);
         navigate("/tournament");
     };
 
@@ -115,7 +116,7 @@ function Tournament_recap() {
 
 
 			<div>
-				{winner && <h4>t("game.userWon", {winner})</h4>}
+				{winner && <h4>{t("tournament_recap.tournamentWinner", { winner })}</h4>}
 			</div>
 
 			
