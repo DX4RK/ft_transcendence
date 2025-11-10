@@ -45,6 +45,7 @@ services:
       - IPC_LOCK
     volumes:
       - vault-data:/vault/data
+      - ./containers/vault/config:/vault/config
 
 volumes:
   vault-data:

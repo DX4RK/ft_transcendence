@@ -3,6 +3,15 @@
 export VAULT_ADDR="http://localhost:8200"
 export VAULT_TOKEN="myroot"
 
+# Load environment variables from .env file
+if [ -f "/vault/config/.env" ]; then
+    export $(grep -v '^#' /vault/config/.env | xargs)
+    echo "Environment variables loaded from .env file"
+else
+    echo "Warning: .env file not found at /vault/config/.env"
+    exit 1
+fi
+
 for i in {1..20}; do
     if vault status > /dev/null 2>&1; then break; fi
     sleep 1
@@ -19,27 +28,27 @@ CERT_CONTENT=$(cat /tmp/nginx.crt)
 KEY_CONTENT=$(cat /tmp/nginx.key)
 
 vault kv put secret/app/server \
-  port="3000"
+  port="$PORT"
 
 vault kv put secret/app/jwt \
-  secret="c4d33a89a49710c12fce5a7d272f470a82ddd04b7680f46529514fce5ad41905"
+  secret="$JWT_SECRET"
 
 vault kv put secret/app/gmail \
-  user="fttranscendence03@gmail.com" \
-  pass="rqws vbkc xjyl mcoe"
+  user="$GMAIL_USER" \
+  pass="$GMAIL_PASS"
 
 vault kv put secret/app/vonage \
-  key="32d4e479" \
-  secret="4RTgGmv1fo3wIlws"
+  key="$VONAGE_KEY" \
+  secret="$VONAGE_SECRET"
 
 vault kv put secret/app/cookie \
-  secret="JhMAZm3stJcqo9Y9bEfVlfKY4pp7wxSBbTIg0L/nXJl5QQoitAaMaF8jRBVOMeCM41Om3JyShUsLJKirMukelA=="
+  secret="$COOKIE_SECRET"
 
 vault kv put secret/app/database \
-  host="db" \
-  user="transcendence_user" \
-  password="secure_db_password_123" \
-  database="transcendence"
+  host="$DB_HOST" \
+  user="$DB_USER" \
+  password="$DB_PASSWORD" \
+  database="$DB_NAME"
 
 vault kv put secret/ssl/certificates \
   cert="$CERT_CONTENT" \
@@ -48,3 +57,4 @@ vault kv put secret/ssl/certificates \
 rm -f /tmp/nginx.key /tmp/nginx.crt
 
 echo "Vault secrets initialized successfully with generated SSL certificates"
+echo "All secrets loaded from .env file and stored in Vault"
