@@ -56,10 +56,11 @@ async function signRoutes(fastify, opts) {
 			return reply
 				.setCookie('token', token, {
 					httpOnly: true,
-					sameSite: 'lax',  // change from 'strict' when prod
+					secure: true,           // required for HTTPS
+					sameSite: 'none',       // allow cross-origin cookie sending
 					path: '/',
-					maxAge: 60 * 60
-				})
+					maxAge: 60 * 60,
+				  })
 				.send({ success: true, message: 'Verification successfull', code: token });
 		} catch (err) {
 			fastify.log.error(err);
