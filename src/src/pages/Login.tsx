@@ -53,6 +53,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		}
 	}
 	catch (err) {
+		if (err instanceof Response && err.status >= 400)
+			navigate('/login');
  		setError(err instanceof Error ? err.message : String(err));
 	}
 	finally {

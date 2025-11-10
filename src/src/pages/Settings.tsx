@@ -29,7 +29,7 @@ function Settings() {
 		return e164Regex.test(phone);
 	}
 
-	const isValidTwofa = (option) => {
+	const isValidTwofa = (option: string) => {
 		return typeof option === 'string' && (option === 'email' || option === 'phone' || option === 'totp');
 	};
 

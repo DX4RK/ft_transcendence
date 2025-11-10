@@ -52,13 +52,15 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 			}
 
 			if (result.success) {
-				console.log("success !");
-				navigate('/tfa', { state: { login: email }});
+				// console.log("success !");
+				navigate('/login');
 			}
 		}
 	}
 	catch (err) {
- 		setError(err instanceof Error ? err.message : String(err));
+		if (err instanceof Response && err.status >= 400)
+			navigate('/login');
+		setError(err instanceof Error ? err.message : String(err));
 	}
 	finally {
 		setLoading(false);

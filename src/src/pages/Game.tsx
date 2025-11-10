@@ -143,8 +143,6 @@ function Game() {
 		{
 			console.log("Right player wins!");
 			setWinner(2);
-			// data ? data.userData.score = left : 0;
-			// data ? data.guestData.score = right : 0;
 
 			console.log(data);
 			console.log(left);

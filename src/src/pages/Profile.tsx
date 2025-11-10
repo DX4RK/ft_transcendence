@@ -40,11 +40,17 @@ let [data, setData] = useState<UserStats | null>(null);
 
 		if (!result.success) {
 			throw new Error(`Error Status: ${result.message}`);
+			// console.log(result.status);
+			// if (result.status >= 400)
+			// 	navigate('login');
 		}
 		setData(result);
 	} catch (err) {
- 		//  setError(err instanceof Error ? err.message : String(err));
+		// const error = err as any;
+		// console.log(error.status);
+		// if (error instanceof Response && error.status >= 400)
 		console.log(err instanceof Error ? err.message : String(err));
+		navigate('/login');
 	}
 };
 
@@ -130,7 +136,6 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
 		<div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl">
 			<h1 className="text-3xl font-bold text-cyan-300/70 mb-8 text-center font-arcade">{email}</h1>
 
-			{/* Niveau actuel */}
 			<div className="flex items-center justify-between mb-4">
 			<div className="flex items-center gap-3">
 				<div className="bg-gradient-to-br from-gray-400/80 to-slate-500/80 rounded-lg p-3 shadow-lg">
@@ -144,7 +149,6 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
 			</div>
 			</div>
 
-			{/* Info détaillée */}
 
 			<div className="mt-4 text-center text-slate-300 text-sm">
 			{xpProgress < 100 ? (
@@ -154,22 +158,17 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
 			)}
 			</div>
 
-			{/* Barre d'XP */}
 			<div className="relative">
-			{/* Fond de la barre */}
 			<div className="h-8 bg-slate-700/50 rounded-full overflow-hidden border-2 border-slate-600/50 shadow-inner">
-				{/* Progression animée */}
 				<div
 				className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-1000 ease-out relative overflow-hidden"
 				style={{ width: `${xpProgress}%` }}
 				>
-				{/* Effet de brillance */}
 				<div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>Total but encaisse
 				</div>
 			</div>
 
 
-            {/* Pourcentage */}
             <div className="absolute inset-0 flex items-center justify-center">
               <span className="text-sm font-bold text-white drop-shadow-lg">
                 {xpProgress.toFixed(0)}%
@@ -179,20 +178,15 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
 
 	  <div className="max-w-4xl w-full">
         <div className="text-center mb-12">
-          {/* <h1 className="text-5xl font-bold text-white mb-2">{stats.login}</h1> */}
           <p className="text-purple-300">{t("profile.perfomanceAnalysis")}</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 items-center">
-          {/* Roue principale */}
           <div className="relative">
             <div className="relative w-80 h-80 mx-auto">
-              {/* Cercle de fond avec effet glassmorphism */}
               <div className="absolute inset-0 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 shadow-2xl"></div>
 
-              {/* SVG Roue */}
               <svg className="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
-                {/* Cercle de fond */}
                 <circle
                   cx="100"
                   cy="100"
@@ -202,7 +196,6 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
                   strokeWidth="40"
                 />
 
-                {/* Victoires */}
                 <circle
                   cx="100"
                   cy="100"
@@ -213,10 +206,8 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
                   strokeDasharray={`${(victoiresPct / 100) * circumference} ${circumference}`}
                   strokeDashoffset={0}
                   className="transition-all duration-1000"
-                //   style={{ filter: 'drop-shadow(0 0 8px rgba(8, 207, 141, 0.5))' }}
                 />
 
-                {/* Défaites */}
                 <circle
                   cx="100"
                   cy="100"
@@ -227,11 +218,9 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
                   strokeDasharray={`${(defaitesPct / 100) * circumference} ${circumference}`}
                   strokeDashoffset={-defaitesOffset}
                   className="transition-all duration-1000"
-                //   style={{ filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.5))' }}
                 />
               </svg>
 
-              {/* Contenu central */}
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <div className="text-5xl font-bold text-white">{victoiresPct.toFixed(0)}%</div>
                 <div className="text-sm text-purple-300 mt-1">{t("profile.winRate")}</div>
@@ -239,7 +228,6 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
             </div>
           </div>
 
-          {/* Cartes de statistiques */}
           <div className="space-y-4">
             <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105">
               <div className="flex items-center justify-between">
@@ -261,7 +249,6 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
-                    {/* <Target className="w-6 h-6 text-red-400" /> */}
                   </div>
                   <div>
                     <div className="text-gray-400 text-sm">{t("profile.losses")}</div>
@@ -278,7 +265,6 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-purple-500/30 rounded-full flex items-center justify-center">
-                    {/* <TrendingUp className="w-6 h-6 text-purple-300" /> */}
                   </div>
                   <div>
                     <div className="text-purple-200 text-sm">{t("profile.totalGamesPlayed")}</div>
@@ -289,7 +275,6 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
             </div>
           </div>
         </div>
-				{/* TOTAL SCORED */}
 		<div className="mt-12 text-center bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
 			<div className="text-gray-400 mb-2">{t("profile.totalGoalsScored")}</div>
 			<div className="text-4xl font-arcade text-white">{95}</div>
@@ -308,12 +293,9 @@ const defaitesOffset = (victoiresPct / 100) * circumference;
 
 
 	<div className="flex flex-col items-center justify-center">
-		{/* {games.map(game => ( */}
 		<div className="bg-slate-800/50  backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl m-2">
-			{/* <div>{game.result === 'win' ? '🏆' : ''} vs {opponent_name}</div> */}
 			<div>win 🏆 vs Jeremy
 			Score: 5 - 2</div>
-			{/* <div>{new Date(game.played_at).toLocaleDateString()}</div> */}
 		</div>
 		<div className="bg-slate-800/50  backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl m-2">
 			<div>Lost ❌ vs Timothe
