@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 // }
 
 
-function Tournoi() {
+function Tournament() {
 	const navigate = useNavigate();
 	const { addNotification } = useNotification();
 	const { startMatch } = useTournament();
@@ -38,7 +38,7 @@ function Tournoi() {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
-	const startTournoi = async () => {
+	const startTournament = async () => {
 
 
 		let players = [player1, player2, player3, player4, player5, player6, player7, player8];
@@ -56,20 +56,20 @@ function Tournoi() {
 		const mode = 2;
 
 		while (currentRound.length > 1) {
-			addNotification("info", t("tournoi.roundStarting", { round: roundNumber }));
+			addNotification("info", t("tournament.roundStarting", { round: roundNumber }));
 			await wait(2000);
 			console.log(`Round ${roundNumber}:`);
 			let nextRound = [];
 
 			for (let i = 0; i < currentRound.length; i += 2) {
 				if (currentRound[i + 1] === undefined) {
-					addNotification("info", t("tournoi.bye", { player: currentRound[i] }));
+					addNotification("info", t("tournament.bye", { player: currentRound[i] }));
 					await wait(2000);
 					console.log(`${currentRound[i]} gets a bye to the next round.`);
 					nextRound.push(currentRound[i]);
 					continue;
 				}
-				addNotification("info", t("tournoi.match", { player1: currentRound[i], player2: currentRound[i + 1] }));
+				addNotification("info", t("tournament.match", { player1: currentRound[i], player2: currentRound[i + 1] }));
 				await wait(2000);
 				const user1 = currentRound[i];
 				const user2 = currentRound[i + 1];
@@ -78,7 +78,7 @@ function Tournoi() {
 				navigate("/game", { state: { mode: mode }});
 				const winner = await winnerPromise;
 				
-				addNotification("info", t("tournoi.winner", { winner }));
+				addNotification("info", t("tournament.winner", { winner }));
 				await wait(2000);
 				console.log(`Match: ${user1} vs ${user2} => Winner: ${winner}`);
 				nextRound.push(winner);
@@ -86,7 +86,7 @@ function Tournoi() {
 			currentRound = nextRound;
 			roundNumber++;
 		}
-		addNotification("info", t("tournoi.tournamentWinner", { winner: currentRound[0] }));
+		addNotification("info", t("tournament.tournamentWinner", { winner: currentRound[0] }));
 		console.log(`Tournament Winner: ${currentRound[0]}`);
 
 	};
@@ -128,7 +128,7 @@ function Tournoi() {
 						<Link to="/" className="flex p-2 mx-1 text-yllow-500/80 bg-gradient-to-br from-pink-500/90 to-orange-400/90 bg-clip-text text-transparent font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">
 							<svg viewBox="0 0 24 24" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10.5 18.5H6.5V8.66667L3 11L12 5L21 11L17.5 8.66667V18.5H13.5M10.5 18.5V13.5H13.5V18.5M10.5 18.5H13.5" stroke="#f08e4dff" strokeWidth="1.5" strokeLinecap="round" stroke-linejoin="round"></path> </g></svg>
 						</Link>
-						<Link to="/tournoi" className="flex p-2 text-yellow-500/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">
+						<Link to="/tournament" className="flex p-2 text-yellow-500/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">
 							<svg viewBox="0 0 1024 1024" width="64" height="64" className="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#f08e4dff"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M352 128a32 32 0 0 0 12.16-2.56 37.12 37.12 0 0 0 10.56-6.72 37.12 37.12 0 0 0 6.72-10.56A32 32 0 0 0 384 96a33.6 33.6 0 0 0-9.28-22.72 32 32 0 0 0-45.44 0A32 32 0 0 0 320 96a32 32 0 0 0 32 32zM480 128h128a32 32 0 0 0 0-64h-128a32 32 0 0 0 0 64z" fill="#f08e4dff"></path><path d="M960 32h-32a32 32 0 0 0-22.72 9.28L832 115.2V96a32 32 0 0 0-32-32h-64a32 32 0 0 0 0 64h32c-8 271.68-117.44 480-256 480-143.68 0-256-224-256-512a32 32 0 0 0-64 0v19.2L118.72 41.28A32 32 0 0 0 96 32H64a32 32 0 0 0-32 32v256a32 32 0 0 0 9.28 22.72l96 96A32 32 0 0 0 160 448h96c46.4 111.04 114.88 188.48 196.16 214.4l-115.2 137.6H224a32 32 0 0 0-32 32v128a32 32 0 0 0 32 32h576a32 32 0 0 0 32-32v-128a32 32 0 0 0-32-32h-112.96l-114.88-137.6c81.28-25.6 149.76-103.04 196.16-214.4h96a32 32 0 0 0 22.72-9.28l96-96A32 32 0 0 0 992 320V64a32 32 0 0 0-32-32zM173.12 384L96 306.88V109.12L198.08 211.2A909.76 909.76 0 0 0 232.32 384zM672 864h96v64H256v-64h96a32 32 0 0 0 24.64-11.52L512 689.92l135.36 162.56A32 32 0 0 0 672 864z m256-557.12L850.88 384h-59.2a909.76 909.76 0 0 0 34.56-172.8L928 109.12z" fill="#f08e4dff"></path><path d="M384 224a32 32 0 0 0 0 64h256a32 32 0 0 0 0-64zM448 384a32 32 0 0 0 0 64h128a32 32 0 0 0 0-64z" fill="#f08e4dff"></path></g></svg>
 						</Link>
 						<Link to="/Profile" className="flex p-2 text-yelow-500/80 bg-gradient-to-br from-pink-500/90 to-orange-400/90 bg-clip-text text-transparent font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">
@@ -146,7 +146,7 @@ function Tournoi() {
 
 			{/* Titre */}
 			<h1 className="text-4xl font-arcade md:text-6xl font-bold text-orange-300/90 drop-shadow-lg tracking-wide mt-4">
-				{t("tournoi.tournament")}
+				{t("tournament.tournament")}
 			</h1>
 
 			{/* Notifications
@@ -166,7 +166,7 @@ function Tournoi() {
 					<input
 					type="text"
 					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder={t("tournoi.player1")}
+					placeholder={t("tournament.player1")}
 					value={player1}
 					onChange={(e) => setPlayer1(e.target.value)}
 					/>
@@ -175,7 +175,7 @@ function Tournoi() {
 					<input
 					type="text"
 					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder={t("tournoi.player2")}
+					placeholder={t("tournament.player2")}
 					value={player2}
 					onChange={(e) => setPlayer2(e.target.value)}
 					/>
@@ -184,7 +184,7 @@ function Tournoi() {
 					<input
 					type="text"
 					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder={t("tournoi.player3")}
+					placeholder={t("tournament.player3")}
 					value={player3}
 					onChange={(e) => setPlayer3(e.target.value)}
 					/>
@@ -193,7 +193,7 @@ function Tournoi() {
 					<input
 					type="text"
 					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder={t("tournoi.player4")}
+					placeholder={t("tournament.player4")}
 					value={player4}
 					onChange={(e) => setPlayer4(e.target.value)}
 					/>
@@ -202,7 +202,7 @@ function Tournoi() {
 					<input
 					type="text"
 					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder={t("tournoi.player5")}
+					placeholder={t("tournament.player5")}
 					value={player5}
 					onChange={(e) => setPlayer5(e.target.value)}
 					/>
@@ -211,7 +211,7 @@ function Tournoi() {
 					<input
 					type="text"
 					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder={t("tournoi.player6")}
+					placeholder={t("tournament.player6")}
 					value={player6}
 					onChange={(e) => setPlayer6(e.target.value)}
 					/>
@@ -220,7 +220,7 @@ function Tournoi() {
 					<input
 					type="text"
 					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder={t("tournoi.player7")}
+					placeholder={t("tournament.player7")}
 					value={player7}
 					onChange={(e) => setPlayer7(e.target.value)}
 					/>
@@ -229,7 +229,7 @@ function Tournoi() {
 					<input
 					type="text"
 					className="flex-1 text-center px-4 py-3 rounded-full text-black focus:outline-none disabled:opacity-50"
-					placeholder={t("tournoi.player8")}
+					placeholder={t("tournament.player8")}
 					value={player8}
 					onChange={(e) => setPlayer8(e.target.value)}
 					/>
@@ -239,12 +239,12 @@ function Tournoi() {
 			<button
 			className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
 			// onClick={() => navigate('/game', { state: { mode: 2 } })}>
-			onClick={() => startTournoi()}>
-				{t("tournoi.start")}
+			onClick={() => startTournament()}>
+				{t("tournament.start")}
 			</button>
 
 		</div>
 	)
 }
 
-export default Tournoi;
+export default Tournament;

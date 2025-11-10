@@ -136,7 +136,7 @@ function Game() {
 				if (mode == 1)
 					navigate("/", { state: { winner: left }});
 				else if (mode == 2)
-					navigate("/tournoi", { state: { winner: left ,scoreL: left}});
+					navigate("/tournament", { state: { winner: left ,scoreL: left}});
 			}, 3000);
 		}
 		else if (right >= 3)
@@ -166,7 +166,7 @@ function Game() {
 				if (mode == 1)
 					navigate("/", { state: { winner: right }});
 				else if (mode == 2)
-					navigate("/tournoi", { state: { winner: right }});
+					navigate("/tournament", { state: { winner: right }});
 			}, 3000);
 		}
 		return ;
