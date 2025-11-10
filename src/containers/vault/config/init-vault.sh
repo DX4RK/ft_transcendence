@@ -4,7 +4,9 @@ export VAULT_ADDR="http://localhost:8200"
 export VAULT_TOKEN="myroot"
 
 if [ -f "/vault/config/.env" ]; then
-    export $(grep -v '^#' /vault/config/.env | xargs)
+    set -a  # automatically export all variables
+    source /vault/config/.env
+    set +a  # stop automatically exporting
     echo "Environment variables loaded from .env file"
 else
     echo "Warning: .env file not found at /vault/config/.env"
