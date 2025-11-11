@@ -183,7 +183,7 @@ function Settings() {
 						>
 						<div className="grid bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl">
 							<span className="text-2xl font-arcade text-gray-300 text-center">QRCODE</span>
-							<span className="opacity-75">Scan this qrcode with your authenticator app</span>
+							<span className="opacity-75">{t("settings.scan")}</span>
 							<div className="flex w-full justify-center">
 								<div className="w-42 mt-4 aspect-square p-2 border-2 rounded-lg border-dashed">
 									<img className="rounded-md" src={qrcodeImage} />

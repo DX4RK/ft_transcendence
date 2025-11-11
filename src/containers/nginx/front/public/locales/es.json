@@ -1,26 +1,28 @@
 {
   "settings": {
     "downloadApp": "Descarga una aplicación en tu teléfono para generar códigos de seguridad únicos. La aplicación sugerida es Google Authenticator.",
-    "uniqueSecurityCodeNumber": "Recibe códigos de seguridad únicos en tu número de teléfono especificado.",
+    "uniqueSecurityCodeNumber": "Recibe códigos de seguridad únicos en el número de teléfono especificado.",
     "phoneNumber": "Número de teléfono:",
-    "uniqueSecurityCodeEmail": "Recibe códigos de seguridad únicos en tu correo electrónico especificado.",
+    "uniqueSecurityCodeEmail": "Recibe códigos de seguridad únicos en tu dirección de correo electrónico.",
     "email": "Correo electrónico:",
     "username": "Nombre de usuario:",
     "accountInfo": "Información de la cuenta",
-    "settings": "CONFIGURACION",
-    "failLoadSettings": "Error al cargar la configuración",
-    "loadSettings": "Cargando configuración...",
-	"disconnect": "Desconexión",
-	"verySecure": "(Muy seguro)"
+    "settings": "AJUSTES",
+    "failLoadSettings": "Error al cargar los ajustes",
+    "loadSettings": "Cargando ajustes...",
+    "disconnect": "Desconectar",
+    "verySecure": "(Muy seguro)",
+    "scan": "Escanea este código QR con tu aplicación autenticadora",
+    "setts": "Ajustes"
   },
 
   "game": {
-    "userWon": "¡El usuario ha ganado!",
-    "guestWon": "¡El invitado ha ganado!",
+    "userWon": "¡El usuario ganó!",
+    "guestWon": "¡El invitado ganó!",
     "paused": "Juego en pausa.",
     "home": "Inicio",
     "user": "Usuario",
-    "guest": "Invitado"
+    "guest": "INVITADO"
   },
 
   "home": {
@@ -29,77 +31,90 @@
   },
 
   "login": {
-    "connexion": "CONEXION",
-	"logIn": "Entrar",
-	"connecting": "Conectando...",
-	"ifNoAccountRegister": "¿No tienes cuenta? ¡Crea una ahora!"
+    "connexion": "Conexion",
+    "logIn": "Iniciar sesion",
+    "connecting": "Conectando...",
+    "ifNoAccountRegister": "¿No tienes una cuenta? ¡Crea una!"
+  },
+
+  "liveChat": {
+    "title": "Chat en vivo",
+    "publicChat": "Chat público",
+    "privateChat": "Chat privado",
+    "connectedUsers": "Usuarios conectados:",
+    "selectUser": "Selecciona un usuario...",
+    "writeMessage": "Escribe tu mensaje...",
+    "send": "Enviar",
+    "profile": "Perfil",
+    "block": "Bloquear",
+    "unblock": "Desbloquear",
+    "invite": "Invitar",
+    "back": "Volver",
+    "noUsersCo": "Ningún usuario conectado"
   },
 
   "tournament": {
-	"tournament": "Torneo",
-	"start": "Comenzar torneo",
-	"player1": "Jugador 1",
-	"player2": "Jugador 2",
-	"player3": "Jugador 3",
-	"player4": "Jugador 4",
-	"player5": "Jugador 5",
-	"player6": "Jugador 6",
-	"player7": "Jugador 7",
-	"player8": "Jugador 8",
-	"roundStarting": "¡Comienza la ronda {{round}}!",
-	"bye": "{{player}} pasa automáticamente a la siguiente ronda.",
-	"match": "Partido: {{player1}} contra {{player2}}",
-	"winner": "Ganador: {{winner}}",
-	"tournamentWinner": "🏆 ¡El ganador del torneo es {{winner}}!"
-},
+    "tournament": "Torneo",
+    "start": "Iniciar torneo",
+    "player1": "Jugador 1",
+    "player2": "Jugador 2",
+    "player3": "Jugador 3",
+    "player4": "Jugador 4",
+    "player5": "Jugador 5",
+    "player6": "Jugador 6",
+    "player7": "Jugador 7",
+    "player8": "Jugador 8",
+    "roundStarting": "¡Comienza la ronda {{round}}!",
+    "bye": "{{player}} pasa automáticamente a la siguiente ronda.",
+    "match": "Partido: {{player1}} contra {{player2}}",
+    "winner": "Ganador: {{winner}}",
+    "tournamentWinner": "🏆 ¡El gran ganador del torneo es {{winner}}!"
+  },
 
   "tournament_recap": {
-	"tournament": "Torneo",
-	"start": "Comenzar torneo",
-	"player1": "Jugador 1",
-	"player2": "Jugador 2",
-	"player3": "Jugador 3",
-	"player4": "Jugador 4",
-	"player5": "Jugador 5",
-	"player6": "Jugador 6",
-	"player7": "Jugador 7",
-	"player8": "Jugador 8",
-	"roundStarting": "¡Comienza la ronda {{round}}!",
-	"bye": "{{player}} pasa automáticamente a la siguiente ronda.",
-	"match": "Partido: {{player1}} contra {{player2}}",
-	"winner": "Ganador: {{winner}}",
-	"tournamentWinner": "🏆 ¡El ganador del torneo es {{winner}}!",
-  "userWon": "{{winner}} ganó!"
-},
-
-  "liveChat": {
-	"title": "Chat en vivo",
-	"publicChat": "Chat público",
-	"privateChat": "Chat privado",
-	"connectedUsers": "Usuarios conectados:",
-	"selectUser": "Selecciona un usuario...",
-	"writeMessage": "Escribe tu mensaje...",
-	"send": "Enviar",
-	"profile": "Perfil",
-	"block": "Bloquear",
-	"unblock": "Desbloquear",
-	"invite": "Invitar",
-	"back": "Atrás",
-	"noUsersCo": "Ningún usuario conectado"
-},
+    "tournament": "Torneo",
+    "start": "Iniciar torneo",
+    "player1": "Jugador 1",
+    "player2": "Jugador 2",
+    "player3": "Jugador 3",
+    "player4": "Jugador 4",
+    "player5": "Jugador 5",
+    "player6": "Jugador 6",
+    "player7": "Jugador 7",
+    "player8": "Jugador 8",
+    "roundStarting": "¡Comienza la ronda {{round}}!",
+    "bye": "{{player}} pasa automáticamente a la siguiente ronda.",
+    "match": "Partido: {{player1}} contra {{player2}}",
+    "winner": "Ganador: {{winner}}",
+    "tournamentWinner": "🏆 ¡El gran ganador del torneo es {{winner}}!",
+    "userWon": "¡{{winner}} ganó!"
+  },
 
   "ladder": {
     "home": "Inicio",
     "test": "Prueba",
     "profile": "Perfil",
-    "ladder": "Clasificación"
+    "ladder": "Clasificacion"
+  },
+
+  "tfa": {
+    "checking": "Verificacion",
+    "access": "Acceso"
+  },
+
+  "register": {
+    "connexion": "Conexion",
+    "login": "Iniciar sesion",
+    "registration": "Registrarse",
+	"password": "Contrasena",
+	"confirmPassword": "Confirmar contrasena"
   },
 
   "profile": {
     "level": "Nivel",
-    "nextLevel": "Próximo nivel",
+    "nextLevel": "Siguiente nivel",
     "youNeed": "Necesitas",
-    "remainingXP": "Te quedan",
+    "remainingXP": "Experiencia restante",
     "maxLevel": "¡Nivel máximo alcanzado!",
     "performanceAnalysis": "Análisis de rendimiento",
     "winRate": "Tasa de victorias",
@@ -112,6 +127,8 @@
     "previous": "Anterior",
     "next": "Siguiente",
     "matchResult": "{{result}} 🆚 contra {{opponent}}",
-    "lostAgainst": "Perdido ❌ contra {{opponent}}"
+    "lostAgainst": "Derrota ❌ contra {{opponent}}",
+    "noMatchYet": "Aún no hay partidas registradas",
+    "startPlayingToGetHistory": "¡Comienza a jugar para llenar tu historial!"
   }
 }
