@@ -2,6 +2,8 @@ FROM hashicorp/vault:latest
 
 RUN apk add --no-cache openssl jq
 
+RUN mkdir -p /vault/data && chown vault:vault /vault/data && chmod 755 /vault/data
+
 COPY config/ /vault/config/
 
 RUN chmod +x /vault/config/init-vault.sh
