@@ -1,16 +1,22 @@
 async function getMatchStats(fastify, opts) {
-	fastify.get(
+	fastify.post(
 		'/matches/me',
 		{ preValidation: [fastify.authenticate] },
 		async (request, reply) => {
 			const decoded = request.user;
-			const { targetId } = request.body;
 
-			if (targetId && typeof targetId !== 'number') {
-				return reply.code(401).send({ success: false, message: 'Invalid parameters' });
-			} else if (targetId) {
-				decoded.userId = targetId;
+			try {
+				const { targetId } = request.body;
+
+				if (targetId && typeof targetId !== 'number') {
+					return reply.code(401).send({ success: false, message: 'Invalid parameters' });
+				} else if (targetId) {
+					decoded.userId = targetId;
+				}
+			} catch (err) {
+
 			}
+
 
 			let stmt = fastify.usersDb.prepare('SELECT * FROM user_matches WHERE user_id = ?');
 			const userStats = stmt.get(decoded.userId);

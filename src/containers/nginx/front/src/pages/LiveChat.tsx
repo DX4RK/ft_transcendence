@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSocket, useSocketEvent } from "../context/SocketContext";
 import { useNotification } from "../context/NotificationContext";
 // import { Background } from "../../Game/background";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 // import { io } from "socket.io-client";
 
@@ -20,9 +20,32 @@ interface ConnectedUser {
 	userId: number;
 }
 
+interface MatchScore {
+	[playerName: string]: number;
+}
+
+interface Match {
+	players: string[];
+	score: MatchScore;
+	date: string;
+}
+
+interface UserData {
+	"success": true,
+	"message": "User stats retrieved successfully.",
+		"data": {
+		"matchWon": 0,
+		"matchLost": 0,
+		"matchPlayed": 0,
+		"xp" : 0,
+		"history": Match[],
+		"username": string
+	}
+}
+
 function LiveChat() {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
+	// const navigate = useNavigate();
 	const { addNotification } = useNotification();
 
 	const { socket, isConnected } = useSocket();
@@ -33,6 +56,8 @@ function LiveChat() {
 	const [blockedUsers, setBlockedUsers] = useState<number[]>([]);
 	const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([]);
 	const [selectedUser, setSelectedUser] = useState<ConnectedUser>();
+
+	let [currentProfile, setCurrentProfile] = useState<UserData | null>(null);
 
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [inputText, setInputText] = useState('');
@@ -50,7 +75,7 @@ function LiveChat() {
 	}
 
 	const isUserBlocked = (user: ConnectedUser) => {
-		console.log(blockedUsers);
+		// console.log(blockedUsers);
 		return blockedUsers.includes(user.userId)
 	}
 
@@ -65,6 +90,14 @@ function LiveChat() {
 		if (!socket || !isConnected) { return };
 		socket.emit('initLiveChat');
 	}, [socket, isConnected]);
+
+	useEffect(() => {
+		if (isAuthenticated) {
+			setConnectedUsers(prevUsers =>
+				prevUsers.filter(user => user.userId !== isAuthenticated)
+			);
+		}
+	}, [isAuthenticated]);
 
 
 	useSocketEvent('authenticated', (data) => {
@@ -235,28 +268,33 @@ function LiveChat() {
 		if (!user) return;
 		addNotification("profil", `Profil of ${user.userId}`);
 
-		const dataUserProfile = {
-			login: user,
-		};
+		const fetchData = async () => {
+			try {
 
-		fetch('http://localhost:3000/api/profil', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			credentials: "include",
-			body: JSON.stringify(dataUserProfile)
-		})
-		.then(res => res.json())
-		.then(data => {
-			if (data.success) {
-				console.log(data.message);
-				navigate("/profile", { state: { login: user }});
-			} else {
-				console.error('Erreur : ' + data.message);
+
+					const raw = JSON.stringify({
+						"targetId": user.userId,
+					});
+
+				const response = await fetch("http://localhost:3000/api/stats/matches/me", {
+					method: "POST",
+					credentials: 'include',
+					headers: { "Content-Type": "application/json" },
+					body: raw
+				});
+				const result = await response.json();
+
+				console.log(result);
+
+				if (!result.success) {
+					throw new Error(`Error Status: ${result.message}`);
+				}
+				setCurrentProfile(result);
+			} catch (err) {
+				console.log(err instanceof Error ? err.message : String(err));
 			}
-		})
-		.catch(err => {
-			console.error("Erreur fetch :", err);
-		});
+		};
+		fetchData();
 	};
 
 	return (
@@ -401,7 +439,31 @@ function LiveChat() {
 				</button>
 			</div>
 			)}
+			{currentProfile && (
+				<div className="absolute backdrop-blur-sm w-full h-full inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+				<div className="bg-white rounded-xl shadow-2xl p-6 relative">
+					{/* Bouton fermer */}
+					{/* Nom */}
+					<h3 className="text-xl font-bold text-gray-800 mb-4 pr-6">
+					{currentProfile.data.username}
+					</h3>
 
+					{/* Niveau */}
+					<div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-3 text-white">
+					<div className="flex items-center justify-between">
+						<span className="font-semibold">Niveau</span>
+						<span className="text-2xl font-bold">{Math.floor(currentProfile.data.xp)}</span>
+					</div>
+					</div>
+					<button
+					onClick={() => setCurrentProfile(null)}
+					className="mt-2 text-white rounded-lg w-full h-13 bg-red-500 top-2 right-2 text-gray-400 hover:text-gray-600 transition">
+					{/* <X size={20} /> */}
+					Exit
+					</button>
+				</div>
+				</div>
+			)}
 			{/* Bouton retour */}
 			<Link to="/" className="mt-10 px-6 py-3 rounded-full bg-pink-200 dark:bg-black-950 text-2xl text-white font-bold shadow-xl hover:bg-yellow-500 hover:scale-110 hover:italic hover:shadow-inner hover:outline hover:outline-4 hover:outline-cyan-500 transition">
 				⬅ {t("liveChat.back")}
