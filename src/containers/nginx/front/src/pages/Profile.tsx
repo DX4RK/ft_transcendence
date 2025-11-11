@@ -48,7 +48,7 @@ function Profile() {
 	const fetchData = async () => {
 
 	try {
-		const response = await fetch("http://localhost:3000/stats/matches/me", {
+		const response = await fetch("http://localhost:3000/api/stats/matches/me", {
 			method: "GET",
 			credentials: 'include',
 			headers: { "Content-Type": "application/json" },

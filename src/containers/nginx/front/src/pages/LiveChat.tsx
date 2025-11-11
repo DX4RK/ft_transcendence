@@ -127,7 +127,7 @@ function LiveChat() {
 
 	useEffect(() => {
 		if (!isAuthenticated) return;
-		fetch('http://localhost:3000/users/blocked', {
+		fetch('http://localhost:3000/api/users/blocked', {
 			method: 'GET',
 			credentials: 'include',
 			headers: {
@@ -183,7 +183,7 @@ function LiveChat() {
 	const blockUser = (user: ConnectedUser | null) => {
 		if (!user || !canInteract()) return;
 
-		fetch('http://localhost:3000/users/block', {
+		fetch('http://localhost:3000/api/users/block', {
 			method: 'POST',
 			credentials: 'include',
 			headers: {
@@ -202,7 +202,7 @@ function LiveChat() {
 	const unblockUser = (user: ConnectedUser | null) => {
 		if (!user || !canInteract()) return;
 		console.log("yes");
-		fetch('http://localhost:3000/users/unblock', {
+		fetch('http://localhost:3000/api/users/unblock', {
 			method: 'POST',
 			credentials: 'include',
 			headers: {
@@ -237,7 +237,7 @@ function LiveChat() {
 			login: user,
 		};
 
-		fetch('http://localhost:3000/profil', {
+		fetch('http://localhost:3000/api/profil', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			credentials: "include",

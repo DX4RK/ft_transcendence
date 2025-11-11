@@ -35,7 +35,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		"password": password
 		});
 
-		const response = await fetch("http://localhost:3000/sign/in", { method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
+		const response = await fetch("http://localhost:3000/api/sign/in", { method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
 		const result = await response.json();
 
 		console.log(result);

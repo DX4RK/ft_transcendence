@@ -105,7 +105,7 @@ function Game() {
 	<div className="absolute top-10 right-20 z-10" >
 		<Button onClick={() => alert(t("game.paused"))}>Pause</Button>
 	</div>
-
+	<div className="relative w-full h-202 overflow-hidden rounded-lg shadow-lg">
 	<BabylonScene
 		onScoreUpdate={(left, right) => {
 		setScoreLeft(left);
@@ -125,7 +125,7 @@ function Game() {
 
 				const raw = JSON.stringify(newData);
 
-				fetch("http://localhost:3000/stats/match-finished", {
+				fetch("http://localhost:3000/api/stats/match-finished", {
 					method: "POST",
 					credentials: 'include',
 					headers: myHeaders,
@@ -157,7 +157,7 @@ function Game() {
 				setData(newData);
 
 				const raw = JSON.stringify(newData);
-				fetch("http://localhost:3000/stats/match-finished", {
+				fetch("http://localhost:3000/api/stats/match-finished", {
 					method: "POST",
 					credentials: 'include',
 					headers: myHeaders,
@@ -179,6 +179,7 @@ function Game() {
 		}
 		}
 	/>
+	</div>
 
 		  <Link to="/" className="flex p-1 mx-1 text-orange-300/80 font-arcade text-xl justify-center hover:scale-110 hover:shadow-xl transition">{t("game.home")}HOME</Link>
 	</div>

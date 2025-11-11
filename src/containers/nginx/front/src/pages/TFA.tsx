@@ -42,7 +42,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 				"code": code
 			});
 
-			const response = await fetch("http://localhost:3000/twofa/verify" ,{method: "POST", headers: myHeaders, credentials: "include", body: raw, redirect: "follow" })
+			const response = await fetch("http://localhost:3000/api/twofa/verify" ,{method: "POST", headers: myHeaders, credentials: "include", body: raw, redirect: "follow" })
 			const result = await response.json();
 
 			console.log(result);

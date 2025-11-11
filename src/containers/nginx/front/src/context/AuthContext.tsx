@@ -66,7 +66,7 @@ const login = async(email: string, password: string): Promise<{ success: boolean
     password: password
   };
 
-  fetch('http://localhost:3000/sign/up', {
+  fetch('http://localhost:3000/api/sign/up', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: "include",
@@ -114,7 +114,7 @@ const register = async (email: string, password: string): Promise<{ success: boo
     password: password
   };
 
-  fetch('http://localhost:3000/sign/in', {
+  fetch('http://localhost:3000/api/sign/in', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: "include",
