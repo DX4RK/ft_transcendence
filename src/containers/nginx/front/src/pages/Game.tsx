@@ -110,32 +110,32 @@ function Game() {
 		onScoreUpdate={(left, right) => {
 		setScoreLeft(left);
 		setScoreRight(right);
-		if (left >= 1) //$ END FUNCTION - HANDLE DATA REQUEST HERE
+		if (left >= 3) //$ END FUNCTION - HANDLE DATA REQUEST HERE
 		{
 			console.log("Left player wins!");
 			setWinner(1);
 
-			const newData = {
-				userData: { name: name1, score: left },
-				guestData: { name: name2, score: right }
-			};
-			setData(newData);
-
-			const raw = JSON.stringify(newData);
-
-			fetch("http://localhost:3000/stats/match-finished", {
-				method: "POST",
-				credentials: 'include',
-				headers: myHeaders,
-				body: raw,
-				redirect: "follow"
-			})
-			.then((response) => response.text())
-			.then((result) => console.log(result))
-			.catch((error) => console.error(error));
-
 			if (mode == 1)
 			{
+				const newData = {
+					userData: { name: name1, score: left },
+					guestData: { name: name2, score: right }
+				};
+				setData(newData);
+
+				const raw = JSON.stringify(newData);
+
+				fetch("http://localhost:3000/stats/match-finished", {
+					method: "POST",
+					credentials: 'include',
+					headers: myHeaders,
+					body: raw,
+					redirect: "follow"
+				})
+				.then((response) => response.text())
+				.then((result) => console.log(result))
+				.catch((error) => console.error(error));
+
 				setTimeout(() => {
 					navigate("/", { state: { winner: left }});
 				}, 3000);
@@ -143,31 +143,31 @@ function Game() {
 			else if (mode == 2)
 				handleGameOver(name1);
 		}
-		else if (right >= 1)
+		else if (right >= 3)
 		{
 			console.log("Right player wins!");
 			setWinner(2);
 
-			const newData = {
-				userData: { name: name1, score: left },
-				guestData: { name: name2, score: right }
-			};
-			setData(newData);
-
-			const raw = JSON.stringify(newData);
-			fetch("http://localhost:3000/stats/match-finished", {
-				method: "POST",
-				credentials: 'include',
-				headers: myHeaders,
-				body: raw,
-				redirect: "follow"
-			})
-			.then((response) => response.text())
-			.then((result) => console.log(result))
-			.catch((error) => console.error(error));
-
 			if (mode == 1)
 			{
+				const newData = {
+					userData: { name: name1, score: left },
+					guestData: { name: name2, score: right }
+				};
+				setData(newData);
+
+				const raw = JSON.stringify(newData);
+				fetch("http://localhost:3000/stats/match-finished", {
+					method: "POST",
+					credentials: 'include',
+					headers: myHeaders,
+					body: raw,
+					redirect: "follow"
+				})
+				.then((response) => response.text())
+				.then((result) => console.log(result))
+				.catch((error) => console.error(error));
+
 				setTimeout(() => {
 					navigate("/", { state: { winner: right }});
 				}, 3000);

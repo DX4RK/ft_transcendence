@@ -77,6 +77,16 @@ return (
 			className="delay-1000 animate-draw "/>
 		</svg>
 
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 14" className="absolute bottom-0 left-0 w-full z-0 delay-300 pointer-events-none">
+            <path d="M 24 3 L 22 6 Q 21.393 5.659 20.253 8.076 L 20.029 10.012 Q 20.079 13.02 19.223 13.002 Q 18.585 13.439 19 16 l -3.7 0.637 L 15 13 Q 14.993 12.692 14.742 12.575 L 14.274 12.358 Q 14.04 12.241 13.973 12.023 L 13.686 10.27" stroke="#e95d2c" strokeWidth="0.05" fill="none"
+            className="delay-1000 animate-draw"/>
+        </svg>
+
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 14" className="absolute bottom-0 left-0 w-full z-0 delay-300 pointer-events-none blur">
+            <path d="M 24 3 L 22 6 Q 21.393 5.659 20.253 8.076 L 20.029 10.012 Q 20.079 13.02 19.223 13.002 Q 18.585 13.439 19 16 l -3.7 0.637 L 15 13 Q 14.993 12.692 14.742 12.575 L 14.274 12.358 Q 14.04 12.241 13.973 12.023 L 13.686 10.27" stroke="#e95d2c" strokeWidth="0.05" fill="none"
+            className="delay-1000 animate-draw "/>
+        </svg>
+
 		<Link to="/" className="text-base text-cyan-300/70  text-xl hover:shadow-lg font-arcade z-50">ft_transcendence</Link>
 
 		<div className="flex min-h-screen items-center justify-center ">

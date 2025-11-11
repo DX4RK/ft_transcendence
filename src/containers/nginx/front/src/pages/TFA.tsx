@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useLocation } from "react-router-dom"
 // import { useAuth } from "../context/AuthContext";
 
@@ -11,6 +12,7 @@ export default function tfa() {
 //   const { register } = useAuth();
   const navigate = useNavigate();
 
+	const { t } = useTranslation();
 	const location = useLocation();
 	const { email } = location.state || {};
 			console.log('cfyu');
@@ -98,7 +100,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
 			<button type="submit" className="w-full bg-[#E95D2C] font-arcade text-[#B0CEE2] py-2 rounded-lg
 				hover:ring hover:ring-[#B0CEE2] hover:bg-orange-600 hover:text-[#1A2730] transition">
-					{loading ? 'Checkin\'...' : 'Access'}
+					{loading ? t("tfa.checking") : t("tfa.access")}
 			</button>
 			</form>
 		</div>

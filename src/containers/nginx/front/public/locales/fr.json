@@ -11,7 +11,9 @@
     "failLoadSettings": "Échec du chargement des paramètres",
     "loadSettings": "Chargement des paramètres...",
 	"disconnect": "Deconnexion",
-	"verySecure": "(Tres securise)"
+	"verySecure": "(Tres securise)",
+	"scan": "Scan ce qrcode avec ton app authenticator",
+	"setts": "Parametres"
   },
 
   "game": {
@@ -95,6 +97,19 @@
     "ladder": "Classement"
   },
 
+  "tfa": {
+	"checking": "Verification",
+	"access": "Acceder"
+  },
+
+  "register": {
+	"connexion": "connection",
+	"login": "se connecter",
+	"registration": "s'enregister",
+	"password": "mot de passe",
+	"confirmPassword": "confirmation de mot de passe"
+  },
+
   "profile": {
     "level": "Niveau",
     "nextLevel": "Prochain niveau",
@@ -112,6 +127,8 @@
     "previous": "Précédent",
     "next": "Suivant",
     "matchResult": "{{result}} 🆚 contre {{opponent}}",
-    "lostAgainst": "Défaite ❌ contre {{opponent}}"
+    "lostAgainst": "Défaite ❌ contre {{opponent}}",
+	"noMatchYet": "Aucun match enregistré pour le moment",
+	"startPlayingToGetHistory": "Commencez à jouer pour remplir votre historique !"
   }
 }

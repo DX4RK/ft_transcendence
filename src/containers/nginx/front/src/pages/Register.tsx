@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom"
 // import { useAuth } from "../context/AuthContext";
 
@@ -12,6 +13,7 @@ export default function RegisterPage() {
 
 //   const { register } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
 
 
@@ -87,7 +89,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		<div className="min-h-screen flex items-center justify-center">
 			<form onSubmit={handleSubmit} className="bg-gradient-to-t from-[#1A2730] to-[#45586c] justify-center p-8 rounded-lg shadow-xl shadow-cyan-500/30 w-80">
 			<h2 className="text-2xl font-arcade text-center mb-6 text-slate-300">
-				Register
+				{t("register.registration")}
 			</h2>
 			{error && (
 				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -103,18 +105,18 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 			<div className="mb-6">
 				<input type="password" value={password1} onChange={(e) => setPassword1(e.target.value)}
 				className="w-full border bordr-[#E95D2C] rounded-lg p-2 text-slate-300 	focus:outline-none focus:ring-3 focus:ring-[#B0CEE2]"
-				placeholder="Password"/>
+				placeholder={t("register.password")}/>
 			</div>
 
 			<div className="mb-6">
 				<input type="password" value={password2} onChange={(e) => setPassword2(e.target.value)}
 				className="w-full border bordr-[#E95D2C] rounded-lg p-2 text-slate-300 	focus:outline-none focus:ring-3 focus:ring-[#B0CEE2]"
-				placeholder="Confirm Password"/>
+				placeholder={t("register.confirmPassword")}/>
 			</div>
 
 			<button type="submit" className="w-full bg-[#E95D2C] font-arcade text-[#B0CEE2] py-2 rounded-lg
 				hover:ring hover:ring-[#B0CEE2] hover:bg-orange-600 hover:text-[#1A2730] transition">
-					{loading ? 'Connexion...' : 'Log In'}
+					{loading ? t("register.connexion") : t("register.login")}
 			</button>
 			</form>
 		</div>
