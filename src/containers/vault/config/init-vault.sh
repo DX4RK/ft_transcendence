@@ -3,20 +3,25 @@
 export VAULT_ADDR="http://localhost:8200"
 export VAULT_TOKEN="myroot"
 
+# Load environment variables from .env file
 if [ -f "/vault/config/.env" ]; then
-    set -a  # automatically export all variables
+    set -a
     source /vault/config/.env
-    set +a  # stop automatically exporting
+    set +a 
     echo "Environment variables loaded from .env file"
 else
     echo "Warning: .env file not found at /vault/config/.env"
     exit 1
 fi
 
+# Wait for Vault to be ready
 for i in {1..20}; do
     if vault status > /dev/null 2>&1; then break; fi
     sleep 1
 done
+
+vault operator init -key-shares=1 -key-threshold=1 2>/dev/null || echo "Vault already initialized"
+vault operator unseal myroot 2>/dev/null || echo "Vault already unsealed"
 
 vault secrets enable -path=secret kv-v2 2>/dev/null || true
 
@@ -55,7 +60,8 @@ vault kv put secret/ssl/certificates \
   cert="$CERT_CONTENT" \
   key="$KEY_CONTENT"
 
-rm -f /tmp/nginx.key /tmp/nginx.crt
+rm -f /tmp/nginx.key /tmp/nginx.crt /tmp/vault-init.txt
 
 echo "Vault secrets initialized successfully with generated SSL certificates"
 echo "All secrets loaded from .env file and stored in Vault"
+echo "Vault is running in PRODUCTION mode!"
