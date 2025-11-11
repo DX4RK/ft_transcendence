@@ -11,4 +11,4 @@ RUN chmod 666 /vault/config/init-vault.sh
 
 EXPOSE 8200
 
-CMD ["vault", "server", "-dev", "-dev-listen-address=0.0.0.0:8200"]
+CMD ["vault", "server", "-config=/vault/config/vault.hcl"]
