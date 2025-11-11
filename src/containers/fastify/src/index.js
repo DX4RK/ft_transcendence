@@ -13,7 +13,7 @@ const { generateToken } = require('./service/jwt');
 const registerPlugins = require('./plugins');
 const registerRoutes = require('./routes');
 
-fastify.setPrefix('/api');
+// fastify.setPrefix('/api');
 
 const start = async () => {
 	try {

@@ -25,43 +25,43 @@ const socketNotificationHandlers = require('../plugins/socket-handlers/notificat
 
 const registerRoutes = async (fastify, { transporter, vonage, generateToken }) => {
 	// Auth
-	await fastify.register(verifyTokenRoute, { prefix: '/auth' });
+	await fastify.register(verifyTokenRoute, { prefix: '/api/auth' });
 
 	// Users
-	await fastify.register(blockUserRoute, { prefix: '/users' });
-	await fastify.register(unBlockUserRoute, { prefix: '/users' });
-	await fastify.register(getBlockedRoute, { prefix: '/users' });
+	await fastify.register(blockUserRoute, { prefix: '/api/users' });
+	await fastify.register(unBlockUserRoute, { prefix: '/api/users' });
+	await fastify.register(getBlockedRoute, { prefix: '/api/users' });
 
 	// Stats
-	await fastify.register(getMatchStatsRoute, { prefix: '/stats' });
-	await fastify.register(updateStatsOnMatchFinishRoute, { prefix: '/stats' });
+	await fastify.register(getMatchStatsRoute, { prefix: '/api/stats' });
+	await fastify.register(updateStatsOnMatchFinishRoute, { prefix: '/api/stats' });
 
 	// My
-	await fastify.register(getSettings, { prefix: '/my' });
-	await fastify.register(updateSettings, { prefix: '/my' });
-	await fastify.register(updatePhone, { prefix: '/my' });
-	await fastify.register(updateTwofa, { prefix: '/my' });
-	await fastify.register(disconnect, { prefix: '/my' });
+	await fastify.register(getSettings, { prefix: '/api/my' });
+	await fastify.register(updateSettings, { prefix: '/api/my' });
+	await fastify.register(updatePhone, { prefix: '/api/my' });
+	await fastify.register(updateTwofa, { prefix: '/api/my' });
+	await fastify.register(disconnect, { prefix: '/api/my' });
 
 	// Check
-	fastify.get('/', async (request, reply) => {
+	fastify.get('/api/', async (request, reply) => {
 		return { message: 'Hello from Fastify!' };
 	});
 
 	// Feature routes
 	await fastify.register(signInRoute, {
-		prefix: '/sign',
+		prefix: '/api/sign',
 		transporter,
 		vonage
 	});
-	await fastify.register(signUpRoute, { prefix: '/sign' });
+	await fastify.register(signUpRoute, { prefix: '/api/sign' });
 
 	// 2FA
-	await fastify.register(totpRoute, { prefix: '/twofa'});
-	await fastify.register(verifyRoute, { prefix: '/twofa', generateToken});
+	await fastify.register(totpRoute, { prefix: '/api/twofa'});
+	await fastify.register(verifyRoute, { prefix: '/api/twofa', generateToken});
 
 	// Notifications
-	fastify.post('/send-notification', async (request, reply) => {
+	fastify.post('/api/send-notification', async (request, reply) => {
 		const { userId, message } = request.body;
 
 		fastify.sendNotification(userId, {

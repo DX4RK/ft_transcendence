@@ -197,13 +197,13 @@ function Profile() {
 			</div>
 
 
-			<div className="mt-4 text-center text-slate-300 text-sm">
+			{/* <div className="mt-4 text-center text-slate-300 text-sm">
 			{xpProgress < 100 ? (
 				<span>{t("profile.youNeed")}<span className="font-bold text-purple-400">{(100 - xpProgress).toFixed(0)}%</span>{t("profile.remainingXP")}{level + 1}</span>
 			) : (
 				<span className="text-green-400 font-bold">{t("profile.maxLevel")}</span>
 			)}
-			</div>
+			</div> */}
 
 			<div className="relative">
 			<div className="h-8 bg-slate-700/50 rounded-full overflow-hidden border-2 border-slate-600/50 shadow-inner">
