@@ -20,8 +20,21 @@ for i in {1..20}; do
     sleep 1
 done
 
-vault operator init -key-shares=1 -key-threshold=1 2>/dev/null || echo "Vault already initialized"
-vault operator unseal myroot 2>/dev/null || echo "Vault already unsealed"
+if ! vault status 2>/dev/null | grep -q "Initialized.*true"; then
+    echo "Initializing Vault..."
+    vault operator init -key-shares=1 -key-threshold=1 > /tmp/vault-keys.txt
+    
+    UNSEAL_KEY=$(grep "Unseal Key 1:" /tmp/vault-keys.txt | cut -d' ' -f4)
+    ROOT_TOKEN=$(grep "Initial Root Token:" /tmp/vault-keys.txt | cut -d' ' -f4)
+    
+    echo "Vault initialized with unseal key: $UNSEAL_KEY"
+    
+    vault operator unseal "$UNSEAL_KEY"
+    
+    export VAULT_TOKEN="$ROOT_TOKEN"
+else
+    echo "Vault already initialized"
+fi
 
 vault secrets enable -path=secret kv-v2 2>/dev/null || true
 
