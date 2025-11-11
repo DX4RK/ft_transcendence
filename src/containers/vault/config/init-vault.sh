@@ -3,7 +3,6 @@
 export VAULT_ADDR="http://localhost:8200"
 export VAULT_TOKEN="myroot"
 
-# Load environment variables from .env file
 if [ -f "/vault/config/.env" ]; then
     set -a
     source /vault/config/.env
@@ -14,7 +13,6 @@ else
     exit 1
 fi
 
-# Wait for Vault to be ready
 echo "Waiting for Vault server to start..."
 for i in {1..30}; do
     if vault status > /dev/null 2>&1; then 
@@ -25,13 +23,11 @@ for i in {1..30}; do
     sleep 2
 done
 
-# Check if Vault is initialized
 echo "Checking Vault initialization status..."
 if ! vault status 2>/dev/null | grep -q "Initialized.*true"; then
     echo "Initializing Vault for the first time..."
     vault operator init -key-shares=1 -key-threshold=1 -format=json > /tmp/vault-keys.json
     
-    # Extract keys using jq
     UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /tmp/vault-keys.json)
     ROOT_TOKEN=$(jq -r '.root_token' /tmp/vault-keys.json)
     
@@ -39,7 +35,6 @@ if ! vault status 2>/dev/null | grep -q "Initialized.*true"; then
     echo "Unsealing Vault with generated key..."
     vault operator unseal "$UNSEAL_KEY"
     
-    # Save credentials for potential restart
     echo "UNSEAL_KEY=$UNSEAL_KEY" > /vault/data/vault-creds.txt
     echo "ROOT_TOKEN=$ROOT_TOKEN" >> /vault/data/vault-creds.txt
     
@@ -47,17 +42,17 @@ if ! vault status 2>/dev/null | grep -q "Initialized.*true"; then
     echo "Vault unsealed and ready!"
 else
     echo "Vault already initialized"
-    # Load saved credentials if available
     if [ -f "/vault/data/vault-creds.txt" ]; then
         source /vault/data/vault-creds.txt
         echo "Loaded saved credentials"
         
-        # Check if sealed and unseal if needed
         if vault status | grep -q "Sealed.*true"; then
             echo "Vault is sealed, unsealing..."
             vault operator unseal "$UNSEAL_KEY"
         fi
         export VAULT_TOKEN="$ROOT_TOKEN"
+    else
+        echo "No saved credentials found, Vault may need reinitialization"
     fi
 fi
 
