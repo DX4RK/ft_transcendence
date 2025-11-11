@@ -12,6 +12,7 @@ up:
 	@docker exec ft_transcendence_vault sh /vault/config/init-vault.sh
 	@echo "Starting remaining services..."
 	@$(DOCKER_COMPOSE) up -d --build
+	@bash scripts/art.sh
 
 down:
 	@echo "Stopping $(NAME)..."
