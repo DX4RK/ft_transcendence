@@ -30,7 +30,6 @@ async function socketAuthHandlers(fastify, opts) {
 
 			const token = cookies['token']
 			if (!token) {
-				console.log("ihoh");
 				socket.emit('auth-error', { message: 'Token not found' });
 				return socket.disconnect();
 			};
@@ -39,7 +38,6 @@ async function socketAuthHandlers(fastify, opts) {
 			const decoded = jwt.verify(token, jwtSecret);
 
 			if (!decoded) {
-				console.log("jij");
 				socket.emit('auth-error', { message: 'Invalid or expired token' });
 				return socket.disconnect();
 			}
@@ -55,6 +53,7 @@ async function socketAuthHandlers(fastify, opts) {
 			socket.on('initLiveChat', () => {
 				socket.emit('connected-users', getAllConnectedSockets());
 				socket.emit('authenticated', { userId: socket.userId });
+				connectedSockets.set(socket.id, socket);
 				fastify.socketIO.emit('user-added', { id: socket.id, userId: socket.userId });
 			});
 

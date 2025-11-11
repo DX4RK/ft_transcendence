@@ -40,7 +40,7 @@ async function unBlockUser(fastify, opts) {
 
 			return reply.send({
 				success: true,
-				message: 'Blocked user successfully.',
+				message: 'Unblocked user successfully.',
 			}
 		);
 	});

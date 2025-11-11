@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useNotification } from "../context/NotificationContext";
+// import { useNotification } from "../context/NotificationContext";
 import { io, Socket } from "socket.io-client";
 import type { ReactNode }from "react"
 
@@ -11,7 +11,7 @@ type SocketContextType = {
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
-	const { addNotification } = useNotification();
+	// const { addNotification } = useNotification();
 	const [socket, setSocket] = useState<Socket | null>(null);
 	const [isConnected, setIsConnected] = useState(false);
 
@@ -43,9 +43,9 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 			setIsConnected(false);
 		});
 
-		newSocket.on("invite", (fromUser: string) => {
-			addNotification("invite", `Invitation to play from ${fromUser}`);
-		});
+		// newSocket.on("invite", (fromUser: string) => {
+		// 	addNotification("invite", `Invitation to play from ${fromUser}`);
+		// });
 
 		setSocket(newSocket);
 

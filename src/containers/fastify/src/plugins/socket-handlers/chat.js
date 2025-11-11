@@ -10,14 +10,16 @@ const getPrivateRoomId = (userId, targetId) => {
 }
 
 const extractPrivateRoomMembers = (roomId) => {
-	const parts = roomId.split(':');
+	const parts = roomId.split('-');
+	console.log(parts);
 	return [parseInt(parts[0], 10), parseInt(parts[1], 10)];
 }
 
 const isUserBlocked = (usersDb, userId, targetId) => {
+	console.log(userId, targetId);
 	const stmt = usersDb.prepare('SELECT * FROM users WHERE id = ?');
 	const userData = stmt.get(targetId);
-
+	console.log(userData.blocked);
 	if (!userData) return false;
 
 	let blocked = [];

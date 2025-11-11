@@ -62,7 +62,7 @@ function LiveChat() {
 	// Auth
 
 	useEffect(() => {
-		if (!socket || !isConnected) return;
+		if (!socket || !isConnected) { return };
 		socket.emit('initLiveChat');
 	}, [socket, isConnected]);
 
@@ -85,6 +85,8 @@ function LiveChat() {
 	});
 
 	useSocketEvent('connected-users', (data) => {
+		console.log("yes");
+		console.log(data);
 		setConnectedUsers(data);
 	});
 
