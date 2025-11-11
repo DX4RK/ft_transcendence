@@ -5,8 +5,8 @@ storage "file" {
 }
 
 listener "tcp" {
-  address     = "0.0.0.0:8200"
-  tls_disable = 1
+  address       = "0.0.0.0:8200"
+  tls_disable   = 1
 }
 
 api_addr = "http://0.0.0.0:8200"
@@ -16,3 +16,6 @@ disable_mlock = true
 # Enable KV secrets engine
 default_lease_ttl = "168h"
 max_lease_ttl = "720h"
+
+# Log level for debugging
+log_level = "info"

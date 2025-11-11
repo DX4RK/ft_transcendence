@@ -1,6 +1,6 @@
 FROM hashicorp/vault:latest
 
-RUN apk add --no-cache openssl
+RUN apk add --no-cache openssl jq
 
 COPY config/ /vault/config/
 

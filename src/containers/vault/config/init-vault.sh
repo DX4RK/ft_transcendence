@@ -15,25 +15,50 @@ else
 fi
 
 # Wait for Vault to be ready
-for i in {1..20}; do
-    if vault status > /dev/null 2>&1; then break; fi
-    sleep 1
+echo "Waiting for Vault server to start..."
+for i in {1..30}; do
+    if vault status > /dev/null 2>&1; then 
+        echo "Vault server is responding"
+        break
+    fi
+    echo "Attempt $i/30: Waiting for Vault..."
+    sleep 2
 done
 
+# Check if Vault is initialized
+echo "Checking Vault initialization status..."
 if ! vault status 2>/dev/null | grep -q "Initialized.*true"; then
-    echo "Initializing Vault..."
-    vault operator init -key-shares=1 -key-threshold=1 > /tmp/vault-keys.txt
+    echo "Initializing Vault for the first time..."
+    vault operator init -key-shares=1 -key-threshold=1 -format=json > /tmp/vault-keys.json
     
-    UNSEAL_KEY=$(grep "Unseal Key 1:" /tmp/vault-keys.txt | cut -d' ' -f4)
-    ROOT_TOKEN=$(grep "Initial Root Token:" /tmp/vault-keys.txt | cut -d' ' -f4)
+    # Extract keys using jq
+    UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /tmp/vault-keys.json)
+    ROOT_TOKEN=$(jq -r '.root_token' /tmp/vault-keys.json)
     
-    echo "Vault initialized with unseal key: $UNSEAL_KEY"
-    
+    echo "Vault initialized!"
+    echo "Unsealing Vault with generated key..."
     vault operator unseal "$UNSEAL_KEY"
     
+    # Save credentials for potential restart
+    echo "UNSEAL_KEY=$UNSEAL_KEY" > /vault/data/vault-creds.txt
+    echo "ROOT_TOKEN=$ROOT_TOKEN" >> /vault/data/vault-creds.txt
+    
     export VAULT_TOKEN="$ROOT_TOKEN"
+    echo "Vault unsealed and ready!"
 else
     echo "Vault already initialized"
+    # Load saved credentials if available
+    if [ -f "/vault/data/vault-creds.txt" ]; then
+        source /vault/data/vault-creds.txt
+        echo "Loaded saved credentials"
+        
+        # Check if sealed and unseal if needed
+        if vault status | grep -q "Sealed.*true"; then
+            echo "Vault is sealed, unsealing..."
+            vault operator unseal "$UNSEAL_KEY"
+        fi
+        export VAULT_TOKEN="$ROOT_TOKEN"
+    fi
 fi
 
 vault secrets enable -path=secret kv-v2 2>/dev/null || true
