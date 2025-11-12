@@ -28,6 +28,7 @@ services:
       - ./containers/fastify:/app
       - ./volumes/node_modules:/app/node_modules
       - ./volumes/sqlite:/data
+      - vault-data:/vault/data
     working_dir: /app
     command: sh -c "npm install && npm run dev"
     restart: unless-stopped
