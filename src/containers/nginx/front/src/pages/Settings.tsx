@@ -41,7 +41,7 @@ function Settings() {
 			},
 			withCredentials: true
 		});
-		api.post('http://localhost:3000/api/twofa/generate-totp')
+		api.post('https://localhost:3000/api/twofa/generate-totp')
 		.then(res => {
 			console.log(res);
 			setErrorMessage("success");
@@ -77,7 +77,7 @@ function Settings() {
 			},
 			withCredentials: true
 		});
-		api.post('http://localhost:3000/api/my/change-phone', JSON.stringify({'phoneNumber': newPhone}))
+		api.post('https://localhost:3000/api/my/change-phone', JSON.stringify({'phoneNumber': newPhone}))
 		.then(res => {
 			console.log(res);
 			setSettings(prev => {
@@ -107,7 +107,7 @@ function Settings() {
 			},
 			withCredentials: true
 		});
-		api.post('http://localhost:3000/api/my/change-twofa', JSON.stringify({'option': option}))
+		api.post('https://localhost:3000/api/my/change-twofa', JSON.stringify({'option': option}))
 		.then(res => {
 			console.log(res);
 			setSettings(prev => {
@@ -132,7 +132,7 @@ function Settings() {
 			},
 			withCredentials: true
 		});
-		api.post('http://localhost:3000/api/my/disconnect')
+		api.post('https://localhost:3000/api/my/disconnect')
 		.then(res => {
 			console.log(res);
 			navigate('/login');
@@ -153,7 +153,7 @@ function Settings() {
 		const api = axios.create({
 			withCredentials: true
 		});
-		api.get('http://localhost:3000/api/my/settings')
+		api.get('https://localhost:3000/api/my/settings')
 		.then(res => {
 			setSettings(res.data.data);
 			setLoading(false);

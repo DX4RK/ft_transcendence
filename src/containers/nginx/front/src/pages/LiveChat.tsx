@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 // import { io } from "socket.io-client";
 
-// const socket = io("http://localhost:3000", { withCredentials: true, autoConnect: false });
+// const socket = io("https://localhost:3000", { withCredentials: true, autoConnect: false });
 
 interface Message {
 	id: string;
@@ -162,7 +162,7 @@ function LiveChat() {
 
 	useEffect(() => {
 		if (!isAuthenticated) return;
-		fetch('http://localhost:3000/api/users/blocked', {
+		fetch('https://localhost:3000/api/users/blocked', {
 			method: 'GET',
 			credentials: 'include',
 			headers: {
@@ -218,7 +218,7 @@ function LiveChat() {
 	const blockUser = (user: ConnectedUser | null) => {
 		if (!user || !canInteract()) return;
 
-		fetch('http://localhost:3000/api/users/block', {
+		fetch('https://localhost:3000/api/users/block', {
 			method: 'POST',
 			credentials: 'include',
 			headers: {
@@ -237,7 +237,7 @@ function LiveChat() {
 	const unblockUser = (user: ConnectedUser | null) => {
 		if (!user || !canInteract()) return;
 		console.log("yes");
-		fetch('http://localhost:3000/api/users/unblock', {
+		fetch('https://localhost:3000/api/users/unblock', {
 			method: 'POST',
 			credentials: 'include',
 			headers: {
@@ -276,7 +276,7 @@ function LiveChat() {
 						"targetId": user.userId,
 					});
 
-				const response = await fetch("http://localhost:3000/api/stats/matches/me", {
+				const response = await fetch("https://localhost:3000/api/stats/matches/me", {
 					method: "POST",
 					credentials: 'include',
 					headers: { "Content-Type": "application/json" },

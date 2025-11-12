@@ -44,7 +44,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 				"email": email
 			});
 
-			const response = await fetch("http://localhost:3000/api/sign/up", { method: "POST", headers: myHeaders, body: raw });
+			const response = await fetch("https://localhost:3000/api/sign/up", { method: "POST", headers: myHeaders, body: raw });
 			const result = await response.json();
 
 			console.log(result);

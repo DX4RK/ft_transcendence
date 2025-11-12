@@ -48,7 +48,7 @@ function Profile() {
 	const fetchData = async () => {
 
 	try {
-		const response = await fetch("http://localhost:3000/api/stats/matches/me", {
+		const response = await fetch("https://localhost:3000/api/stats/matches/me", {
 			method: "POST",
 			credentials: 'include',
 			body: "{}",
@@ -78,14 +78,12 @@ function Profile() {
 		let goalsScored = 0;
 		let goalsConceded = 0;
 
-		// Boucle pour calculer les buts marqués et encaissés
 		for (let i = 0; i < data.data.history.length; i++) {
 		const match = data.data.history[i];
 		const [player1, player2] = match.players;
 		const score1 = match.score[player1];
 		const score2 = match.score[player2];
 
-		// On considère que player1 est le joueur principal
 		goalsScored += score1;
 		goalsConceded += score2;
 		}

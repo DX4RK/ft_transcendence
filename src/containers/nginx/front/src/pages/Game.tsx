@@ -62,7 +62,6 @@ function Game() {
 	};
 
 	window.addEventListener("keydown", handleKeyDown);
-	// Nettoyage à la fin du cycle de vie du composant
 	return () => {
 		window.removeEventListener("keydown", handleKeyDown);
 	};
@@ -125,7 +124,7 @@ function Game() {
 
 				const raw = JSON.stringify(newData);
 
-				fetch("http://localhost:3000/api/stats/match-finished", {
+				fetch("https://localhost:3000/api/stats/match-finished", {
 					method: "POST",
 					credentials: 'include',
 					headers: myHeaders,
@@ -157,7 +156,7 @@ function Game() {
 				setData(newData);
 
 				const raw = JSON.stringify(newData);
-				fetch("http://localhost:3000/api/stats/match-finished", {
+				fetch("https://localhost:3000/api/stats/match-finished", {
 					method: "POST",
 					credentials: 'include',
 					headers: myHeaders,
