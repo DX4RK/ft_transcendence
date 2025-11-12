@@ -4,6 +4,9 @@ export VAULT_ADDR="http://localhost:8200"
 export VAULT_TOKEN="myroot"
 
 if [ -f "/vault/config/.env" ]; then
+    # Convert Windows line endings to Unix
+    sed -i 's/\r$//' /vault/config/.env
+    
     set -a
     source /vault/config/.env
     set +a 
@@ -98,3 +101,6 @@ rm -f /tmp/nginx.key /tmp/nginx.crt /tmp/vault-init.txt
 echo "Vault secrets initialized successfully with generated SSL certificates"
 echo "All secrets loaded from .env file and stored in Vault"
 echo "Vault is running in PRODUCTION mode!"
+
+# Create a marker file to indicate initialization is complete
+echo "$(date): Vault initialization completed" > /vault/data/vault-ready.txt

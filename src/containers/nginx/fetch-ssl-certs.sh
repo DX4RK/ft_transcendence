@@ -1,7 +1,6 @@
 #!/bin/bash
 
 export VAULT_ADDR="http://vault:8200"
-export VAULT_TOKEN="myroot"
 
 echo "Waiting for Vault to be ready..."
 
@@ -21,6 +20,26 @@ for i in {1..60}; do
     fi
     sleep 1
 done
+
+# Try to get the real token from Vault data
+echo "Looking for Vault credentials..."
+for attempt in {1..60}; do
+    if [ -f "/vault/data/vault-creds.txt" ] && [ -f "/vault/data/vault-ready.txt" ]; then
+        source /vault/data/vault-creds.txt
+        export VAULT_TOKEN="$ROOT_TOKEN"
+        echo "✅ Using production token from credentials file"
+        echo "✅ Vault initialization confirmed complete"
+        break
+    else
+        echo "⚠️ Attempt $attempt: Waiting for Vault initialization to complete..."
+        sleep 2
+    fi
+done
+
+if [ ! -f "/vault/data/vault-creds.txt" ] || [ ! -f "/vault/data/vault-ready.txt" ]; then
+    echo "❌ Vault not ready after 60 attempts (120 seconds)"
+    exit 1
+fi
 
 mkdir -p /etc/ssl/certs /etc/ssl/private
 
