@@ -14,14 +14,10 @@ export class Background {
 			return Math.random() < 0.5 ? speed : -speed;    // signe aléatoire
 		}
 
-		// Exemple : dessine une balle
 		let x1 = canvas.width / 2;
 		let y1 = canvas.height / 2;
 		let x2 = canvas.width / 2;
 		let y2 = canvas.height / 2;
-
-		// let dx1 = 7;
-		// let dy1 = 7;
 
 		let dx1 = randomVelocity();
 		let dy1 = randomVelocity();
@@ -62,8 +58,6 @@ export class Background {
 		}
 
 		drawBall();
-		// setInterval(drawBall, 16);
-
 	}
 
 }

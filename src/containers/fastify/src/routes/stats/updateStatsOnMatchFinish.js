@@ -40,7 +40,7 @@ async function updateStatsOnMatchFinish(fastify, opts) {
 			}
 			newHistory.push(history);
 
-			const points = userWon ? 8.5 : 3.5;
+			const points = userWon ? 0.4 : 0.2;
 			fastify.usersDb.prepare(`
 			  UPDATE users
 			  SET experience_point = experience_point + ?

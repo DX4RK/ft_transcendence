@@ -1,0 +1,134 @@
+{
+  "settings": {
+    "downloadApp": "Téléchargez une application sur votre téléphone pour générer des codes de sécurité uniques. L'application suggéré est Google Authenticator.",
+    "uniqueSecurityCodeNumber": "Recevez des codes de sécurité uniques sur le numéro de téléphone spécifié.",
+    "phoneNumber": "Numéro de téléphone :",
+    "uniqueSecurityCodeEmail": "Recevez des codes de sécurité uniques à votre adresse e-mail.",
+    "email": "E-mail :",
+    "username": "Nom d’utilisateur :",
+    "accountInfo": "Informations du compte",
+    "settings": "PARAMETRES",
+    "failLoadSettings": "Échec du chargement des paramètres",
+    "loadSettings": "Chargement des paramètres...",
+	"disconnect": "Deconnexion",
+	"verySecure": "(Tres securise)",
+	"scan": "Scan ce qrcode avec ton app authenticator",
+	"setts": "Parametres"
+  },
+
+  "game": {
+    "userWon": "L’utilisateur a gagné !",
+    "guestWon": "L’invité a gagné !",
+    "paused": "Jeu en pause.",
+    "home": "Accueil",
+    "user": "Utilisateur",
+    "guest": "INVITE"
+  },
+
+  "home": {
+    "play": "JOUER",
+    "welcome": "BIENVENUE"
+  },
+
+  "login": {
+    "connexion": "Connexion",
+	"logIn": "Se connecter",
+	"connecting": "Connexion...",
+	"ifNoAccountRegister": "Pas de compte ? Creer en un !"
+  },
+
+  "liveChat": {
+	"title": "Chat en direct",
+	"publicChat": "Chat public",
+	"privateChat": "Chat privé",
+	"connectedUsers": "Utilisateurs connectés :",
+	"selectUser": "Sélectionne un utilisateur...",
+	"writeMessage": "Écris ton message...",
+	"send": "Envoyer",
+	"profile": "Profil",
+	"block": "Bloquer",
+	"unblock": "Débloquer",
+	"invite": "Inviter",
+	"back": "Retour",
+	"noUsersCo": "Aucun utilisateur connecté"
+	},
+
+	"tournament": {
+		"tournament": "Tournoi",
+		"start": "Démarrer le tournoi",
+		"player1": "Joueur 1",
+		"player2": "Joueur 2",
+		"player3": "Joueur 3",
+		"player4": "Joueur 4",
+		"player5": "Joueur 5",
+		"player6": "Joueur 6",
+		"player7": "Joueur 7",
+		"player8": "Joueur 8",
+		"roundStarting": "Le round {{round}} commence !",
+		"bye": "{{player}} passe automatiquement au prochain tour.",
+		"match": "Match : {{player1}} contre {{player2}}",
+		"winner": "Vainqueur : {{winner}}",
+		"tournamentWinner": "🏆 Le grand gagnant du tournoi est {{winner}} !"
+	},
+
+	"tournament_recap": {
+		"tournament": "Tournoi",
+		"start": "Démarrer le tournoi",
+		"player1": "Joueur 1",
+		"player2": "Joueur 2",
+		"player3": "Joueur 3",
+		"player4": "Joueur 4",
+		"player5": "Joueur 5",
+		"player6": "Joueur 6",
+		"player7": "Joueur 7",
+		"player8": "Joueur 8",
+		"roundStarting": "Le round {{round}} commence !",
+		"bye": "{{player}} passe automatiquement au prochain tour.",
+		"match": "Match : {{player1}} contre {{player2}}",
+		"winner": "Vainqueur : {{winner}}",
+		"tournamentWinner": "🏆 Le grand gagnant du tournoi est {{winner}} !",
+  "userWon": "{{winner}} a gagné!"
+	},
+
+  "ladder": {
+    "home": "Accueil",
+    "test": "Essai",
+    "profile": "Profil",
+    "ladder": "Classement"
+  },
+
+  "tfa": {
+	"checking": "Verification",
+	"access": "Acceder"
+  },
+
+  "register": {
+	"connexion": "connection",
+	"login": "se connecter",
+	"registration": "s'enregister",
+	"password": "mot de passe",
+	"confirmPassword": "confirmation de mot de passe"
+  },
+
+  "profile": {
+    "level": "Niveau",
+    "nextLevel": "Prochain niveau",
+    "youNeed": "Vous avez besoin",
+    "remainingXP": "Il vous reste",
+    "maxLevel": "Niveau maximal atteint !",
+    "performanceAnalysis": "Analyse des performances",
+    "winRate": "Taux de victoire",
+    "wins": "Victoires",
+    "losses": "Défaites",
+    "totalGamesPlayed": "Nombre total de parties jouées",
+    "totalGoalsScored": "Total de buts marqués",
+    "totalGoalsTaken": "Total de buts encaissés",
+    "score": "Score : {{left}} - {{right}}",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "matchResult": "{{result}} 🆚 contre {{opponent}}",
+    "lostAgainst": "Défaite ❌ contre {{opponent}}",
+	"noMatchYet": "Aucun match enregistré pour le moment",
+	"startPlayingToGetHistory": "Commencez à jouer pour remplir votre historique !"
+  }
+}

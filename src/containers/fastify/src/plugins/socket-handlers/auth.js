@@ -1,5 +1,7 @@
 const fp = require('fastify-plugin');
 const { verifyToken } = require('../../service/jwt');
+const jwt = require('jsonwebtoken');
+const { get } = require("../../config/env");
 
 const connectedSockets = new Map();
 
@@ -11,44 +13,48 @@ function getAllConnectedSockets() {
 
 async function socketAuthHandlers(fastify, opts) {
 	fastify.addHook('onReady', async () => {
+		fastify.socketIO.use(async (socket, next) => {
+			const cookieHeader = socket.handshake.headers.cookie;
+			if (!cookieHeader) {
+				console.log("eoweh");
+				socket.emit('auth-error', { message: 'Invalid or expired token' });
+				return socket.disconnect();
+			}
+
+			const cookies = Object.fromEntries(
+				cookieHeader.split(';').map(c => {
+					const [key, ...v] = c.trim().split('=');
+					return [key, decodeURIComponent(v.join('='))];
+				})
+			);
+
+			const token = cookies['token']
+			if (!token) {
+				socket.emit('auth-error', { message: 'Token not found' });
+				return socket.disconnect();
+			};
+
+			const jwtSecret = await get('jwtSecret');
+			const decoded = jwt.verify(token, jwtSecret);
+
+			if (!decoded) {
+				socket.emit('auth-error', { message: 'Invalid or expired token' });
+				return socket.disconnect();
+			}
+
+			socket.userId = decoded.userId;
+			socket.join(`user:${decoded.userId}`);
+			fastify.log.info(`User ${decoded.userId} authenticated`);
+			next();
+		});
 		fastify.socketIO.on('connection', (socket) => {
 			fastify.log.info(`Client connected: ${socket.id}`);
 
-			socket.on('authenticate', async (token) => {
-				try {
-					const { valid, decoded } = await verifyToken(token);
-
-					if (!valid) {
-						socket.emit('auth-error', { message: 'Invalid or expired token' });
-						fastify.log.warn('Socket authentication failed: invalid token');
-						socket.disconnect();
-						return;
-					}
-
-					socket.userId = decoded.userId;
-					socket.join(`user:${decoded.userId}`);
-					fastify.log.info(`User ${decoded.userId} authenticated`);
-
-					socket.emit('connected-users', getAllConnectedSockets());
-
-					connectedSockets.set(socket.id, socket);
-					socket.emit('authenticated', { userId: decoded.userId });
-					fastify.socketIO.emit('user-added', { id: socket.id, userId: decoded.userId });
-				} catch (err) {
-					fastify.log.error('Authentication failed:', err);
-					socket.emit('auth-error', { message: 'Invalid token' });
-					socket.disconnect();
-				}
-			});
-
-			socket.use((packet, next) => {
-				if (packet[0] === 'authenticate') {
-					return next();
-				}
-				if (!socket.userId) {
-					return next(new Error('Not authenticated'));
-				}
-				next();
+			socket.on('initLiveChat', () => {
+				socket.emit('connected-users', getAllConnectedSockets());
+				socket.emit('authenticated', { userId: socket.userId });
+				connectedSockets.set(socket.id, socket);
+				fastify.socketIO.emit('user-added', { id: socket.id, userId: socket.userId });
 			});
 
 			socket.on('disconnect', () => {

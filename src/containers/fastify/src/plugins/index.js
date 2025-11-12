@@ -4,11 +4,12 @@ const fastifyIO = require('fastify-better-socket.io');
 const fastifyBetterSqlite3 = require('./db.js');
 const auth = require('./auth.js');
 const { get } = require('../config/env');
+//const { get } = require('../');
 
 const registerPlugins = async (fastify) => {
 	// CORS
 	await fastify.register(cors, {
-		origin: 'http://localhost:5173',
+		origin: 'https://localhost:8443',
 		credentials: true,
 		methods: ['GET', 'POST']
 	});
@@ -22,7 +23,7 @@ const registerPlugins = async (fastify) => {
 	// Socket.IO
 	await fastify.register(fastifyIO, {
 		cors: {
-			origin: 'http://localhost:5173',
+			origin: 'https://localhost:8443',
 			methods: ['GET', 'POST'],
 			credentials: true,
 		}

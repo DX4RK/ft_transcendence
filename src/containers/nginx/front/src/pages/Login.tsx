@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"
-import { useAuth } from "../context/AuthContext";
+// import { useAuth } from "../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 
 export default function LoginPage({ }) {
 
-
+const { t } = useTranslation();
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
 const [error, setError] = useState('');
 const [loading, setLoading] = useState(false);
-const { login } = useAuth();
+// const { login } = useAuth();
 const navigate = useNavigate();
 
 
@@ -26,14 +27,34 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 	setLoading(true);
 
 	try {
-		const result = await login(email, password);
+		const myHeaders = new Headers();
+		myHeaders.append("Content-Type", "application/json");
+
+		const raw = JSON.stringify({
+		"username": email,
+		"password": password
+		});
+
+		const response = await fetch("http://localhost:3000/api/sign/in", { method: "POST", headers: myHeaders, body: raw, redirect: "follow" })
+		const result = await response.json();
+
+		console.log(result);
+
+		if (!result.success) {
+			throw new Error(`Error Status: ${result.message}`);
+		}
 
 		if (result.success) {
 			console.log("success !");
-			navigate('/profile', { state: { login: email }});
+			console.log(result.message);
+			console.log(result);
+			navigate('/tfa', { state: { email }});
 		}
-	} catch (err) {
-		setError('Erreur de connexion');
+	}
+	catch (err) {
+		if (err instanceof Response && err.status >= 400)
+			navigate('/login');
+ 		setError(err instanceof Error ? err.message : String(err));
 	}
 	finally {
 		setLoading(false);
@@ -56,12 +77,22 @@ return (
 			className="delay-1000 animate-draw "/>
 		</svg>
 
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 14" className="absolute bottom-0 left-0 w-full z-0 delay-300 pointer-events-none">
+            <path d="M 24 3 L 22 6 Q 21.393 5.659 20.253 8.076 L 20.029 10.012 Q 20.079 13.02 19.223 13.002 Q 18.585 13.439 19 16 l -3.7 0.637 L 15 13 Q 14.993 12.692 14.742 12.575 L 14.274 12.358 Q 14.04 12.241 13.973 12.023 L 13.686 10.27" stroke="#e95d2c" strokeWidth="0.05" fill="none"
+            className="delay-1000 animate-draw"/>
+        </svg>
+
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 14" className="absolute bottom-0 left-0 w-full z-0 delay-300 pointer-events-none blur">
+            <path d="M 24 3 L 22 6 Q 21.393 5.659 20.253 8.076 L 20.029 10.012 Q 20.079 13.02 19.223 13.002 Q 18.585 13.439 19 16 l -3.7 0.637 L 15 13 Q 14.993 12.692 14.742 12.575 L 14.274 12.358 Q 14.04 12.241 13.973 12.023 L 13.686 10.27" stroke="#e95d2c" strokeWidth="0.05" fill="none"
+            className="delay-1000 animate-draw "/>
+        </svg>
+
 		<Link to="/" className="text-base text-cyan-300/70  text-xl hover:shadow-lg font-arcade z-50">ft_transcendence</Link>
 
 		<div className="flex min-h-screen items-center justify-center ">
 			<form onSubmit={handleSubmit} className="bg-gradient-to-r from-[#45586c] to-[#424048] p-8 rounded-lg shadow-xl shadow-cyan-500/30 w-80 ">
 			<h2 className="text-2xl font-arcade text-center mb-6 text-slate-300 m-6">
-				connexion
+				{t("login.connexion")}
 			</h2>
 			{error && (
 				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -84,9 +115,9 @@ return (
 
 			<button  type="submit" className="flex justify-center w-full p-4 bg-[#E95D2C] font-arcade text-[#B0CEE2] rounded-lg hover:ring hover:ring-[#B0CEE2] hover:bg-orange-600 hover:text-[#1A2730] transition">
 					{/* log in */}
-					{loading ? 'Connexion...' : 'Log In'}
+					{loading ? t("login.connecting") : t("login.logIn")}
 			</button>
-			<Link to="/signIn" className="flex justify-center underline m-4">No account ? register</Link>
+			<Link to="/register" className="flex justify-center underline m-4">{t("login.ifNoAccountRegister")}</Link>
 			</form>
 		</div>
 	</div>

@@ -24,7 +24,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
 
 		setTimeout(() => {
 			setNotifications((prev) => prev.filter((n) => n.id !== id));
-		}, 3000);
+		}, 10000);
 	};
 
 	const handleClick = (id: number) => {
@@ -35,7 +35,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
 		<NotificationContext.Provider value={{ notifications, addNotification }}>
 			{children}
 			{/* Zone d'affichage des notifications */}
-			<div className="fixed top-10 right-10 flex flex-col items-end space-y-2 z-50">
+			<div className="fixed top-17 right-10 flex flex-col items-end space-y-2 z-50">
 				{notifications.map((notif) => (
 					<button
 						key={notif.id}

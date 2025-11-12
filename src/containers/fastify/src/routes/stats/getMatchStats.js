@@ -1,9 +1,22 @@
 async function getMatchStats(fastify, opts) {
-	fastify.get(
+	fastify.post(
 		'/matches/me',
 		{ preValidation: [fastify.authenticate] },
 		async (request, reply) => {
 			const decoded = request.user;
+
+			try {
+				const { targetId } = request.body;
+
+				if (targetId && typeof targetId !== 'number') {
+					return reply.code(401).send({ success: false, message: 'Invalid parameters' });
+				} else if (targetId) {
+					decoded.userId = targetId;
+				}
+			} catch (err) {
+
+			}
+
 
 			let stmt = fastify.usersDb.prepare('SELECT * FROM user_matches WHERE user_id = ?');
 			const userStats = stmt.get(decoded.userId);
@@ -16,6 +29,7 @@ async function getMatchStats(fastify, opts) {
 					success: true,
 					message: 'No stats yet.',
 					data: {
+						username: userData.username,
 						xp: userData.experience_point,
 						matchWon: 0,
 						matchLost: 0,
@@ -36,6 +50,7 @@ async function getMatchStats(fastify, opts) {
 				success: true,
 				message: 'User stats retrieved successfully.',
 				data: {
+					username: userData.username,
 					xp: userData.experience_point,
 					matchWon: userStats.match_won,
 					matchLost: (userStats.match_played - userStats.match_won),

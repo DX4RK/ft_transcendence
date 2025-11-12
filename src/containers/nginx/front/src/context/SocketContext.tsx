@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useNotification } from "../context/NotificationContext";
+// import { useNotification } from "../context/NotificationContext";
 import { io, Socket } from "socket.io-client";
 import type { ReactNode }from "react"
 
@@ -11,7 +11,7 @@ type SocketContextType = {
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
-	const { addNotification } = useNotification();
+	// const { addNotification } = useNotification();
 	const [socket, setSocket] = useState<Socket | null>(null);
 	const [isConnected, setIsConnected] = useState(false);
 
@@ -23,15 +23,19 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
 		newSocket.connect(); //! connecter seulement si user login
 
-
 		newSocket.on("connect", () => {
-				console.log("✅ Socket connected");
-				setIsConnected(true);
+			console.log("✅ Socket connected");
+			setIsConnected(true);
+		});
+
+		newSocket.on("auth-error", (err) => {
+			console.error("❌ Erreur Socket.IO:", err.message);
+			setIsConnected(false);
 		});
 
 		newSocket.on("connect_error", (err) => {
-				console.error("❌ Erreur Socket.IO:", err.message);
-				setIsConnected(false);
+			console.error("❌ Erreur Socket.IO:", err.message);
+			setIsConnected(false);
 		});
 
 		newSocket.on("disconnect", () => {
@@ -39,15 +43,9 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 			setIsConnected(false);
 		});
 
-		newSocket.on("user-blocked", (blocker: string, blocked: string) => {
-			if (blocked === newSocket.id) {
-				addNotification("blocked", `${blocker} has blocked you`);
-			}
-		});
-
-		newSocket.on("invit-game", (fromUser: string) => {
-			addNotification("invite", `Invitation to play from ${fromUser}`);
-		});
+		// newSocket.on("invite", (fromUser: string) => {
+		// 	addNotification("invite", `Invitation to play from ${fromUser}`);
+		// });
 
 		setSocket(newSocket);
 
@@ -70,3 +68,20 @@ export const useSocket = () => {
 		throw new Error("useSocket must be used within a SocketProvider");
 	return context;
 };
+
+export function useSocketEvent<T = any>(
+	eventName: string,
+	callback: (data: T) => void
+  ) {
+	const { socket, isConnected } = useSocket();
+
+	useEffect(() => {
+	  if (!socket || !isConnected) return;
+
+	  socket.on(eventName, callback);
+
+	  return () => {
+		socket.off(eventName, callback);
+	  };
+	}, [socket, isConnected, eventName, callback]);
+  }

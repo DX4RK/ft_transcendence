@@ -13,11 +13,13 @@ const { generateToken } = require('./service/jwt');
 const registerPlugins = require('./plugins');
 const registerRoutes = require('./routes');
 
+// fastify.setPrefix('/api');
+
 const start = async () => {
 	try {
 		// Wait for configuration to be available
 		const config = await env.getConfig();
-		
+
 		// Initialize services
 		const transporter = await createEmailTransporter();
 		const vonage = await createVonageClient();

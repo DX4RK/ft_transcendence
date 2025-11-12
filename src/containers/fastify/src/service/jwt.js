@@ -8,7 +8,7 @@ async function generateToken(payload, expiresIn = "7d") {
 
 async function verifyToken(token) {
 	try {
-		const jwtSecret = await env.get('jwtSecret');
+		const jwtSecret = await get('jwtSecret');
 		const decoded = jwt.verify(token, jwtSecret);
 		return { valid: true, decoded };
 	} catch (err) {

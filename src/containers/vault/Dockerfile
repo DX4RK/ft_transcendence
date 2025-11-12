@@ -11,13 +11,6 @@ RUN chmod 666 /vault/config/.env
 RUN chmod 666 /vault/config/vault.hcl
 RUN chmod 666 /vault/config/init-vault.sh
 
-RUN echo '#!/bin/bash' > /start.sh && \
-    echo 'vault server -config=/vault/config/vault.hcl &' >> /start.sh && \
-    echo 'sleep 5' >> /start.sh && \
-    echo '/vault/config/init-vault.sh' >> /start.sh && \
-    echo 'wait' >> /start.sh && \
-    chmod +x /start.sh
-
 EXPOSE 8200
 
-CMD ["/start.sh"]
+CMD ["vault", "server", "-dev", "-dev-listen-address=0.0.0.0:8200"]

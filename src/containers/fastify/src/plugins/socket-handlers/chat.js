@@ -10,14 +10,16 @@ const getPrivateRoomId = (userId, targetId) => {
 }
 
 const extractPrivateRoomMembers = (roomId) => {
-	const parts = roomId.split(':');
+	const parts = roomId.split('-');
+	console.log(parts);
 	return [parseInt(parts[0], 10), parseInt(parts[1], 10)];
 }
 
 const isUserBlocked = (usersDb, userId, targetId) => {
+	console.log(userId, targetId);
 	const stmt = usersDb.prepare('SELECT * FROM users WHERE id = ?');
 	const userData = stmt.get(targetId);
-
+	console.log(userData.blocked);
 	if (!userData) return false;
 
 	let blocked = [];
@@ -148,6 +150,28 @@ async function socketChatHandlers(fastify, opts) {
 						id: msg.lastInsertRowid,
 						userId: socket.userId,
 						text: message,
+						timestamp: Date.now()
+					});
+				} catch (err) {
+					fastify.log.error(`Error sending private message: ${err.message}`);
+				}
+			});
+
+			socket.on('send-invite', async (data) => {
+				if (!socket.userId) return;
+
+				const { roomId } = data;
+
+				try {
+					const roomMembers = extractPrivateRoomMembers(roomId);
+					const targetId = roomMembers[0] === socket.userId ? roomMembers[1] : roomMembers[0];
+
+					if (isUserBlocked(fastify.usersDb, socket.userId, targetId))
+						return;
+
+					fastify.socketIO.to(`private:${roomId}`).emit('invite', {
+						userId: socket.userId,
+						text: `Invite recev from: ${socket.userId}`,
 						timestamp: Date.now()
 					});
 				} catch (err) {
